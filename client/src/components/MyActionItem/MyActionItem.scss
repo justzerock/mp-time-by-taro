@@ -1,0 +1,43 @@
+$light-sel: rgba($color: #fff, $alpha: .1);
+$light-unsel: rgba($color: #fff, $alpha: .3);
+$dark-sel: rgba($color: #999, $alpha: .1);
+$dark-unsel: rgba($color: #999, $alpha: .3);
+$shadow-sel: 0 0 3PX 0 rgba($color: #000000, $alpha: .08);
+$shadow-unsel: 0 0 10PX 0 rgba($color: #000000, $alpha: .08);
+.my-action-item {
+  display: flex;
+  width: 44vw;
+  height: 80PX;
+  border-radius: 5PX;
+  box-shadow: $shadow-unsel;
+  margin: 2vw;
+  position: relative;
+  justify-content: space-evenly;
+  align-items: center;
+  .color-block {
+    position: absolute;
+    width: 20PX;
+    height: 10PX;
+    border-radius: 5PX;
+    right: 10PX;
+    bottom: 10PX;
+  }
+  &.light {
+    &.selected {
+      background: $light-sel;
+      box-shadow: $shadow-sel;
+    }
+    &.unselected {
+      background: $light-unsel;
+    }
+  }
+  &.dark {
+    &.selected {
+      background: $dark-sel;
+      box-shadow: $shadow-sel;
+    }
+    &.unselected {
+      background: $dark-unsel;
+    }
+  }
+}

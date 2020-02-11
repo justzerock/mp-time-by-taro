@@ -1,5 +1,8 @@
 import Taro, { Component, Config } from '@tarojs/taro'
+import { Provider } from '@tarojs/mobx'
 import Index from './pages/index'
+
+import themeStore from './store/theme'
 
 import './app.scss'
 
@@ -8,6 +11,9 @@ import './app.scss'
 // if (process.env.NODE_ENV !== 'production' && process.env.TARO_ENV === 'h5')  {
 //   require('nerv-devtools')
 // }
+const store = {
+  themeStore
+}
 
 class App extends Component {
 
@@ -23,6 +29,7 @@ class App extends Component {
       'pages/index/index'
     ],
     window: {
+      navigationStyle: 'custom',
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'WeChat',
@@ -47,7 +54,9 @@ class App extends Component {
   // 请勿修改此函数
   render () {
     return (
-      <Index />
+      <Provider store={store}>
+        <Index />
+      </Provider>
     )
   }
 }

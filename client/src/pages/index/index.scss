@@ -1,0 +1,127 @@
+$light: #fafafa;
+$dark: #333;
+$light-one: #FFDA7E;
+$dark-one: #FEFDFE;
+$light-two: #AAC9F0;
+$dark-two: #EEEEEE;
+$cube: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+.index {
+  height: 100%;
+  width: 100%;
+  transition: all .3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'webfont';
+  position: fixed;
+  &.light {
+    background: $light;
+    color: $dark;
+  }
+  &.dark {
+    background: $dark;
+    color: $light;
+  }
+  .Indicator {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 10PX;
+    width: 42PX;
+    position: absolute;
+    top: 70PX;
+    left: 17PX;
+    .one {
+      display: flex;
+      height: 100%;
+      border-radius: 10PX;
+      transition: $cube;
+      &.light {
+        background: $light-one;
+      }
+      &.dark {
+        background: $dark-one;
+      }
+      &.dot {
+        opacity: .3;
+      }
+    }
+    .two {
+      display: flex;
+      height: 100%;
+      border-radius: 10PX;
+      transition: $cube;
+      &.light {
+        background: $light-two;
+      }
+      &.dark {
+        background: $dark-two;
+      }
+      &.dot {
+        opacity: .3;
+      }
+    }
+  }
+  .swiper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    .swiper-item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+  }
+  .list-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    border-radius: 10PX;
+    box-shadow: 0 0 10PX 0 rgba($color: #000000, $alpha: .05);
+    transition: all .3s;
+    &.light {
+      background: rgba($color: #fff, $alpha: .2);
+    }
+    &.dark {
+      background: rgba($color: #666, $alpha: .2);
+    }
+    .list {
+      overflow-y: scroll;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 10PX;
+    }
+  }
+  .setting-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 80PX;
+    width: 90vw;
+    background: #AAC9F0;
+    margin: 10PX auto;
+    border-radius: 10PX;
+    box-shadow: 0 0 10PX 0 rgba($color: #000000, $alpha: .05);
+    &.light {
+      background: rgba($color: #fff, $alpha: .2);
+    }
+    &.dark {
+      background: rgba($color: #666, $alpha: .2);
+    }
+  } 
+  .float-btn {
+    position: absolute;
+    right: 10PX;
+    bottom: 10PX;
+    transition: $cube;
+    &.hidden {
+      transform: scale(0);
+    }
+  }
+}

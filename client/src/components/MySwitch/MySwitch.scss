@@ -1,0 +1,114 @@
+$light-bgcolor: #ACC8F2;
+$light-color: #FFDC76;
+$dark-bgcolor: rgba($color: #666, $alpha: .2);
+$dark-color: #FEFDFE;
+$shadow-color: rgba($color: #000000, $alpha: .08);
+$shadow-none: 0 0 0 0 $shadow-color;
+$shadow-normal: 0 0 8PX 0 $shadow-color;
+$shadow-hover: 0 0 12PX 0 $shadow-color;
+$transition: all .2s ease-in-out;
+$icon-size: 28PX;
+.my-switch {
+  height: $icon-size;
+  width: $icon-size*2;
+  border-radius: $icon-size;
+  margin: auto 10PX;
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: $transition;
+  /* border: 1PX solid; */
+  overflow: hidden;
+  box-shadow: $shadow-normal;
+  animation: shadow 1s;
+  &:hover {
+    box-shadow: $shadow-hover;
+  }
+  &.light {
+    background: $light-bgcolor;
+    /* border-color: $light-bgcolor; */
+  }
+  &.dark {
+    background: $dark-bgcolor;
+    /* border-color: $dark-bgcolor; */
+  }
+  .my-icon {
+    width: $icon-size;
+    height: $icon-size;
+    border-radius: 100%;
+    position: absolute;
+    transition: $transition;
+    &.light {
+      left: 0;
+      background: $light-color;
+      &:before {
+        content: '';
+        position: absolute;
+        left: $icon-size*.5;
+        top: $icon-size*.5;
+        width: $icon-size;
+        height: $icon-size*.5;
+        border-radius: $icon-size;
+        background: #efefef;
+        transition: $transition;
+        animation: clouds 10s linear infinite;
+      }
+      &:after {
+        content: '';
+        position: absolute;
+        left: $icon-size*.75;
+        top: $icon-size*.25;
+        width: $icon-size*.5;
+        height: $icon-size*.5;
+        border-radius: $icon-size*.5;
+        background: #efefef;
+        transition: $transition;
+        animation: clouds 10s linear infinite;
+      }
+    }
+    &.dark {
+      left: $icon-size;
+      background: $dark-color;
+      overflow: hidden;
+      &:before {
+        content: '';
+        width: $icon-size*.2;
+        height: $icon-size*.2;
+        border-radius: $icon-size*.2;
+        background: #eee;
+        position: absolute;
+        right: 10%;
+        top: 20%;
+        box-shadow: -$icon-size*.15 $icon-size*.4 0 0 #eee;
+      }
+      &:after {
+        content: '';
+        width: $icon-size*.3;
+        height: $icon-size*.3;
+        border-radius: $icon-size*.3;
+        background: #eee;
+        position: absolute;
+        left: 5%;
+        top: 30%;
+      }
+    }
+  }
+}
+
+@keyframes shadow {
+  0% {
+    box-shadow: $shadow-none;
+  }
+  100% {
+    box-shadow: $shadow-normal;
+  }
+}
+
+@keyframes clouds {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-$icon-size*.2);
+  }
+}

@@ -1,0 +1,16 @@
+.my-nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 44PX;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  z-index: 999;
+  .my-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}

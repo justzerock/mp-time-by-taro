@@ -1,10 +1,52 @@
-import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Text } from '@tarojs/components'
-import './index.scss'
+// eslint-disable-next-line no-unused-vars
+import { ComponentType } from 'react'
+import Taro, { Component } from '@tarojs/taro'
+import { View, Swiper, SwiperItem } from '@tarojs/components'
+import { observer, inject } from '@tarojs/mobx'
+import classNames from 'classnames/bind'
 
-import Login from '../../components/login/index'
+import styles from './index.scss'
+import MyNavBar from '../../components/MyNavBar/MyNavBar'
+import MyProgress from '../../components/MyProgress/MyProgress'
+import MyFloatButton from '../../components/MyFloatButton/MyFloatButton'
+import MyActionLayer from '../../components/MyActionLayer/MyActionLayer'
+import '../../assets/myfont.scss'
 
-export default class Index extends Component {
+let cx = classNames.bind(styles)
+
+type PageStateProps = {
+  themeStore: {
+    isDark: boolean,
+    systemInfo: object,
+    list: Array<Object>,
+    updateTime: number,
+    birthday: Array<number>,
+    avglife: number,
+    explife: number,
+    setListData: Function,
+    getListData: Function,
+    getSystemInfo: Function,
+    setNavBarTitle: Function
+  }
+}
+
+interface Index {
+  props: PageStateProps;
+}
+
+@inject('themeStore')
+@observer
+class Index extends Component {
+  state = {
+    expand: false,
+    dateSel: '1993-1-1',
+    startX: 0,
+    x: 0,
+    translateX: 0,
+    transition: 'all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+    isLeft: true,
+    current: '0'
+  }
 
   /**
    * 指定config的类型声明为: Taro.Config
@@ -13,25 +55,231 @@ export default class Index extends Component {
    * 对于像 navigationBarTextStyle: 'black' 这样的推导出的类型是 string
    * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
    */
-  config: Config = {
-    navigationBarTitleText: '首页'
+
+  componentWillMount () {
+    this.onUpdate()
+  }
+  
+  componentDidMount () { 
+  }
+  
+  componentWillUnmount () { 
+    clearInterval(this._interval)
+  }
+  
+  componentDidShow () {
+  }
+  
+  componentDidHide () {
   }
 
-  componentWillMount () { }
+  componentWillReact () { }
 
-  componentDidMount () { }
+  onUpdate = () => {
+    const { themeStore } = this.props
+    themeStore.getListData()
+    themeStore.getSystemInfo()
+    this._interval = setInterval(() => {
+      themeStore.getListData()
+    }, 600 * 1000)
+  }
 
-  componentWillUnmount () { }
+  onAddToggle = () => {
+    const { expand } = this.state
+    this.setState({
+      expand: !expand
+    })
+  }
 
-  componentDidShow () { }
+  onAddCancle = () => {
+    this.setState({
+      expand: false
+    })
+  }
 
-  componentDidHide () { }
+  onDateChange = (e) => {
+    this.setState({
+      dateSel: e.detail.value
+    })
+  }
+
+  onSwipItem = (e) => {
+    const { themeStore } = this.props
+    let current = e.detail.current
+    this.setState({
+      isLeft: current ? false : true
+    })
+    let title = current ? '设置' : '亦时'
+    themeStore.setNavBarTitle(title)
+    console.log(e, current)
+  }
+
+  removeItem = (type) => {
+    const { themeStore } = this.props
+    let newList = themeStore.list
+    let index = newList.findIndex(item => item.type === type)
+    newList[index].selected = false
+    themeStore.setListData(newList, Date.now(), false)
+  }
 
   render () {
-    return (
-      <View className='index'>
-        <Login/>
+    const { themeStore: { isDark, systemInfo, list } } = this.props
+    const { expand, isLeft } = this.state
+    let classIndex = cx({
+      'index': true,
+      'light': !isDark,
+      'dark': isDark
+    })
+    let classIndicator = cx({
+      'Indicator': true
+    })
+    let classIndicatorOne = cx({
+      'one': true,
+      'light': !isDark,
+      'dark': isDark,
+      'dot': !isLeft
+    })
+    let classIndicatorTwo = cx({
+      'two': true,
+      'light': !isDark,
+      'dark': isDark,
+      'dot': isLeft
+    })
+    let classSwiper = cx({
+      'swiper': true
+    })
+    let classSwiperItem = cx({
+      'swiper-item': true
+    })
+    let classListWrap = cx({
+      'list-wrap': true,
+      'light': !isDark,
+      'dark': isDark
+    })
+    let classList = cx({
+      'list': true
+    })
+    let classFloatBtn = cx({
+      'float-btn': true,
+      'hidden': !isLeft
+    })
+    let classSettingItem = cx({
+      'setting-item': true,
+      'light': !isDark,
+      'dark': isDark
+    })
+
+    let styleIndicator = {
+      top: `${46 + systemInfo.statusBarHeight}PX`
+    }
+    let styleIndicatorOne = {
+      width: isLeft ? '25PX' : '10PX'
+    }
+    let styleIndicatorTwo = {
+      width: isLeft ? '10PX' : '25PX'
+
+    }
+    let styleListWrap = {
+      marginTop: `${(44 + systemInfo.statusBarHeight)/2}PX`
+    }
+    let styleList = {
+      maxHeight: `calc(100vh - (${44 + systemInfo.statusBarHeight}PX)*2)`,
+    }
+    let styleFloatBtn = {}
+    return ( 
+      <View
+        className={classIndex}
+      >
+        <MyNavBar />
+        <View
+          className={classIndicator}
+          style={styleIndicator}
+        >
+          <View
+            className={classIndicatorOne}
+            style={styleIndicatorOne}
+          ></View>
+          <View
+            className={classIndicatorTwo}
+            style={styleIndicatorTwo}
+          ></View>
+        </View>
+        <Swiper
+          className={classSwiper}
+          onChange={this.onSwipItem}
+        >
+          <SwiperItem
+            className={classSwiperItem}
+          >
+            <View 
+              className={classListWrap}
+              style={styleListWrap}
+            >
+              <View 
+                className={classList}
+                style={styleList}
+              >
+                {
+                  list
+                  .filter(item => item.selected)
+                  .map(
+                    item => {
+                      return (
+                        <MyProgress 
+                          key={item.type + item.time}
+                          name={item.name}
+                          title={item.title}
+                          percent={item.percent}
+                          time={item.time}
+                          icon={item.icon}
+                          color={item.color}
+                          type={item.type}
+                          editable={item.editable}
+                          isDark={isDark}
+                          onRemoveItem={() => this.removeItem(item.type)}
+                        />
+                      )
+                    }
+                  )
+                }
+              </View>
+            </View>
+          </SwiperItem>
+          <SwiperItem
+            className={classSwiperItem}
+          >
+            {
+              [1,2,3,4,5].map(
+                item => {
+                  return (
+                    <View
+                      className={classSettingItem}
+                    >
+                      {item}
+                    </View>
+                  )
+                }
+              )
+            }
+          </SwiperItem>
+        </Swiper>
+        <View
+          className={classFloatBtn}
+          style={styleFloatBtn}
+        >
+          <MyFloatButton 
+            isDark={isDark}
+            onAdd={this.onAddToggle}
+          />
+        </View>
+        <MyActionLayer 
+          expand={expand}
+          onAdd={this.onAddCancle}
+          isDark={isDark}
+        />
       </View>
     )
   }
 }
+
+export default Index  as ComponentType

@@ -1,0 +1,70 @@
+$cubic: cubic-bezier(.25,.46,.45,.94);
+.my-progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 8PX 0 rgba($color: #000000, $alpha: .08);
+  &.light {
+    background: rgba($color: #fff, $alpha: .3);
+  }
+  &.dark {
+    background: rgba($color: #999, $alpha: .3);
+  }
+  .remove-btn {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all .3s;
+    &:hover {
+      background: rgba($color: #000000, $alpha: .08);
+    }
+  }
+    .my-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all .5s;
+    }
+    .detail {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: all .5s;
+      height: 100%;
+    }
+    .bar-color {
+      position: absolute;
+      height: 100%;
+      .bar-title {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fafafa;
+        overflow: hidden;
+        white-space: nowrap;
+        touch-action: none;
+      }
+      .percent {
+        position: absolute;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &.left {
+          right: 5PX;
+        }
+        &.right {
+          right: -5PX;
+          transform: translateX(100%);
+        }
+      }
+    }
+}
+
