@@ -5,17 +5,39 @@ import tp from '../utils/timePercent'
 const { timePercent } = tp
 
 const themeStore = observable({
-  statusBarHeight: 20,
   systemInfo: {
     statusBarHeight: 20,
-    model: 'iPhone X',
+    model: 'iPhone',
     windowWidth: 375
   },
+  menuButton: {
+    width: 87,
+    height: 32,
+    top: 26,
+    bottom: 58,
+    left: 278,
+    right: 365
+  },
+  primary: '#329188',
+  colors: [
+    '#329188',
+    '#5C8AC1',
+    '#1CBDE3',
+    '#00CA94',
+    '#F32F55',
+    '#FA9684',
+    '#006CFA',
+    '#95CFB5',
+    '#78C9A7'
+  ],
   navBarTitle: '亦时',
+  isRight: false,
   isDark: false,
-  birthday: '1993,3,1',
+  hasHomeBar: false,
+  birthday: '',
   avglife: 77,
   explife: 0,
+  wStart: 0,
   list: [
     {
       name: '年进度',
@@ -24,7 +46,6 @@ const themeStore = observable({
       icon: 'earth',
       color: '#D8000C',
       selected: true,
-      editable: false,
       type: 'year'
     },
     {
@@ -34,7 +55,6 @@ const themeStore = observable({
       icon: 'moon',
       color: '#00CCEB',
       selected: true,
-      editable: false,
       type: 'month'
     },
     {
@@ -44,7 +64,6 @@ const themeStore = observable({
       icon: 'week',
       color: '#00CA94',
       selected: false,
-      editable: false,
       type: 'week'
     },
     {
@@ -54,7 +73,6 @@ const themeStore = observable({
       icon: 'sun',
       color: '#FFBF65',
       selected: true,
-      editable: false,
       type: 'day'
     },
     {
@@ -64,7 +82,6 @@ const themeStore = observable({
       icon: 'face',
       color: '#FF5680',
       selected: false,
-      editable: false,
       type: 'life'
     }
   ],
@@ -81,27 +98,33 @@ const themeStore = observable({
   // 更新数据列表
   updateList() {
     let life = this.explife ? this.explife : this.avglife
-    let date1 = new Date(this.birthday)
-    let midDate = new Date(this.birthday)
-    let date2 = new Date(midDate.setFullYear(midDate.getFullYear() + life))
-    console.log(date1, date2, life)
+    let date1
+    let midDate
+    let date2 
+    if ( this.birthday !== '' ) {
+      date1 = new Date(this.birthday)
+      midDate = new Date(this.birthday)
+      date2 = new Date(midDate.setFullYear(midDate.getFullYear() + life))
+    }
     return this.list
     .map(
       item => {
-        let tpobj = {}
-        if (item.type == 'life') {
-          tpobj = timePercent('life', date1, date2)
+        let tpobj
+        let type = item.type
+        if (type === 'week' ) {
+          tpobj = timePercent(type, this.wStart)
+        } else if (type === 'life') {
+          tpobj = this.birthday === '' ? {time:0, percent:0} : timePercent(type, 0, date1, date2)
         } else {
-          tpobj = timePercent(item.type)
+          tpobj = timePercent(type)
         }
         return {
-          type: item.type,
+          type: type,
           name: item.name,
-          title: this.getName(item.type, tpobj.time),
+          title: this.getName(type, tpobj.time),
           icon: item.icon,
           color: item.color,
           selected: item.selected,
-          editable: false,
           time: tpobj.time,
           percent: tpobj.percent
         }
@@ -197,31 +220,73 @@ const themeStore = observable({
     })
   },
 
+  // 设置主题色
+  setPrimaryColor(color) {
+    this.primary = color
+    Taro.setStorage({key: 'primary', data: color})
+  },
+
+  // 获取主题色
+  getPrimaryColor() {
+    Taro.getStorage({key: 'primary'})
+    .then(
+      res => this.primary = res.data
+    )
+    .catch(
+      () => this.setPrimaryColor(this.primary)
+    )
+  },
+
+  //  获取菜单按钮信息
+  getMenuButton() {
+    Taro.getStorage({key: 'menuButton'})
+    .then(
+      res => this.menuButton = res.data
+    )
+    .catch(
+      () => {
+        try {
+          let menuButton = Taro.getMenuButtonBoundingClientRect()
+          this.menuButton = menuButton
+          Taro.setStorage({key: 'menuButton', data: menuButton})
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    )
+  },
+
+  //  用于判断底部空间
+  setHomeBar(model) {
+    if (model.search('iPhone X') !== -1 || model.search('iPhone 11') !== -1) {
+      this.hasHomeBar = true
+    }
+  },
+
   // 系统信息
   getSystemInfo() {
     Taro.getStorage({key: 'systemInfo'})
     .then(
-      res => this.systemInfo = res.data
+      res => {
+        this.systemInfo = res.data
+        this.setHomeBar(res.data.model)
+      } 
     )
     .catch(
       () => Taro.getSystemInfo()
       .then(
         res => {
           this.systemInfo = res
+          this.setHomeBar(res.model)
           Taro.setStorage({key: 'systemInfo', data: res})
         }
       )
     )
   },
 
-  setStatusBarHeight(height, isFirst) {
-    this.statusBarHeight = height
-    if (isFirst) Taro.setStorage({key: 'statusBarHeight', data: height})
-  },
-
-  setNavBarTitle(title) {
+  setNavBarTitle(title, isRight) {
     this.navBarTitle = title
-    Taro.setStorage({key: 'navBarTitle', data: title})
+    this.isRight = isRight
   },
 
   setLocalListData(list, updateTime) {

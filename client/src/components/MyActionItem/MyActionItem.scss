@@ -1,15 +1,31 @@
-$light-sel: rgba($color: #fff, $alpha: .1);
-$light-unsel: rgba($color: #fff, $alpha: .3);
-$dark-sel: rgba($color: #999, $alpha: .1);
-$dark-unsel: rgba($color: #999, $alpha: .3);
-$shadow-sel: 0 0 3PX 0 rgba($color: #000000, $alpha: .08);
-$shadow-unsel: 0 0 10PX 0 rgba($color: #000000, $alpha: .08);
+$light: #dde1e7;
+$dark: #233541;
+$light-text: rgba($color: $light, $alpha: .8);
+$dark-text: rgba($color: $dark, $alpha: .6);
+$added: #FFBD6D;
+$addable: #0BC84D;
+
+$shadow-out-light:-3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
+3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
+$shadow-inset-light:inset -3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
+inset 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
+$shadow-touch-light:-1.5PX -1.5PX 3.5PX 0 rgba($color: #fff, $alpha: .45),
+1.5PX 1.5PX 2.5PX 0 rgba($color: #5E6879, $alpha: .28);
+$shadow-text-light: 1PX 1PX 2PX $light, 0 0 0 $dark, 1PX 1PX 2PX $light;
+
+$shadow-out-dark:-3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
+3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
+$shadow-inset-dark:inset -3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
+inset 3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
+$shadow-touch-dark:-1.5PX -1.5PX 3.5PX 0 rgba($color: #2a404e, $alpha: .8),
+1.5PX 1.5PX 2.5PX 0 rgba($color: #1c2a34, $alpha: .8);
+$shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
+
 .my-action-item {
   display: flex;
   width: 44vw;
   height: 80PX;
-  border-radius: 5PX;
-  box-shadow: $shadow-unsel;
+  border-radius: 10PX;
   margin: 2vw;
   position: relative;
   justify-content: space-evenly;
@@ -21,23 +37,29 @@ $shadow-unsel: 0 0 10PX 0 rgba($color: #000000, $alpha: .08);
     border-radius: 5PX;
     right: 10PX;
     bottom: 10PX;
+    &.light {
+      box-shadow: $shadow-inset-light;
+    }
+    &.dark {
+      box-shadow: $shadow-inset-dark;
+    }
   }
   &.light {
-    &.selected {
-      background: $light-sel;
-      box-shadow: $shadow-sel;
-    }
-    &.unselected {
-      background: $light-unsel;
+    color: $dark-text;
+    background: $light;
+    box-shadow: $shadow-out-light;
+    text-shadow: $shadow-text-light;
+    &.touch {
+      box-shadow: $shadow-inset-light, $shadow-touch-light;
     }
   }
   &.dark {
-    &.selected {
-      background: $dark-sel;
-      box-shadow: $shadow-sel;
-    }
-    &.unselected {
-      background: $dark-unsel;
+    color: $light-text;
+    background: $dark;
+    box-shadow: $shadow-out-dark;
+    text-shadow: $shadow-text-dark;
+    &.touch {
+      box-shadow: $shadow-inset-dark, $shadow-touch-dark;
     }
   }
 }

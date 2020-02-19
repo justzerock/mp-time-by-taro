@@ -1,5 +1,28 @@
-$light-back: rgba($color: #fff, $alpha: .3);
-$dark-back: rgba($color: #999, $alpha: .3);
+$light: #dde1e7;
+$dark: #233541;
+$light-text: rgba($color: $light, $alpha: .8);
+$dark-text: rgba($color: $dark, $alpha: .6);
+$added: #FFBD6D;
+$addable: #0BC84D;
+
+$shadow-out-light:-3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
+3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
+$shadow-inset-light:inset -3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
+inset 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
+$shadow-touch-light:-1.5PX -1.5PX 3.5PX 0 rgba($color: #fff, $alpha: .45),
+1.5PX 1.5PX 2.5PX 0 rgba($color: #5E6879, $alpha: .28);
+$shadow-text-light: 1PX 1PX 2PX $light, 0 0 0 $dark, 1PX 1PX 2PX $light;
+$shadow-circle-light: inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3), inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3);
+
+$shadow-out-dark:-3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
+3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
+$shadow-inset-dark:inset -3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
+inset 3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
+$shadow-touch-dark:-1.5PX -1.5PX 3.5PX 0 rgba($color: #2a404e, $alpha: .8),
+1.5PX 1.5PX 2.5PX 0 rgba($color: #1c2a34, $alpha: .8);
+$shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
+$shadow-circle-dark: inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3), inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3);
+
 .my-action-layer {
   .full-layer {
     height: 100%;
@@ -17,19 +40,9 @@ $dark-back: rgba($color: #999, $alpha: .3);
     &.close {
       z-index: -1;
     }
-    .close-icon {
-      position: absolute;
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-      height: calc(30% - 10PX);
-      width: 100%;
-      color: #999;
-      font-size: 16PX;
-    }
   }
   .main {
-    height: 70%;
+    max-height: 90vh;
     width: 100%;
     position: absolute;
     border-radius: 40PX 40PX 0 0 ;
@@ -39,91 +52,8 @@ $dark-back: rgba($color: #999, $alpha: .3);
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    opacity: .99;
     flex-wrap: wrap;
-    .action-title {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 20PX;
-      height: 60PX;
-      .title-icon {
-        margin-right: 10PX;
-      }
-      .close-btn {
-        width: 60PX;
-        height: 60PX;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: absolute;
-        right: 0;
-        top: 0;
-        border-radius: 60PX;
-        transition: all .3s;
-        &.light {
-          &:hover {
-            background: $dark-back;
-          }
-        }
-        &.dark {
-          &:hover {
-            background: $dark-back;
-          }
-        }
-      }
-    }
-    .action-list {
-      overflow-y: scroll;
-      -webkit-overflow-scrolling: touch;
-      max-height: calc(100% - 60PX);
-      .action-list-added {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 2vw;
-        flex-wrap: wrap;
-        .list-added-title {
-          width: 96vw;
-          height: 30PX;
-          padding-left: 8vw;
-          display: flex;
-          align-items: center;
-          &::before {
-            content: '';
-            position: absolute;
-            width: 10PX;
-            height: 30PX;
-            border-radius: 10PX;
-            left: 4vw;
-            background: #FFBB41;
-          }
-        }
-      }
-      .action-list-addable {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 2vw;
-        flex-wrap: wrap;
-        .list-addable-title {
-          width: 96vw;
-          height: 30PX;
-          padding-left: 8vw;
-          display: flex;
-          align-items: center;
-          &::before {
-            content: '';
-            position: absolute;
-            width: 10PX;
-            height: 30PX;
-            border-radius: 10PX;
-            left: 4vw;
-            background: #0BC84D;
-          }
-        }
-      }
-    }
+    border-top: 2PX solid;
     &.open {
       transform: translateY(0);
       z-index: 2000;
@@ -133,10 +63,101 @@ $dark-back: rgba($color: #999, $alpha: .3);
       z-index: -1;
     }
     &.light {
-      background: #fafafa;
+      color: $dark-text;
+      background: $light;
+      border-color: $light;
+      box-shadow: $shadow-inset-light;
+      text-shadow: $shadow-text-light;
     }
     &.dark {
-      background: #333;
+      color: $light-text;
+      background: $dark;
+      border-color: $dark;
+      box-shadow: $shadow-inset-dark;
+      text-shadow: $shadow-text-dark;
+    }
+    .action-title {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 18PX;
+      height: 60PX;
+      .title-icon {
+        margin-right: 10PX;
+      }
+      .close-btn {
+        width: 30PX;
+        height: 30PX;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        right: 4vw;
+        top: 4vw;
+        border-radius: 30PX;
+        transition: all .3s;
+        &.light {
+          box-shadow: $shadow-out-light;
+          text-shadow: $shadow-text-light;
+          &.touch {
+            box-shadow: $shadow-inset-light, $shadow-touch-light;
+          }
+        }
+        &.dark {
+          box-shadow: $shadow-out-dark;
+          text-shadow: $shadow-text-dark;
+          &.touch {
+            box-shadow: $shadow-inset-dark, $shadow-touch-dark;
+          }
+        }
+      }
+    }
+    .action-list {
+      overflow-y: scroll;
+      -webkit-overflow-scrolling: touch;
+      .action-list-added, .action-list-addable {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2vw;
+        flex-wrap: wrap;
+        .list-added-title, .list-addable-title {
+          width: 96vw;
+          height: 30PX;
+          padding-left: calc(4vw + 30PX);
+          display: flex;
+          align-items: center;
+          position: relative;
+          &::before {
+            content: '';
+            position: absolute;
+            width: 20PX;
+            height: 20PX;
+            border-radius: 20PX;
+            left: 4vw;
+          }
+          &.light {
+            &::before {
+              box-shadow: $shadow-circle-light;
+            }
+          }
+          &.dark {
+            &::before {
+              box-shadow: $shadow-circle-dark;
+            }
+          }
+        }
+        .list-added-title {
+          &::before {
+            background: $added;
+          }
+        }
+        .list-addable-title {
+          &::before {
+            background: $addable;
+          }
+        }
+      }
     }
   }
 }

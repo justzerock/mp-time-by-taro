@@ -1,3 +1,23 @@
+$light: #dde1e7;
+$dark: #233541;
+
+$shadow-out-light:-3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
+3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
+$shadow-inset-light:inset -3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
+inset 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
+$shadow-touch-light:-1.5PX -1.5PX 3.5PX 0 rgba($color: #fff, $alpha: .45),
+1.5PX 1.5PX 2.5PX 0 rgba($color: #5E6879, $alpha: .28);
+$shadow-text-light: 1PX 1PX 2PX $light, 0 0 0 $dark, 1PX 1PX 2PX $light;
+
+$shadow-out-dark:-3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
+3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
+$shadow-inset-dark:inset -3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
+inset 3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
+$shadow-touch-dark:-1.5PX -1.5PX 3.5PX 0 rgba($color: #2a404e, $alpha: .8),
+1.5PX 1.5PX 2.5PX 0 rgba($color: #1c2a34, $alpha: .8);
+$shadow-text-dark: 1PX 1PX 2PX $dark, 0 0 0 $dark, 1PX 1PX 2PX $dark;
+
+
 .my-float-button {
   width: 40PX;
   height: 40PX;
@@ -6,42 +26,50 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 0 10PX 0 rgba($color: #000000, $alpha: .05);
-  animation: scale 1s;
   transition: all .3s;
-  .main-icon-wrap {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    width: 100%;
-    height: 100%;
-    border-radius: 100%;;
-    transition: all .3s;
-    z-index: 2;
-    &.expand {
-      transform: rotate(-45deg);
+  &.light {
+    background: $light;
+    box-shadow: $shadow-out-light;
+    text-shadow: $shadow-text-light;
+    animation: scale-light 1s;
+    &.touch {
+      box-shadow: $shadow-out-light, $shadow-inset-light;
     }
-    &.light {
-      background: rgba($color: #fff, $alpha: .2);
-    }
-    &.dark {
-      background: rgba($color: #666, $alpha: .2);
+  }
+  &.dark {
+    background: $dark;
+    box-shadow: $shadow-out-dark;
+    text-shadow: $shadow-text-dark;
+    animation: scale-dark 1s;
+    &.touch {
+      box-shadow: $shadow-out-dark, $shadow-inset-dark;
     }
   }
 }
 
-@keyframes scale {
+@keyframes scale-light {
   0% {
     transform: scale(0);
+    box-shadow: none;
   }
-  50% {
-    transform: scale(1.1);
-  }
-  75% {
-    transform: scale(.9);
+  30% {
+    transform: scale(1);
+    box-shadow: none;
   }
   100% {
+    box-shadow: $shadow-out-light;
+  }
+}
+@keyframes scale-dark {
+  0% {
+    transform: scale(0);
+    box-shadow: none;
+  }
+  30% {
     transform: scale(1);
+    box-shadow: none;
+  }
+  100% {
+    box-shadow: $shadow-out-dark;
   }
 }

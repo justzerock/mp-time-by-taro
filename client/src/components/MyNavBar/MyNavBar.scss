@@ -1,3 +1,25 @@
+$cube: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+$normal: all .3s;
+$light: #dde1e7;
+$dark: #233541;
+
+$shadow-out-light:-3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
+3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
+$shadow-inset-light:inset -3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
+inset 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
+$shadow-touch-light:-1.5PX -1.5PX 3.5PX 0 rgba($color: #fff, $alpha: .45),
+1.5PX 1.5PX 2.5PX 0 rgba($color: #5E6879, $alpha: .28);
+
+$shadow-out-dark:-3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
+3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
+$shadow-inset-dark:inset -3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
+inset 3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
+$shadow-touch-dark:-1.5PX -1.5PX 3.5PX 0 rgba($color: #2a404e, $alpha: .8),
+1.5PX 1.5PX 2.5PX 0 rgba($color: #1c2a34, $alpha: .8);
+
+$dot: 16PX;
+$bar: 30PX;
+$cur-color: #FF5F5C;
 .my-nav-bar {
   position: fixed;
   top: 0;
@@ -8,9 +30,62 @@
   justify-content: flex-start;
   align-items: center;
   z-index: 999;
+  transition: background .3s;
+  will-change: background;
+  &.light {
+    background: linear-gradient(180deg, rgba($color: $light, $alpha: 1), rgba($color: $light, $alpha: 0));
+  }
+  &.dark {
+    background: linear-gradient(180deg, rgba($color: $dark, $alpha: 1), rgba($color: $dark, $alpha: 0));
+  }
+  .Indicator {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: $dot;
+    width: 60PX;
+    position: absolute;
+    left: 4vw;
+    .one, .two {
+      display: flex;
+      height: 100%;
+      width: $dot;
+      border-radius: $dot;
+      transition: $normal;
+      will-change: background;
+      box-shadow: inset 1PX 1PX 2PX rgba(0,0,0,.4);
+      &.light {
+        &.cur {
+          background: $cur-color;
+        }
+      }
+      &.dark {
+
+        &.cur {
+          background: $cur-color;
+        }
+      }
+    }
+  }
   .my-title {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    display: none;
+  }
+  .capsule {
+    position: absolute;
+    transition: $normal;
+    will-change: box-shadow, border, background;
+    &.light {
+      box-shadow: $shadow-out-light;
+      border: 4PX solid $light;
+      background: #bcc1d0;
+    }
+    &.dark {
+      box-shadow: $shadow-out-dark;
+      border: 4PX solid $dark;
+      background: $dark;
+    }
   }
 }

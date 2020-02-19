@@ -1,4 +1,26 @@
 $cubic: cubic-bezier(.25,.46,.45,.94);
+$light: #dde1e7;
+$dark: #233541;
+
+$shadow-out-light:-3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
+3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
+$shadow-inset-light:inset -3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
+inset 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
+$shadow-touch-light:-1.5PX -1.5PX 3.5PX 0 rgba($color: #fff, $alpha: .45),
+1.5PX 1.5PX 2.5PX 0 rgba($color: #5E6879, $alpha: .28);
+$shadow-bar-light:inset -3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .1),
+3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
+
+$shadow-out-dark:-3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
+3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
+$shadow-inset-dark:inset -3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
+inset 3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
+$shadow-touch-dark:-1.5PX -1.5PX 3.5PX 0 rgba($color: #2a404e, $alpha: .8),
+1.5PX 1.5PX 2.5PX 0 rgba($color: #1c2a34, $alpha: .8);
+$shadow-bar-dark:inset -3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .4),
+3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
+
+$radius: 15PX;
 .my-progress {
   display: flex;
   justify-content: center;
@@ -6,12 +28,23 @@ $cubic: cubic-bezier(.25,.46,.45,.94);
   flex-direction: row;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 8PX 0 rgba($color: #000000, $alpha: .08);
+  transition: $cubic;
+  border: 2PX solid;
   &.light {
-    background: rgba($color: #fff, $alpha: .3);
+    background: $light;
+    border-color: $light;
+    box-shadow: $shadow-out-light, $shadow-inset-light;
+    &.touch {
+      box-shadow: $shadow-touch-light, $shadow-inset-light;
+    }
   }
   &.dark {
-    background: rgba($color: #999, $alpha: .3);
+    background: $dark;
+    border-color: $dark;
+    box-shadow: $shadow-out-dark, $shadow-inset-dark;
+    &.touch {
+      box-shadow: $shadow-touch-dark, $shadow-inset-dark;
+    }
   }
   .remove-btn {
     position: absolute;
@@ -19,52 +52,68 @@ $cubic: cubic-bezier(.25,.46,.45,.94);
     justify-content: center;
     align-items: center;
     transition: all .3s;
-    &:hover {
-      background: rgba($color: #000000, $alpha: .08);
+    border-radius: 100%;
+    &.light {
+      box-shadow: $shadow-out-light;
+      &.touch {
+        box-shadow: $shadow-touch-light;
+      }
+    }
+    &.dark {
+      box-shadow: $shadow-out-dark;
+      &.touch {
+        box-shadow: $shadow-touch-dark;
+      }
     }
   }
-    .my-icon {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: all .5s;
+  .my-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all .5s;
+    height: 100%;
+  }
+  .detail {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all .5s;
+    height: 100%;
+  }
+  .bar-color {
+    position: absolute;
+    height: 90%;
+    &.light {
+      box-shadow: $shadow-bar-light;
     }
-    .detail {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: all .5s;
+    &.dark {
+      box-shadow: $shadow-bar-dark;
+    }
+    .bar-title {
       height: 100%;
+      width: 100%;
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      white-space: nowrap;
+      touch-action: none;
     }
-    .bar-color {
+    .percent {
       position: absolute;
       height: 100%;
-      .bar-title {
-        height: 100%;
-        width: 100%;
-        position: absolute;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #fafafa;
-        overflow: hidden;
-        white-space: nowrap;
-        touch-action: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      &.left {
+        right: 10PX;
       }
-      .percent {
-        position: absolute;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        &.left {
-          right: 5PX;
-        }
-        &.right {
-          right: -5PX;
-          transform: translateX(100%);
-        }
+      &.right {
+        right: -10PX;
+        transform: translateX(100%);
       }
     }
+  }
 }
 

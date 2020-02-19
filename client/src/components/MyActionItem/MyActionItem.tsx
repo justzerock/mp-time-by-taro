@@ -19,7 +19,8 @@ class MyActionItem extends Component {
   state = {
     edit: false,
     dateSel: '1993-1-1',
-    life: 77
+    life: 77,
+    touch: false
   }
   /**
    * 指定config的类型声明为: Taro.Config
@@ -52,20 +53,39 @@ class MyActionItem extends Component {
     }
   }
 
+  onTouch(e) {
+    let type = e.type
+    switch(type) {
+      case 'touchstart':
+        this.setState({
+          touch: true
+        })
+        break
+      case 'touchend':
+        this.setState({
+          touch: false
+        })
+        break
+    }
+  }
+
   render () {
     const { isDark, name, percent, color, selected, type, onEditItem, onToggleItem } = this.props
+    const { touch } = this.state
     let classDark = isDark ? 'dark' : 'light'
-    let classSelected = selected ? 'selected' : 'unselected'
+    let classTouch = touch ? 'touch' : ''
     let styleColor = {
       background: color
     }
     return (
       <View
-        className={`my-action-item ${classDark} ${classSelected}`}
+        className={`my-action-item ${classDark} ${classTouch}`}
         onClick={onToggleItem}
+        onTouchStart={this.onTouch}
+        onTouchEnd={this.onTouch}
       > 
         <View
-          className='color-block'
+          className={`color-block ${classDark}`}
           style={styleColor}
         ></View>
         <View

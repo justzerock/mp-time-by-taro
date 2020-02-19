@@ -1,8 +1,11 @@
 // eslint-disable-next-line no-unused-vars
 import { ComponentType } from 'react'
 import Taro, { Component } from '@tarojs/taro'
-import { View, Picker } from '@tarojs/components'
+import { View } from '@tarojs/components'
+
 import classNames from 'classnames/bind'
+import hexToRgba from 'hex-to-rgba'
+
 import styles from './MyProgress.scss'
 import MyIcon from '../MyIcon/MyIcon'
 import MyCounter from '../MyCounter/MyCounter'
@@ -18,11 +21,10 @@ class MyProgress extends Component {
     icon: 'earth',
     time: 2020,
     width: '84vw',
-    barHeight: 40,
+    barHeight: 60,
     isDark: false,
     isAnim: true,
     type: 'year',
-    editable: false,
     birthday: '1993-1-1',
     avglife: 77,
     explife: 0
@@ -37,7 +39,9 @@ class MyProgress extends Component {
     opening: false,
     detail: false,
     opacity: 0,
-    life: this.props.explife ? this.props.explife : this.props.avglife
+    life: this.props.explife ? this.props.explife : this.props.avglife,
+    removeTouch: false,
+    progressTouch: false
   }
 
   /**
@@ -140,12 +144,13 @@ class MyProgress extends Component {
   }
 
   showAction = () => {
+    const { barHeight } = this.props
     const { opening } = this.state
     this.setState({
       opening: !opening,
       detail: false,
       opacity: opening ? 0 : 1,
-      translateX: opening ? 0 : 40
+      translateX: opening ? 0 : barHeight
     })
   }
 
@@ -157,21 +162,72 @@ class MyProgress extends Component {
     })
   }
 
+  onRemoveTouch(e) {
+    let type = e.type
+    switch(type) {
+      case 'touchstart':
+        this.setState({
+          removeTouch: true
+        })
+        break
+      case 'touchend':
+        this.setState({
+          removeTouch: false
+        })
+        break
+    }
+  }
+  
+  onProgressTouch(e) {
+    let type = e.type
+    switch(type) {
+      case 'touchstart':
+        this.setState({
+          progressTouch: true
+        })
+        break
+      case 'touchend':
+        this.setState({
+          progressTouch: false
+        })
+        break
+    }
+  }
+
   render () {
 
     const { name, title, time, percent, color, width, barHeight, isDark, isAnim, icon, type, birthday, onRemoveItem } = this.props
 
-    const { counterValue, translateX, transition, opening, detail, opacity, life } = this.state
+    const { counterValue, translateX, transition, opening, detail, opacity, life, removeTouch, progressTouch } = this.state
+
+    let getShadow = (c1, c2) => {
+      return `1PX 1PX 2PX ${c1}, 0 0 0 ${c2}, 1PX 1PX 2PX ${c1}`
+    }
+    let textShadow = (type) => {
+      let shadow = ''
+      let light = '#dde1e7'
+      let dark = '#233541'
+      if ( (type === 'percent' && counterValue > 50) || type === 'title'  ) {
+        shadow = getShadow(color, dark)
+      } else if (isDark) {
+        shadow = '1PX 1PX 2PX rgba(0,0,0,0.4)'
+      } else {
+        shadow = getShadow(light, dark)
+      }
+      return shadow
+    }
 
     let classProgress = cx({
       'my-progress': true,
       'light': !isDark,
-      'dark': isDark
+      'dark': isDark,
+      'touch': progressTouch
     })
     let classRemoveBtn = cx({
       'remove-btn': true,
       'light': !isDark,
-      'dark': isDark
+      'dark': isDark,
+      'touch': removeTouch
     })
     let classIcon = cx({
       'my-icon': true
@@ -180,7 +236,9 @@ class MyProgress extends Component {
       'detail': true
     })
     let classBarcolor = cx({
-      'bar-color': true
+      'bar-color': true,
+      'light': !isDark,
+      'dark': isDark
     })
     let classBarTitle = cx({
       'bar-title': true
@@ -195,19 +253,19 @@ class MyProgress extends Component {
       color: color,
       width: width,
       height: barHeight + 'PX',
-      borderRadius: `${barHeight / 8}PX`,
+      borderRadius: `${barHeight / 4}PX`,
       margin: '4vw',
     }
     let styleRemoveBtn = {
-      width: barHeight + 'PX',
-      height: barHeight + 'PX',
-      left: 0,
+      width: barHeight/2 + 'PX',
+      height: barHeight/2 + 'PX',
+      left: barHeight/4 + 'PX',
       opacity: opacity
     }
     let styleBarcolor = {
       width: opening ? `calc(100% - ${barHeight}PX)` : counterValue + '%',
       height: detail ? '25%' : '100%',
-      borderRadius: `${barHeight / 8}PX`,
+      borderRadius: `${barHeight / 4}PX`,
       transform: `translateX(${translateX}px)`,
       transition: transition,
       background: color,
@@ -215,84 +273,95 @@ class MyProgress extends Component {
       left: 0
     }
     let styleBarTitle = {
-      opacity: detail ? 0 : opacity
+      color: hexToRgba('#efefef', 0.8),
+      opacity: detail ? 0 : opacity,
+      textShadow: textShadow('title')
     }
     let stylePercent = {
-      color: counterValue > 50 ? '#fafafa' : color,
+      color: counterValue <= 50 ? hexToRgba(color, 0.6) : hexToRgba('#efefef', 0.8),
+      textShadow: textShadow('percent'),
       opacity: detail ? 0 : 1 - opacity
     }
     let styleMyIcon = {
       position: 'absolute',
       top: 0,
       right: barHeight / 4 + 'PX',
-      height: barHeight + 'PX',
-      opacity: detail ? 0 : 1 - opacity
+      opacity: detail ? 0 : 1 - opacity,
+      textShadow: textShadow('type'),
+      color: hexToRgba(color, 0.6)
     }
     let styleDetail = {
+      textShadow: textShadow('detail'),
+      color: hexToRgba(color, 0.6),
       opacity: detail ? 1 - opacity : 0
     }
+
     return (
       <View
         className={classProgress}
         style={styleProgress}
         onClick={this.showAction}
         onLongPress={this.showDetail}
+        onTouchStart={this.onProgressTouch}
+        onTouchEnd={this.onProgressTouch}
       >
-        <View 
-          className={classRemoveBtn} 
-          style={styleRemoveBtn}
-          onClick={onRemoveItem}
-        >
-          <MyIcon 
-            name='remove'
-            size={barHeight/2}
-            color='#FF5E5B'
-          />
-        </View>
-          <View
-            className={classIcon}
-            style={styleMyIcon}
-          >
-            {type.toUpperCase()}
-          </View>
-          <View
-            className={classDetail}
-            style={styleDetail}
-          >
-            {title}{percent}%
-          </View>
           <View 
-            className={classBarcolor}
-            style={styleBarcolor}
+            className={classRemoveBtn} 
+            style={styleRemoveBtn}
+            onClick={onRemoveItem}
+            onTouchStart={this.onRemoveTouch}
+            onTouchEnd={this.onRemoveTouch}
           >
-            <View 
-              className={classBarTitle}
-              style={styleBarTitle}
+            <MyIcon 
+              name='remove'
+              size={barHeight/3}
+              color='#FF5E5B'
+            />
+          </View>
+            <View
+              className={classIcon}
+              style={styleMyIcon}
             >
-              {
-                type === 'week' ? 
-                <View>
-                  周起始：周日
-                </View> :
-                type === 'life' ?
-                <View
-                >
-                 生日：{birthday} 期望寿命：{life}
-                </View> :
-                <View>
-                  {name}：{percent}%
-                </View>
-              }
+              {type.toUpperCase()}
             </View>
             <View
-              className={classPercent}
-              style={stylePercent}
+              className={classDetail}
+              style={styleDetail}
             >
-              <MyCounter 
-                value={counterValue}
-              />
+              {title}{percent}%
             </View>
-          </View>
+            <View 
+              className={classBarcolor}
+              style={styleBarcolor}
+            >
+              <View 
+                className={classBarTitle}
+                style={styleBarTitle}
+              >
+                {
+                  type === 'week' ? 
+                  <View>
+                    周起始：周日
+                  </View> :
+                  type === 'life' ?
+                  <View
+                  >
+                  生日：{birthday} 期望寿命：{life}
+                  </View> :
+                  <View>
+                    {name}：{percent}%
+                  </View>
+                }
+              </View>
+              <View
+                className={classPercent}
+                style={stylePercent}
+              >
+                <MyCounter 
+                  value={counterValue}
+                />
+              </View>
+            </View>
       </View>
     )
   }

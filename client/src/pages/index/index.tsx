@@ -10,6 +10,7 @@ import MyNavBar from '../../components/MyNavBar/MyNavBar'
 import MyProgress from '../../components/MyProgress/MyProgress'
 import MyFloatButton from '../../components/MyFloatButton/MyFloatButton'
 import MyActionLayer from '../../components/MyActionLayer/MyActionLayer'
+import MySettingList from '../../components/MySettinglist/MySettingList'
 import '../../assets/myfont.scss'
 
 let cx = classNames.bind(styles)
@@ -17,6 +18,8 @@ let cx = classNames.bind(styles)
 type PageStateProps = {
   themeStore: {
     isDark: boolean,
+    isRight: boolean,
+    hasHomeBar: boolean,
     systemInfo: object,
     list: Array<Object>,
     updateTime: number,
@@ -26,7 +29,9 @@ type PageStateProps = {
     setListData: Function,
     getListData: Function,
     getSystemInfo: Function,
-    setNavBarTitle: Function
+    setNavBarTitle: Function,
+    getMenuButton: Function,
+    getPrimaryColor: Function
   }
 }
 
@@ -44,7 +49,6 @@ class Index extends Component {
     x: 0,
     translateX: 0,
     transition: 'all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-    isLeft: true,
     current: '0'
   }
 
@@ -78,7 +82,9 @@ class Index extends Component {
   onUpdate = () => {
     const { themeStore } = this.props
     themeStore.getListData()
+    themeStore.getPrimaryColor()
     themeStore.getSystemInfo()
+    themeStore.getMenuButton()
     this._interval = setInterval(() => {
       themeStore.getListData()
     }, 600 * 1000)
@@ -106,12 +112,9 @@ class Index extends Component {
   onSwipItem = (e) => {
     const { themeStore } = this.props
     let current = e.detail.current
-    this.setState({
-      isLeft: current ? false : true
-    })
+    let isRight = current ? true : false
     let title = current ? '设置' : '亦时'
-    themeStore.setNavBarTitle(title)
-    console.log(e, current)
+    themeStore.setNavBarTitle(title, isRight)
   }
 
   removeItem = (type) => {
@@ -123,27 +126,13 @@ class Index extends Component {
   }
 
   render () {
-    const { themeStore: { isDark, systemInfo, list } } = this.props
-    const { expand, isLeft } = this.state
+    const { themeStore: { isDark, isRight, hasHomeBar, systemInfo, list } } = this.props
+    const { expand } = this.state
+
     let classIndex = cx({
       'index': true,
       'light': !isDark,
       'dark': isDark
-    })
-    let classIndicator = cx({
-      'Indicator': true
-    })
-    let classIndicatorOne = cx({
-      'one': true,
-      'light': !isDark,
-      'dark': isDark,
-      'dot': !isLeft
-    })
-    let classIndicatorTwo = cx({
-      'two': true,
-      'light': !isDark,
-      'dark': isDark,
-      'dot': isLeft
     })
     let classSwiper = cx({
       'swiper': true
@@ -161,49 +150,23 @@ class Index extends Component {
     })
     let classFloatBtn = cx({
       'float-btn': true,
-      'hidden': !isLeft
-    })
-    let classSettingItem = cx({
-      'setting-item': true,
-      'light': !isDark,
-      'dark': isDark
+      'hidden': isRight
     })
 
-    let styleIndicator = {
-      top: `${46 + systemInfo.statusBarHeight}PX`
-    }
-    let styleIndicatorOne = {
-      width: isLeft ? '25PX' : '10PX'
-    }
-    let styleIndicatorTwo = {
-      width: isLeft ? '10PX' : '25PX'
-
-    }
     let styleListWrap = {
       marginTop: `${(44 + systemInfo.statusBarHeight)/2}PX`
     }
     let styleList = {
       maxHeight: `calc(100vh - (${44 + systemInfo.statusBarHeight}PX)*2)`,
     }
-    let styleFloatBtn = {}
+    let styleFloatBtn = {
+      bottom: hasHomeBar ? '44PX' : '4vw'
+    }
     return ( 
       <View
         className={classIndex}
       >
         <MyNavBar />
-        <View
-          className={classIndicator}
-          style={styleIndicator}
-        >
-          <View
-            className={classIndicatorOne}
-            style={styleIndicatorOne}
-          ></View>
-          <View
-            className={classIndicatorTwo}
-            style={styleIndicatorTwo}
-          ></View>
-        </View>
         <Swiper
           className={classSwiper}
           onChange={this.onSwipItem}
@@ -234,7 +197,6 @@ class Index extends Component {
                           icon={item.icon}
                           color={item.color}
                           type={item.type}
-                          editable={item.editable}
                           isDark={isDark}
                           onRemoveItem={() => this.removeItem(item.type)}
                         />
@@ -248,19 +210,7 @@ class Index extends Component {
           <SwiperItem
             className={classSwiperItem}
           >
-            {
-              [1,2,3,4,5].map(
-                item => {
-                  return (
-                    <View
-                      className={classSettingItem}
-                    >
-                      {item}
-                    </View>
-                  )
-                }
-              )
-            }
+            <MySettingList />
           </SwiperItem>
         </Swiper>
         <View

@@ -4,6 +4,8 @@ import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import { observer, inject } from '@tarojs/mobx'
 
+import hexToRgba from 'hex-to-rgba'
+
 import './MyActionLayer.scss'
 import MyIcon from '../MyIcon/MyIcon'
 import MyActionItem from '../MyActionItem/MyActionItem'
@@ -11,6 +13,7 @@ import MyActionItem from '../MyActionItem/MyActionItem'
 type PageStateProps = {
   themeStore: {
     isDark: boolean,
+    hasHomeBar: boolean,
     list: Array<Object>,
     setListData: Function
   }
@@ -25,6 +28,10 @@ interface MyActionLayer {
 class MyActionLayer extends Component {
   static defaultProps = {
     expand: false
+  }
+  
+  state = {
+    touch: false
   }
   /**
    * 指定config的类型声明为: Taro.Config
@@ -55,10 +62,31 @@ class MyActionLayer extends Component {
     themeStore.setListData(newList, Date.now(), false)
   }
 
+  onTouch(e) {
+    let type = e.type
+    switch(type) {
+      case 'touchstart':
+        this.setState({
+          touch: true
+        })
+        break
+      case 'touchend':
+        this.setState({
+          touch: false
+        })
+        break
+    }
+  }
+
   render () {
-    const { themeStore: { isDark, list } , expand, onAdd } = this.props
+    const { themeStore: { isDark, hasHomeBar, list } , expand, onAdd } = this.props
+    const { touch } = this.state
     let classExpand = expand ? 'open' : 'close'
     let classDark = isDark ? 'dark' : 'light'
+    let classTouch = touch ? 'touch' : ''
+    let styleMain = {
+      paddingBottom: hasHomeBar ? '44PX' : '4vw'
+    }
     return (
       <View
         className='my-action-layer'
@@ -69,6 +97,7 @@ class MyActionLayer extends Component {
         />
         <View
           className={`main ${classExpand} ${classDark}`}
+          style={styleMain}
         >
           <View
             className='action-title'
@@ -79,18 +108,20 @@ class MyActionLayer extends Component {
               <MyIcon 
                 name='progress'
                 size='20'
-                color={isDark ? '#fafafa' : '#333'}
+                color={isDark ? hexToRgba('#dedede', 0.8) : hexToRgba('#233541', 0.6)}
               />
             </View>
             添加进度条
             <View
-              className={`close-btn ${classDark}`}
+              className={`close-btn ${classDark} ${classTouch}`}
               onClick={onAdd}
+              onTouchStart={this.onTouch}
+              onTouchEnd={this.onTouch}
             >
               <MyIcon 
                 name='close'
                 size='20'
-                color={isDark ? '#fafafa' : '#333'}
+                color={isDark ? hexToRgba('#dedede', 0.8) : hexToRgba('#233541', 0.6)}
               />
             </View>
           </View>
@@ -101,7 +132,7 @@ class MyActionLayer extends Component {
               className='action-list-addable'
             >
               <View
-                className='list-addable-title'
+                className={`list-addable-title ${classDark}`}
               >
                 可添加
               </View>
@@ -128,7 +159,7 @@ class MyActionLayer extends Component {
               className='action-list-added'
             >
               <View
-                className='list-added-title'
+                className={`list-added-title ${classDark}`}
               >
                 已添加
               </View>
@@ -144,7 +175,6 @@ class MyActionLayer extends Component {
                         color={item.color}
                         selected={item.selected}
                         type={item.type}
-                        editable={item.editable}
                         isDark={isDark}
                         onToggleItem={()=>this.toggleItem(item.type, false)}
                       />

@@ -5,20 +5,17 @@ import { View, Text } from '@tarojs/components'
 import { observer, inject } from '@tarojs/mobx'
 import classNames from 'classnames/bind'
 
-import MySwitch from '../MySwitch/MySwitch'
-
 import styles from './MyNavBar.scss'
 
 let cx = classNames.bind(styles)
 
 type PageStateProps = {
   themeStore: {
-    setStatusBarHeight: Function,
-    setDarkMode: Function,
-    toggleDarkMode: Function,
     isDark: boolean,
-    statusBarHeight: number, 
-    navBarTitle: string
+    isRight: boolean,
+    navBarTitle: string,
+    systemInfo: object,
+    menuButton: object
   }
 }
 
@@ -38,18 +35,7 @@ class MyNavBar extends Component {
    * 提示和声明 navigationBarTextStyle: 'black' | 'white' 类型冲突, 需要显示声明类型
    */
 
-  componentWillMount () { 
-    Taro.getStorage({key: 'statusBarHeight'})
-    .then(
-      res => this.setStatusBarHeight(res.data, false)
-    )
-    .catch(
-      () => Taro.getSystemInfo()
-      .then(
-        res => this.setStatusBarHeight(res.statusBarHeight, true)
-      )
-    )
-  }
+  componentWillMount () { }
 
   componentDidMount () { }
   
@@ -61,43 +47,71 @@ class MyNavBar extends Component {
 
   componentWillReact () { }
 
-  setStatusBarHeight = (height, isFirst) => {
-    const { themeStore } = this.props
-    themeStore.setStatusBarHeight(height, isFirst)
-  }
-
-  toggleDarkMode = () => {
-    const { themeStore } = this.props
-    themeStore.toggleDarkMode()
-  }
-
-
   render () {
-    const { themeStore: { isDark, statusBarHeight, navBarTitle } } = this.props
+    const { themeStore: { isDark, isRight, navBarTitle, systemInfo, menuButton } } = this.props
     let classNavBar = cx({
-      'my-nav-bar': true
+      'my-nav-bar': true,
+      'light': !isDark,
+      'dark': isDark
     })
     let classTitle = cx({
       'my-title': true
     })
+    let classIndicator = cx({
+      'Indicator': true
+    })
+    let classIndicatorOne = cx({
+      'one': true,
+      'light': !isDark,
+      'dark': isDark,
+      'cur': !isRight
+    })
+    let classIndicatorTwo = cx({
+      'two': true,
+      'light': !isDark,
+      'dark': isDark,
+      'cur': isRight
+    })
+
+    let classCapsule = cx({
+      'capsule': true,
+      'light': !isDark,
+      'dark': isDark
+    })
     
     let styleNavBar = {
-      paddingTop: statusBarHeight + 'PX'
+      paddingTop: systemInfo.statusBarHeight + 'PX'
+    }
+    let styleCapsule = {
+      width: menuButton.width + 'PX',
+      height: menuButton.height + 'PX',
+      borderRadius: menuButton.height + 'PX',
+      left: menuButton.left - 4 + 'PX'
     }
     return (
       <View 
         className={classNavBar}
         style={styleNavBar}
       >
-        <MySwitch
-          onToggle={this.toggleDarkMode}
-          isDark={isDark}
-        />
+        <View
+          className={classIndicator}
+        >
+          <View
+            className={classIndicatorOne}
+          ></View>
+          <View
+            className={classIndicatorTwo}
+          ></View>
+        </View>
         <Text 
           className={classTitle} 
         >
           {navBarTitle}
         </Text>
+        <View
+          className={classCapsule}
+          style={styleCapsule}
+        ></View>
       </View>
     )
   }

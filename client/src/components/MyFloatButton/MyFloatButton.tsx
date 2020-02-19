@@ -2,6 +2,9 @@
 import { ComponentType } from 'react'
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
+
+import hexToRgba from 'hex-to-rgba'
+
 import './MyFloatButton.scss'
 import MyIcon from '../MyIcon/MyIcon'
 
@@ -10,7 +13,7 @@ class MyFloatButton extends Component {
     isDark: false
   }
   state = {
-    expand: false
+    touch: false
   }
   /**
    * 指定config的类型声明为: Taro.Config
@@ -33,32 +36,39 @@ class MyFloatButton extends Component {
   componentWillReact () {
   }
 
-  toggleButton() {
-    const { expand } = this.state
-    this.setState({
-      expand: !expand
-    })
+  onTouch(e) {
+    let type = e.type
+    switch(type) {
+      case 'touchstart':
+        this.setState({
+          touch: true
+        })
+        break
+      case 'touchend':
+        this.setState({
+          touch: false
+        })
+        break
+    }
   }
 
   render () {
-    const { expand } = this.state
-    const { isDark, onAdd, onManage } = this.props
-    let classExpand = expand ? 'expand' : ''
+    const { touch } = this.state
+    const { isDark, onAdd } = this.props
     let classDark = isDark ? 'dark' : 'light'
+    let classTouch = touch ? 'touch' : ''
     return (
       <View
-        className='my-float-button'
+        className={`my-float-button ${classTouch} ${classDark}`}
+        onClick={onAdd}
+        onTouchStart={this.onTouch}
+        onTouchEnd={this.onTouch}
       >
-        <View
-          className={`main-icon-wrap ${classExpand} ${classDark}`}
-          onClick={onAdd}
-        >
-          <MyIcon 
-            name='add'
-            color='#0BC84D'
-            size='20'
-          />
-        </View>
+        <MyIcon 
+          name='plus'
+          color={hexToRgba('#0BC84D', 0.6)}
+          size='20'
+        />
       </View>
     )
   }

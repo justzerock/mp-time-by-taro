@@ -5541,6 +5541,11 @@ he@1.2.x:
   resolved "http://r.cnpmjs.org/he/download/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha1-hK5l+n6vsWX922FWauFLrwVmTw8=
 
+hex-to-rgba@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npm.taobao.org/hex-to-rgba/download/hex-to-rgba-2.0.1.tgz#4176977882a1cb32b83ce5ab1db6828ab84d5a13"
+  integrity sha1-QXaXeIKhyzK4POWrHbaCirhNWhM=
+
 hmac-drbg@^1.0.0:
   version "1.0.1"
   resolved "http://r.cnpmjs.org/hmac-drbg/download/hmac-drbg-1.0.1.tgz#d2745701025a6c775a6c545793ed502fc0c649a1"

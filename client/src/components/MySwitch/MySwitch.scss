@@ -51,7 +51,6 @@ $icon-size: 28PX;
         border-radius: $icon-size;
         background: #efefef;
         transition: $transition;
-        animation: clouds 10s linear infinite;
       }
       &:after {
         content: '';
@@ -63,7 +62,6 @@ $icon-size: 28PX;
         border-radius: $icon-size*.5;
         background: #efefef;
         transition: $transition;
-        animation: clouds 10s linear infinite;
       }
     }
     &.dark {
@@ -101,14 +99,5 @@ $icon-size: 28PX;
   }
   100% {
     box-shadow: $shadow-normal;
-  }
-}
-
-@keyframes clouds {
-  0% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(-$icon-size*.2);
   }
 }

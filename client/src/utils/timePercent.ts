@@ -1,4 +1,4 @@
-const timePercent = (type: string, date1= new Date(1993, 0, 1), date2= new Date(1993 + 77, 0, 1)) => {
+const timePercent = (type: string, wStart = 0, date1= new Date(), date2= new Date()) => {
   let date = new Date()
   let year = date.getFullYear()
   let month = date.getMonth()
@@ -20,8 +20,9 @@ const timePercent = (type: string, date1= new Date(1993, 0, 1), date2= new Date(
       return {time: month + 1, percent}
       break
     case 'week':
-      let weekStart = getMyTime(year, month, day - weekDay)
-      let weekEnd = getMyTime(year, month, day + 7 - weekDay)
+      let days = getDays(wStart, weekDay) 
+      let weekStart = getMyTime(year, month, day - days)
+      let weekEnd = getMyTime(year, month, day + 7 - days)
       percent = getPercent((now - weekStart)/(weekEnd - weekStart))
       return {time: weekDay, percent}
       break
@@ -42,6 +43,18 @@ const timePercent = (type: string, date1= new Date(1993, 0, 1), date2= new Date(
       return {time: age, percent}
       break
   }
+}
+
+const getDays = (wStart, weekDay) => {
+  let days = weekDay
+  if (wStart) {
+    if (weekDay) {
+      days -= 1
+    } else {
+      days += 6
+    }
+  }
+  return days
 }
 
 const getMyTime = (year: number, month: number, day: number) => {
