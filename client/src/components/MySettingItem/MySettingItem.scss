@@ -1,5 +1,5 @@
-$cube: box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-$normal: box-shadow .3s;
+$cube: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+$normal: all .3s;
 $radius: 15PX;
 
 $light: #dde1e7;
@@ -37,10 +37,10 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
   justify-content: space-around;
   align-items: center;
   width: 90vw;
-  height: 80PX;
+  height: 25vw;
   margin-bottom: 20PX;
   border-radius: $radius;
-  transition: $cube;
+  overflow: hidden;
   &.light {
     box-shadow: $shadow-out-light;
     &.touch {
@@ -58,7 +58,7 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
     position: relative;
     justify-content: center;
     align-items: center;
-    transition: $normal;
+    transition: transform .3s;
   }
   .item-title {
     flex: 3;
@@ -67,7 +67,7 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 60PX;
+      width: 25vw;
     }
     .item-text {
       display: flex;
@@ -94,14 +94,13 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
   .item-content {
     flex: 1;
     .item-switch {
-      $switch-trans: background, box-shadow, left, .3s;
       display: flex;
       align-items: center;
       height: 24PX;
       width: 56PX;
       border-radius: 24PX;
       position: relative;
-      transition: $switch-trans;
+      transition: $normal;
       .switch {
         position: absolute;
         display: flex;
@@ -110,7 +109,7 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
         width: 32PX;
         height: 32PX;
         border-radius: 16PX;
-        transition: $switch-trans;
+        transition: $normal;
       }
       &.light {
         box-shadow: $light-switch;
@@ -142,6 +141,89 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
         display: flex;
         justify-content: center;
         align-items: center;
+      }
+    }
+    .item-theme {
+      display: flex;
+      position: relative;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      .theme-btn {
+        width: 40PX;
+        height: 40PX;
+        border-radius: 40PX;
+        display: flex;
+        position: relative;
+        justify-content: center;
+        align-items: center;
+        transition: $normal;
+        &.light {
+          box-shadow: $shadow-out-light;
+          &.touch {
+            box-shadow: $shadow-inset-light;
+          }
+        }
+        &.dark {
+          box-shadow: $shadow-out-dark;
+          &.touch {
+            box-shadow: $shadow-inset-dark;
+          }
+        }
+      }
+      .colors {
+        display: flex;
+        position: absolute;
+        justify-content: space-around;
+        align-items: center;
+        right: 0;
+        transform: translateX(67.5vw);
+        width: 67.5vw;
+        .color-item {
+          display: flex;
+          width: 8vw;
+          height: 8vw;
+          border-radius: 4vw;
+          position: relative;
+          justify-content: center;
+          align-items: center;
+          &::before {
+            content: '';
+            position: absolute;
+            border-radius: 6vw;
+            width: 12vw;
+            height: 12vw;
+          }
+        }
+        &.light {
+          .color-item {
+            &::before {
+              box-shadow: $shadow-out-light;
+            }
+            &.touch {
+              &::before {
+                box-shadow: $shadow-inset-light;
+              }
+            }
+          }
+        }
+        &.dark {
+          .color-item {
+            &::before {
+              box-shadow: $shadow-out-dark;
+            }
+            &.touch {
+              &::before {
+                box-shadow: $shadow-inset-dark;
+              }
+            }
+          }
+        }
+      }
+    }
+    .item-life {
+      input {
+        text-align: center;
       }
     }
   }

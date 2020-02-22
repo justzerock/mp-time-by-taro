@@ -34,6 +34,16 @@ $radius: 15PX;
       justify-content: center;
       align-items: center;
       flex-direction: column;
+      .scroll-list {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        position: relative;
+        height: 100%;
+        width: 100%;
+        -webkit-overflow-scrolling: touch;
+      }
     }
   }
   .list-wrap {
@@ -44,20 +54,6 @@ $radius: 15PX;
     position: relative;
     border-radius: $radius;
     transition: all .3s;
-    /* &.light {
-      background: $light;
-      box-shadow: $shadow-out-light;
-    }
-    &.dark {
-      background: $dark;
-      box-shadow: $shadow-out-dark;
-    } */
-    .list {
-      overflow-y: scroll;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-      border-radius: $radius;
-    }
   }
 
   .float-btn {

@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { ComponentType } from 'react'
 import Taro, { Component } from '@tarojs/taro'
-import { View, Swiper, SwiperItem } from '@tarojs/components'
+import { View, Swiper, SwiperItem, ScrollView } from '@tarojs/components'
 import { observer, inject } from '@tarojs/mobx'
 import classNames from 'classnames/bind'
 
@@ -31,7 +31,10 @@ type PageStateProps = {
     getSystemInfo: Function,
     setNavBarTitle: Function,
     getMenuButton: Function,
-    getPrimaryColor: Function
+    getPrimaryColor: Function,
+    getExpLife: Function,
+    getBirthDay: Function,
+    setUpdateData: Function
   }
 }
 
@@ -81,12 +84,16 @@ class Index extends Component {
 
   onUpdate = () => {
     const { themeStore } = this.props
-    themeStore.getListData()
+    themeStore.getExpLife()
+    themeStore.getBirthDay()
     themeStore.getPrimaryColor()
     themeStore.getSystemInfo()
     themeStore.getMenuButton()
-    this._interval = setInterval(() => {
+    setTimeout(() => {
       themeStore.getListData()
+    }, 100)
+    this._interval = setInterval(() => {
+      themeStore.setUpdateData(0, true)
     }, 600 * 1000)
   }
 
@@ -152,12 +159,15 @@ class Index extends Component {
       'float-btn': true,
       'hidden': isRight
     })
+    let classScrollList = cx({
+      'scroll-list': true
+    })
 
     let styleListWrap = {
       marginTop: `${(44 + systemInfo.statusBarHeight)/2}PX`
     }
     let styleList = {
-      maxHeight: `calc(100vh - (${44 + systemInfo.statusBarHeight}PX)*2)`,
+      margin: `${46 + systemInfo.statusBarHeight}PX auto`
     }
     let styleFloatBtn = {
       bottom: hasHomeBar ? '44PX' : '4vw'
@@ -174,38 +184,37 @@ class Index extends Component {
           <SwiperItem
             className={classSwiperItem}
           >
-            <View 
-              className={classListWrap}
-              style={styleListWrap}
-            >
-              <View 
-                className={classList}
-                style={styleList}
+              <ScrollView 
+                enableFlex={true}
+                scrollY={true}
+                className={classScrollList}
               >
-                {
-                  list
-                  .filter(item => item.selected)
-                  .map(
-                    item => {
-                      return (
-                        <MyProgress 
-                          key={item.type + item.time}
-                          name={item.name}
-                          title={item.title}
-                          percent={item.percent}
-                          time={item.time}
-                          icon={item.icon}
-                          color={item.color}
-                          type={item.type}
-                          isDark={isDark}
-                          onRemoveItem={() => this.removeItem(item.type)}
-                        />
-                      )
-                    }
-                  )
-                }
-              </View>
-            </View>
+                <View 
+                  style={styleList}
+                >
+                  {
+                    list
+                    .filter(item => item.selected)
+                    .map(
+                      item => {
+                        return (
+                          <MyProgress 
+                            key={item.type + item.time}
+                            name={item.name}
+                            title={item.title}
+                            percent={item.percent}
+                            time={item.time}
+                            icon={item.icon}
+                            color={item.color}
+                            type={item.type}
+                            isDark={isDark}
+                          />
+                        )
+                      }
+                    )
+                  }
+                </View>
+              </ScrollView>
           </SwiperItem>
           <SwiperItem
             className={classSwiperItem}

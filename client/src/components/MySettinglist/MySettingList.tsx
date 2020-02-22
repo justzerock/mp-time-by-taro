@@ -1,14 +1,13 @@
 // eslint-disable-next-line no-unused-vars
 import { ComponentType } from 'react'
 import Taro, { Component } from '@tarojs/taro'
-import { View, Icon, ScrollView } from '@tarojs/components'
+import { View, ScrollView } from '@tarojs/components'
 import { observer, inject } from '@tarojs/mobx'
 
 import hexToRgba from 'hex-to-rgba'
 
 import './MySettingList.scss'
 import MySettingItem from '../MySettingItem/MySettingItem'
-import MyIcon from '../MyIcon/MyIcon'
 import MyAvatar from '../MyAvatar/MyAvatar'
 
 type PageStateProps = {
@@ -48,12 +47,12 @@ class MySettingList extends Component {
       },
       {
         title: '出生年月',
-        desc: '设置人生进度条的开始日期',
+        desc: '范围 1900至今',
         type: 'birth'
       },
       {
         title: '期望寿命',
-        desc: '设置人生进度条的跨度',
+        desc: '范围 50～150',
         type: 'life'
       },
       {
@@ -65,12 +64,7 @@ class MySettingList extends Component {
         title: '默认视图',
         desc: '切换默认进度条、详情',
         type: 'view'
-      },
-      {
-        title: '默认样式',
-        desc: '切换条形，方形',
-        type: 'style'
-      },
+      }
     ]
   }
   /**
@@ -98,31 +92,13 @@ class MySettingList extends Component {
     themeStore.toggleDarkMode()
   }
 
-  onTouch(e, key) {
-    let type = e.type
-    switch(type) {
-      case 'touchstart':
-        this.setState({
-          touch: true,
-          key
-        })
-        break
-      case 'touchend':
-        this.setState({
-          touch: false,
-          key: ''
-      })
-      break
-    }
-  }
-
   render () {
     const { themeStore: {systemInfo, isDark, primary } } = this.props
     const { settingList } = this.state
     let classDark = isDark ? 'dark' : 'light'
 
     let stylePage = {
-      color: hexToRgba(primary, 0.6)
+      color: hexToRgba(primary, 0.8)
     }
     let styleList = {
       margin: `${46 + systemInfo.statusBarHeight}PX auto`

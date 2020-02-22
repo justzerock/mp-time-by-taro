@@ -1,4 +1,6 @@
-$cubic: cubic-bezier(.25,.46,.45,.94);
+$cubic: all .5s cubic-bezier(.25,.46,.45,.94);
+$normal: all .5s;
+$long: all 1s;
 $light: #dde1e7;
 $dark: #233541;
 
@@ -37,6 +39,9 @@ $radius: 15PX;
     &.touch {
       box-shadow: $shadow-touch-light, $shadow-inset-light;
     }
+    &.detail {
+      box-shadow: $shadow-out-light;
+    }
   }
   &.dark {
     background: $dark;
@@ -45,44 +50,59 @@ $radius: 15PX;
     &.touch {
       box-shadow: $shadow-touch-dark, $shadow-inset-dark;
     }
-  }
-  .remove-btn {
-    position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: all .3s;
-    border-radius: 100%;
-    &.light {
-      box-shadow: $shadow-out-light;
-      &.touch {
-        box-shadow: $shadow-touch-light;
-      }
-    }
-    &.dark {
+    &.detail {
       box-shadow: $shadow-out-dark;
-      &.touch {
-        box-shadow: $shadow-touch-dark;
-      }
     }
   }
-  .my-icon {
+
+  .type-name {
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: all .5s;
+    transition: $cubic;
+    position: absolute;
+    top: 0;
     height: 100%;
   }
   .detail {
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: all .5s;
+    transition: $cubic;
     height: 100%;
+    .detail-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+    }
+    .detail-title {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: flex-start;
+      flex: 2;
+      flex-direction: column;
+      .detail-name {
+        font-size: 14PX;
+      }
+      .detail-desc {
+        font-size: 12PX;
+        opacity: 0.6;
+      }
+    }
+    .detail-percent {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+    }
   }
   .bar-color {
     position: absolute;
-    height: 90%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    transition: $cubic;
     &.light {
       box-shadow: $shadow-bar-light;
     }
@@ -106,6 +126,7 @@ $radius: 15PX;
       display: flex;
       justify-content: center;
       align-items: center;
+      transition: $cubic;
       &.left {
         right: 10PX;
       }

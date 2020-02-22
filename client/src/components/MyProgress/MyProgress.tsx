@@ -2,6 +2,7 @@
 import { ComponentType } from 'react'
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
+import { observer, inject } from '@tarojs/mobx'
 
 import classNames from 'classnames/bind'
 import hexToRgba from 'hex-to-rgba'
@@ -12,6 +13,46 @@ import MyCounter from '../MyCounter/MyCounter'
 
 let cx = classNames.bind(styles)
 
+type PageStateProps = {
+  themeStore: {
+    isDark: boolean,
+    primary: string,
+    colors: Array<string>,
+    wStart: number,
+    systemInfo: object,
+    birthday: string,
+    avglife: number,
+    explife: number,
+    toggleDarkMode: Function,
+    setPrimaryColor: Function,
+    setExpLife: Function,
+    setBirthDay: Function,
+    setUpdateData: Function
+  },
+  name: string,
+  title: string,
+  percent: number,
+  color: string,
+  icon: string,
+  time: number,
+  width: string,
+  barHeight: number,
+  isDark: boolean,
+  isAnim: boolean,
+  type: string,
+  birthday: string,
+  avglife: number,
+  explife: number,
+  colorLight: string,
+  colorDark: string
+}
+
+interface MyProgress {
+  props: PageStateProps
+}
+
+@inject('themeStore')
+@observer
 class MyProgress extends Component {
   static defaultProps = {
     name: '年进度',
@@ -25,22 +66,17 @@ class MyProgress extends Component {
     isDark: false,
     isAnim: true,
     type: 'year',
-    birthday: '1993-1-1',
+    birthday: '',
     avglife: 77,
-    explife: 0
+    explife: 0,
+    colorLight: '#dde1e7',
+    colorDark: '#233541'
   }
   
   state = {
     counterValue: this.props.percent * .5,
-    startX: 0,
-    x: 0,
-    translateX: 0,
-    transition: 'all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-    opening: false,
     detail: false,
-    opacity: 0,
     life: this.props.explife ? this.props.explife : this.props.avglife,
-    removeTouch: false,
     progressTouch: false
   }
 
@@ -66,14 +102,7 @@ class MyProgress extends Component {
   componentDidUpdate (prevProps) {
     const { isDark, percent } = this.props
     if (isDark !== prevProps.isDark || percent !== prevProps.percent) {
-      this.setState({
-        counterValue: percent * .8
-      })
-      setTimeout(() => {
-        this.setState({
-          counterValue: percent
-        })
-      }, 500)
+      this.animatePercent(percent)
     }
   }
   
@@ -91,91 +120,27 @@ class MyProgress extends Component {
     })
   }
 
-  componentWillReact () {
-  }
+  componentWillReact () {}
 
-  handleStart = (e) => {
-    e.preventDefault()
-    this.setState({
-      startX: e.touches[0].clientX,
-      x: 0,
-      transition: ''
-    })
-  }
 
-  handleTouchMove = (e) => {
-    const { barHeight } = this.props
-    const { startX, opening } = this.state //取得初始坐标和屏幕可视宽高    
-    let x = e.touches[0].clientX - startX
-    if (opening) {
-      x += barHeight
-    }
-    let percent = x / (barHeight) 
-    let opacity = 0
-    if (percent > 1) {
-      opacity = 1
-    } else if (percent < 0) {
-      opacity = 0
-    } else {
-      opacity = percent
-    }
+  animatePercent(percent) {
     this.setState({
-      ///都可以来设置实时变化的值，不用用到changedTouches；
-      x: x, //当前触摸点-初始坐标取得实时变化值
-      translateX: x > 0 ? x : 0,
-      opacity: opacity
+      counterValue: percent * .8
     })
-  }
-
-  handleTouchEnd = () => {
-    const { barHeight } = this.props
-    const { x } = this.state
-    let translateX = 0
-    if (x >= barHeight/2 ) {
-      translateX = barHeight
-    }
-    this.setState({
-      translateX: translateX,
-      transition: 'all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-      opening: translateX ? true : false,
-      detail: false,
-      opacity: translateX ? 1 : 0
-    })
-  }
-
-  showAction = () => {
-    const { barHeight } = this.props
-    const { opening } = this.state
-    this.setState({
-      opening: !opening,
-      detail: false,
-      opacity: opening ? 0 : 1,
-      translateX: opening ? 0 : barHeight
-    })
+    setTimeout(() => {
+      this.setState({
+        counterValue: percent
+      })
+    }, 500)
   }
 
   showDetail = () => {
-    const { opening, detail } = this.state
-    if (opening) return
+    const { percent } = this.props
+    const { detail } = this.state
     this.setState({
       detail: !detail
     })
-  }
-
-  onRemoveTouch(e) {
-    let type = e.type
-    switch(type) {
-      case 'touchstart':
-        this.setState({
-          removeTouch: true
-        })
-        break
-      case 'touchend':
-        this.setState({
-          removeTouch: false
-        })
-        break
-    }
+    this.animatePercent(percent)
   }
   
   onProgressTouch(e) {
@@ -196,23 +161,21 @@ class MyProgress extends Component {
 
   render () {
 
-    const { name, title, time, percent, color, width, barHeight, isDark, isAnim, icon, type, birthday, onRemoveItem } = this.props
+    const { themeStore: { primary },  name, title, time, percent, color, width, barHeight, isDark, isAnim, icon, type, birthday, colorLight, colorDark } = this.props
 
-    const { counterValue, translateX, transition, opening, detail, opacity, life, removeTouch, progressTouch } = this.state
+    const { counterValue, detail, progressTouch } = this.state
 
     let getShadow = (c1, c2) => {
       return `1PX 1PX 2PX ${c1}, 0 0 0 ${c2}, 1PX 1PX 2PX ${c1}`
     }
     let textShadow = (type) => {
-      let shadow = ''
-      let light = '#dde1e7'
-      let dark = '#233541'
+      let shadow
       if ( (type === 'percent' && counterValue > 50) || type === 'title'  ) {
-        shadow = getShadow(color, dark)
+        shadow = getShadow(color, colorDark)
       } else if (isDark) {
         shadow = '1PX 1PX 2PX rgba(0,0,0,0.4)'
       } else {
-        shadow = getShadow(light, dark)
+        shadow = getShadow(colorLight, colorDark)
       }
       return shadow
     }
@@ -221,27 +184,36 @@ class MyProgress extends Component {
       'my-progress': true,
       'light': !isDark,
       'dark': isDark,
-      'touch': progressTouch
+      'touch': progressTouch,
+      'detail': detail
     })
-    let classRemoveBtn = cx({
-      'remove-btn': true,
-      'light': !isDark,
-      'dark': isDark,
-      'touch': removeTouch
-    })
-    let classIcon = cx({
-      'my-icon': true
+    let classTypeName = cx({
+      'type-name': true
     })
     let classDetail = cx({
       'detail': true
+    })
+    let classDetailIcon = cx({
+      'detail-icon': true,
+      'light': !isDark,
+      'dark': isDark
+    })
+    let classDetailTitle = cx({
+      'detail-title': true
+    })
+    let classDetailName = cx({
+      'detail-name': true
+    })
+    let classDetailDesc = cx({
+      'detail-desc': true
+    })
+    let classDetailPercent = cx({
+      'detail-percent': true
     })
     let classBarcolor = cx({
       'bar-color': true,
       'light': !isDark,
       'dark': isDark
-    })
-    let classBarTitle = cx({
-      'bar-title': true
     })
     let classPercent = cx({
       'percent': true,
@@ -252,116 +224,108 @@ class MyProgress extends Component {
     let styleProgress = {
       color: color,
       width: width,
-      height: barHeight + 'PX',
+      height: detail ? barHeight*2 + 'PX' : barHeight + 'PX',
       borderRadius: `${barHeight / 4}PX`,
       margin: '4vw',
     }
-    let styleRemoveBtn = {
-      width: barHeight/2 + 'PX',
-      height: barHeight/2 + 'PX',
-      left: barHeight/4 + 'PX',
-      opacity: opacity
-    }
     let styleBarcolor = {
-      width: opening ? `calc(100% - ${barHeight}PX)` : counterValue + '%',
-      height: detail ? '25%' : '100%',
+      width: detail ? '0' : counterValue + '%',
       borderRadius: `${barHeight / 4}PX`,
-      transform: `translateX(${translateX}px)`,
-      transition: transition,
-      background: color,
-      bottom: 0,
-      left: 0
-    }
-    let styleBarTitle = {
-      color: hexToRgba('#efefef', 0.8),
-      opacity: detail ? 0 : opacity,
-      textShadow: textShadow('title')
+      background: color
     }
     let stylePercent = {
       color: counterValue <= 50 ? hexToRgba(color, 0.6) : hexToRgba('#efefef', 0.8),
       textShadow: textShadow('percent'),
-      opacity: detail ? 0 : 1 - opacity
+      opacity: detail ? 0 : 1
     }
-    let styleMyIcon = {
-      position: 'absolute',
-      top: 0,
+    let styleTypeName = {
       right: barHeight / 4 + 'PX',
-      opacity: detail ? 0 : 1 - opacity,
+      opacity: detail ? 0 : 1,
       textShadow: textShadow('type'),
       color: hexToRgba(color, 0.6)
     }
     let styleDetail = {
+      width: width,
       textShadow: textShadow('detail'),
-      color: hexToRgba(color, 0.6),
-      opacity: detail ? 1 - opacity : 0
+      color: hexToRgba(primary, 0.6),
+      opacity: detail ? 1 : 0
+    }
+    let styleDetailIcon = {
+    }
+    let styleDetailTitle = {}
+    let styleDetailName = {}
+    let styleDetailDesc = {
+      color: hexToRgba(primary, 0.6)
+    }
+    let styleDetailPercent = {
+      color: hexToRgba(primary, 0.6)
     }
 
     return (
       <View
         className={classProgress}
         style={styleProgress}
-        onClick={this.showAction}
-        onLongPress={this.showDetail}
+        onClick={this.showDetail}
         onTouchStart={this.onProgressTouch}
         onTouchEnd={this.onProgressTouch}
       >
-          <View 
-            className={classRemoveBtn} 
-            style={styleRemoveBtn}
-            onClick={onRemoveItem}
-            onTouchStart={this.onRemoveTouch}
-            onTouchEnd={this.onRemoveTouch}
+        <View
+          className={classTypeName}
+          style={styleTypeName}
+        >
+          {type.toUpperCase()}
+        </View>
+        <View
+          className={classDetail}
+          style={styleDetail}
+        >
+          <View
+            className={classDetailIcon}
+            style={styleDetailIcon}
           >
             <MyIcon 
-              name='remove'
-              size={barHeight/3}
-              color='#FF5E5B'
+              name={icon}
+              size={barHeight*0.6}
+              color={hexToRgba(primary, 0.6)}
             />
           </View>
+          <View
+            className={classDetailTitle}
+          >
             <View
-              className={classIcon}
-              style={styleMyIcon}
+              className={classDetailName}
             >
-              {type.toUpperCase()}
+              {name}
             </View>
             <View
-              className={classDetail}
-              style={styleDetail}
+              className={classDetailDesc}
+              style={styleDetailDesc}
             >
-              {title}{percent}%
+              {title}
             </View>
-            <View 
-              className={classBarcolor}
-              style={styleBarcolor}
-            >
-              <View 
-                className={classBarTitle}
-                style={styleBarTitle}
-              >
-                {
-                  type === 'week' ? 
-                  <View>
-                    周起始：周日
-                  </View> :
-                  type === 'life' ?
-                  <View
-                  >
-                  生日：{birthday} 期望寿命：{life}
-                  </View> :
-                  <View>
-                    {name}：{percent}%
-                  </View>
-                }
-              </View>
-              <View
-                className={classPercent}
-                style={stylePercent}
-              >
-                <MyCounter 
-                  value={counterValue}
-                />
-              </View>
-            </View>
+          </View>
+          <View
+            className={classDetailPercent}
+            style={styleDetailPercent}
+          >
+            <MyCounter 
+              value={counterValue}
+            />
+          </View>
+        </View>
+        <View 
+          className={classBarcolor}
+          style={styleBarcolor}
+        >
+          <View
+            className={classPercent}
+            style={stylePercent}
+          >
+            <MyCounter 
+              value={counterValue}
+            />
+          </View>
+        </View>
       </View>
     )
   }

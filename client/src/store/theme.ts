@@ -22,13 +22,8 @@ const themeStore = observable({
   colors: [
     '#329188',
     '#5C8AC1',
-    '#1CBDE3',
-    '#00CA94',
-    '#F32F55',
-    '#FA9684',
-    '#006CFA',
-    '#95CFB5',
-    '#78C9A7'
+    '#FF5C5D',
+    '#FFA054',
   ],
   navBarTitle: '亦时',
   isRight: false,
@@ -102,8 +97,8 @@ const themeStore = observable({
     let midDate
     let date2 
     if ( this.birthday !== '' ) {
-      date1 = new Date(this.birthday)
-      midDate = new Date(this.birthday)
+      date1 = new Date(this.birthday.replace(/-/g, '/'))
+      midDate = new Date(this.birthday.replace(/-/g, '/'))
       date2 = new Date(midDate.setFullYear(midDate.getFullYear() + life))
     }
     return this.list
@@ -163,19 +158,23 @@ const themeStore = observable({
     this.setDarkMode(false)
   },
 
-  // 超过9分钟便更新数据
-  setUpdateData(updateTime) {
-    let timeDiff = (Date.now() - updateTime)/(60*1000)
-    if (timeDiff > 9) {
-      let list = this.updateList()
+  // 超过10分钟便更新数据
+  setUpdateData(updateTime, force) {
+    let list = this.updateList()
+    if (force) {
       this.setListData(list, Date.now(), false)
     } else {
-      Taro.getStorage({key: 'list'})
-      .then(
-        res => {
-          this.list = res.data
-        }
-      )
+      let timeDiff = (Date.now() - updateTime)/(60*1000)
+      if (timeDiff > 10) {
+        this.setListData(list, Date.now(), false)
+      } else {
+        Taro.getStorage({key: 'list'})
+        .then(
+          res => {
+            this.list = res.data
+          }
+        )
+      }
     }
   },
 
@@ -188,7 +187,7 @@ const themeStore = observable({
           let obj = res.result.data[0]
           this.setDarkMode(obj.isDark)
           this.setLocalListData(obj.list, obj.updateTime)
-          this.setUpdateData(obj.updateTime)
+          this.setUpdateData(obj.updateTime, false)
         } else {
           this.setInitData()
         }
@@ -204,7 +203,7 @@ const themeStore = observable({
     this.isDark = !this.isDark
     this.setNavBarColor(this.isDark)
     Taro.setStorage({key: 'isDark', data: this.isDark})
-    this.getDbFn('setDarkMode', {isDark: this.isDark})
+    //this.getDbFn('setDarkMode', {isDark: this.isDark})
   },
   setDarkMode(isDark) {
     this.isDark = isDark
@@ -216,7 +215,7 @@ const themeStore = observable({
   setNavBarColor(isDark) {
     Taro.setNavigationBarColor({
       frontColor: isDark ? '#ffffff' : '#000000',
-      backgroundColor: isDark ? '#333333' : '#ffffff'
+      backgroundColor: isDark ? '#233541' : '#dde1e7'
     })
   },
 
@@ -234,6 +233,40 @@ const themeStore = observable({
     )
     .catch(
       () => this.setPrimaryColor(this.primary)
+    )
+  },
+
+  // 设置期望寿命
+  setExpLife(life) {
+    this.explife = life
+    Taro.setStorage({key: 'explife', data: life})
+  },
+
+  // 获取期望寿命
+  getExpLife() {
+    Taro.getStorage({key: 'explife'})
+    .then(
+      res => this.explife = res.data
+    )
+    .catch(
+      () => this.setExpLife(0)
+    )
+  },
+
+  // 设置生日
+  setBirthDay(date) {
+    this.birthday = date
+    Taro.setStorage({key: 'birthday', data: date})
+  },
+
+  // 获取生日
+  getBirthDay() {
+    Taro.getStorage({key: 'birthday'})
+    .then(
+      res => this.birthday = res.data
+    )
+    .catch(
+      () => this.setBirthDay('')
     )
   },
 
@@ -303,11 +336,11 @@ const themeStore = observable({
     isFirst ? 
     this.getDbFn('setInitData', {list, updateTime})
     .then(
-      res => console.log(res)
+      () => console.log('初始化数据')
     ) :
     this.getDbFn('setListData', {list, updateTime})
     .then(
-      res => console.log(res)
+      () => console.log('更新数据')
     )
   },
   getListData() {
@@ -315,7 +348,7 @@ const themeStore = observable({
     .then(
       res => {
         this.updateTime = res.data
-        this.setUpdateData(res.data)
+        this.setUpdateData(res.data, false)
         Taro.getStorage({key: 'isDark'})
         .then(
           res => {
