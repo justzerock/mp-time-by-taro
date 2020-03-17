@@ -1,0 +1,142 @@
+$cube: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+$normal: all .25s ease-in-out;
+$radius: 15PX;
+
+$light: #E3EDF7;
+$dark: #233541;
+
+$shadow-out-light:-3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
+3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
+$shadow-inset-light:inset -3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
+inset 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
+$shadow-touch-light:-1.5PX -1.5PX 3.5PX 0 rgba($color: #fff, $alpha: .45),
+1.5PX 1.5PX 2.5PX 0 rgba($color: #5E6879, $alpha: .28);
+$shadow-switch-light:inset -3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .4),
+3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
+$light-gradient: radial-gradient(at 5px 5px,#ffd97d, #d9a15d );
+$light-switch: inset 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .4);
+$shadow-icon-light: .5PX .5PX 1PX $light, 0 0 0 $dark, .5PX .5PX 1PX $light;
+$shadow-text-light: 1PX 1PX 2PX $light, 0 0 0 rgba($color: $dark, $alpha: .2), 1PX 1PX 2PX $light;
+
+
+$shadow-out-dark:-3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
+3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
+$shadow-inset-dark:inset -3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
+inset 3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
+$shadow-touch-dark:-1.5PX -1.5PX 3.5PX 0 rgba($color: #2a404e, $alpha: .8),
+1.5PX 1.5PX 2.5PX 0 rgba($color: #1c2a34, $alpha: .8);
+$shadow-switch-dark:inset -3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .4),
+3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
+$dark-gradient: radial-gradient(at 0px 0px, rgba($color: #233541, $alpha: 0) 50%, rgba($color: #DDE1E7, $alpha: 0.8) 50%);
+$dark-switch: inset 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .8);
+$shadow-icon-dark: .5PX .5PX 1PX rgba(0,0,0,.4);
+$shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
+
+.switch-back {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .icon-sun, .icon-moon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5PX;
+    font-size: 20PX;
+    &.light {
+      text-shadow: $shadow-text-light;
+    }
+  }
+  .icon-sun {
+    &.light {
+      color: rgba($color: #FFBF65, $alpha: .8);
+    }
+    &.dark {
+      color: rgba($color: $light, $alpha: .2);
+    }
+  }
+  .icon-moon {
+    &.light {
+      color: rgba($color: $dark, $alpha: .1);
+    }
+    &.dark {
+      color: rgba($color: $light, $alpha: .9);
+    }
+  }
+  .my-switch {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 60PX;
+    height: 30PX;
+    border: 2PX solid;
+    border-radius: 15PX;
+    transition: box-shadow .25s, border-color .25s;
+    &.light {
+      box-shadow: $shadow-inset-light;
+      border-color: $light;
+    }
+    &.dark {
+      box-shadow: $shadow-inset-dark;
+      border-color: $dark;
+    }
+    .my-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 20PX;
+      height: 20PX;
+      border-radius: 10PX;
+      position: absolute;
+      transition: background .25s, box-shadow .25s, left .25s;
+      &.light {
+        background: $light;
+        box-shadow: $shadow-out-light;
+        left: 5PX;
+        color: rgba($color: #FFBD6D, $alpha: 0.8);
+        animation: left .3s;
+      }
+      &.dark {
+        background: $dark;
+        box-shadow: $shadow-out-dark;
+        left: 30PX;
+        color: rgba($color: #DDE1E7, $alpha: 0.8);
+        animation: right .3s;
+      }
+    }
+  }
+}
+
+@keyframes left {
+  0% {
+    left: 30PX;
+  }
+  60% {
+    left: 3PX;
+    width: 18PX;
+  }
+  85% {
+    left: 6PX;
+  }
+  100% {
+    left: 5PX;
+    width: 20PX;
+  }
+}
+
+@keyframes right {
+  0% {
+    left: 5PX;
+  }
+  60% {
+    left: 32PX;
+    width: 18PX;
+  }
+  85% {
+    left: 29PX;
+  }
+  100% {
+    left: 30PX;
+    width: 20PX;
+  }
+}

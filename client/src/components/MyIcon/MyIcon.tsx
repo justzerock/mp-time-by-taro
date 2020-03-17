@@ -9,7 +9,7 @@ class MyIcon extends Component {
   static defaultProps = {
     name: 'smile',
     size: 48,
-    color: '#999'
+    color: '#7789A1'
   }
   /**
    * 指定config的类型声明为: Taro.Config
@@ -39,8 +39,8 @@ class MyIcon extends Component {
     let iconName = 'icon-' + name
 
     let styleIcon = {
-      fontSize: size + 'PX',
-      color: color
+      /* fontSize: size + 'PX',
+      color: color */
     }
 
     return (

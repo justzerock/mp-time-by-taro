@@ -1,4 +1,4 @@
-$light: #dde1e7;
+$light: #E3EDF7;
 $dark: #233541;
 $light-text: rgba($color: $light, $alpha: .8);
 $dark-text: rgba($color: $dark, $alpha: .6);
@@ -48,7 +48,7 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
     color: $dark-text;
     background: $light;
     box-shadow: $shadow-out-light;
-    text-shadow: $shadow-text-light;
+    //text-shadow: $shadow-text-light;
     &.touch {
       box-shadow: $shadow-inset-light, $shadow-touch-light;
     }
@@ -57,7 +57,7 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
     color: $light-text;
     background: $dark;
     box-shadow: $shadow-out-dark;
-    text-shadow: $shadow-text-dark;
+    //text-shadow: $shadow-text-dark;
     &.touch {
       box-shadow: $shadow-inset-dark, $shadow-touch-dark;
     }

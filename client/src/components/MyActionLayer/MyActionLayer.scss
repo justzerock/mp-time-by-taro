@@ -1,4 +1,6 @@
-$light: #dde1e7;
+$normal: all .25s ease-in-out;
+
+$light: #E3EDF7;
 $dark: #233541;
 $light-text: rgba($color: $light, $alpha: .8);
 $dark-text: rgba($color: $dark, $alpha: .6);
@@ -31,7 +33,7 @@ $shadow-circle-dark: inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3), inset 2PX 2PX 
     background: rgba($color: #000000, $alpha: .1);
     top: 0;
     left: 0;
-    transition: all .3s;
+    transition: $normal;
     opacity: 0;
     &.open {
       z-index: 1000;
@@ -48,7 +50,7 @@ $shadow-circle-dark: inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3), inset 2PX 2PX 
     border-radius: 40PX 40PX 0 0 ;
     bottom: 0;
     left: 0;
-    transition: all .3s;
+    transition: $normal;
     display: flex;
     justify-content: center;
     align-items: flex-start;
@@ -67,14 +69,14 @@ $shadow-circle-dark: inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3), inset 2PX 2PX 
       background: $light;
       border-color: $light;
       box-shadow: $shadow-inset-light;
-      text-shadow: $shadow-text-light;
+      //text-shadow: $shadow-text-light;
     }
     &.dark {
       color: $light-text;
       background: $dark;
       border-color: $dark;
       box-shadow: $shadow-inset-dark;
-      text-shadow: $shadow-text-dark;
+      //text-shadow: $shadow-text-dark;
     }
     .action-title {
       display: flex;
@@ -95,17 +97,17 @@ $shadow-circle-dark: inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3), inset 2PX 2PX 
         right: 4vw;
         top: 4vw;
         border-radius: 30PX;
-        transition: all .3s;
+        transition: $normal;
         &.light {
           box-shadow: $shadow-out-light;
-          text-shadow: $shadow-text-light;
+          //text-shadow: $shadow-text-light;
           &.touch {
             box-shadow: $shadow-inset-light, $shadow-touch-light;
           }
         }
         &.dark {
           box-shadow: $shadow-out-dark;
-          text-shadow: $shadow-text-dark;
+          //text-shadow: $shadow-text-dark;
           &.touch {
             box-shadow: $shadow-inset-dark, $shadow-touch-dark;
           }

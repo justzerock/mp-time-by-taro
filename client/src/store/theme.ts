@@ -18,12 +18,17 @@ const themeStore = observable({
     left: 278,
     right: 365
   },
-  primary: '#329188',
+  primary: '#7789A1',
   colors: [
+    '#7789A1',
     '#329188',
     '#5C8AC1',
     '#FF5C5D',
     '#FFA054',
+    '#73C2FC',
+    '#5574E3',
+    '#33DFE6',
+    '#5FDFB7',
   ],
   navBarTitle: '亦时',
   isRight: false,
@@ -32,7 +37,8 @@ const themeStore = observable({
   birthday: '',
   avglife: 77,
   explife: 0,
-  wStart: 0,
+  weekStartDay: 0,
+  isDetail: false,
   list: [
     {
       name: '年进度',
@@ -107,7 +113,7 @@ const themeStore = observable({
         let tpobj
         let type = item.type
         if (type === 'week' ) {
-          tpobj = timePercent(type, this.wStart)
+          tpobj = timePercent(type, this.weekStartDay)
         } else if (type === 'life') {
           tpobj = this.birthday === '' ? {time:0, percent:0} : timePercent(type, 0, date1, date2)
         } else {
@@ -161,8 +167,8 @@ const themeStore = observable({
   // 超过10分钟便更新数据
   setUpdateData(updateTime, force) {
     let list = this.updateList()
-    if (force) {
-      this.setListData(list, Date.now(), false)
+    this.setListData(list, Date.now(), false)
+    /* if (force) {
     } else {
       let timeDiff = (Date.now() - updateTime)/(60*1000)
       if (timeDiff > 10) {
@@ -175,7 +181,7 @@ const themeStore = observable({
           }
         )
       }
-    }
+    } */
   },
 
   // 获取云端数据
@@ -209,6 +215,18 @@ const themeStore = observable({
     this.isDark = isDark
     this.setNavBarColor(isDark)
     Taro.setStorage({key: 'isDark', data: isDark})
+  },
+  getDarkMode() {
+    Taro.getStorage({key: 'isDark'})
+    .then(
+      res => {
+        this.isDark = res.data
+        this.setNavBarColor(res.data)
+      }
+    )
+    .catch(
+      () => this.setDarkMode(false)
+    )
   },
 
   // 导航栏前景背景色
@@ -270,6 +288,40 @@ const themeStore = observable({
     )
   },
 
+  // 设置周首日
+  setWeekStartDay(day) {
+    this.weekStartDay = day
+    Taro.setStorage({key: 'weekStartDay', data: day})
+  },
+
+  // 获取周首日
+  getWeekStartDay() {
+    Taro.getStorage({key: 'weekStartDay'})
+    .then(
+      res => this.weekStartDay = res.data
+    )
+    .catch(
+      () => this.setWeekStartDay(0)
+    )
+  },
+
+  // 设置视图显示详情
+  setViewMode(isDetail) {
+    this.isDetail = isDetail
+    Taro.setStorage({key: 'isDetail', data: isDetail})
+  },
+
+  // 获取视图设置
+  getViewMode() {
+    Taro.getStorage({key: 'isDetail'})
+    .then(
+      res => this.isDetail = res.data
+    )
+    .catch(
+      () => this.setViewMode(false)
+    )
+  },
+
   //  获取菜单按钮信息
   getMenuButton() {
     Taro.getStorage({key: 'menuButton'})
@@ -317,17 +369,20 @@ const themeStore = observable({
     )
   },
 
+  // 设置标题
   setNavBarTitle(title, isRight) {
     this.navBarTitle = title
     this.isRight = isRight
   },
 
+  // 将list存到本地
   setLocalListData(list, updateTime) {
     this.list = list
     this.updateTime = updateTime
     Taro.setStorage({key: 'list', data: list})
     Taro.setStorage({key: 'updateTime', data: updateTime})
   },
+  // 更新list
   setListData(list, updateTime, isFirst) {
     this.list = list
     this.updateTime = updateTime
@@ -343,25 +398,17 @@ const themeStore = observable({
       () => console.log('更新数据')
     )
   },
+  // 获取本地或云端list
   getListData() {
-    Taro.getStorage({key: 'updateTime'})
+    Taro.getStorage({key: 'list'})
     .then(
       res => {
-        this.updateTime = res.data
-        this.setUpdateData(res.data, false)
-        Taro.getStorage({key: 'isDark'})
-        .then(
-          res => {
-            this.isDark = res.data
-            this.setNavBarColor(res.data)
-          }
-        )
+        this.list = res.data
+        this.setUpdateData(0, true)
       }
     )
     .catch(
-      () => {
-        this.getUserData()
-      }
+      () => this.getUserData()
     )
   }
 })

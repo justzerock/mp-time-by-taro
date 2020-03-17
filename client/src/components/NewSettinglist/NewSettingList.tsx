@@ -7,8 +7,8 @@ import { observer, inject } from '@tarojs/mobx'
 import classNames from 'classnames/bind'
 import hexToRgba from 'hex-to-rgba'
 
-import styles from './MySettingList.scss'
-import MySettingItem from '../MySettingItem/MySettingItem'
+import styles from './NewSettingList.scss'
+import NewSettingItem from '../NewSettingItem/NewSettingItem'
 import MyAvatar from '../MyAvatar/MyAvatar'
 
 const cx = classNames.bind(styles)
@@ -25,13 +25,13 @@ type PageStateProps = {
   }
 }
 
-interface MySettingList {
+interface NewSettingList {
   props: PageStateProps;
 }
 
 @inject('themeStore')
 @observer
-class MySettingList extends Component {
+class NewSettingList extends Component {
   static defaultProps = {
   }
   state = {
@@ -68,7 +68,35 @@ class MySettingList extends Component {
         desc: '切换默认进度条、详情',
         type: 'view'
       }
-    ]
+    ],
+    newSettingList: [
+      {
+        title: '主题风格',
+        type: 'theme',
+        position: 'lt',
+        id: 1
+      },
+      {
+        title: '人生进度',
+        type: 'life',
+        position: 'rt',
+        id: 2
+      },
+      {
+        title: '星期首日',
+        type: 'week',
+        position: 'lb',
+        id: 3
+      },
+      {
+        title: '默认视图',
+        type: 'view',
+        position: 'rb',
+        id: 4
+      },
+    ],
+    expandState: 'default',
+    current: 0
   }
   /**
    * 指定config的类型声明为: Taro.Config
@@ -95,87 +123,49 @@ class MySettingList extends Component {
     themeStore.toggleDarkMode()
   }
 
+  onExpand = (expand) => {
+    this.setState({
+      expandState: expand ? 'expand' : 'default'
+    })
+  }
+
   render () {
     const { themeStore: {systemInfo, isDark, primary } } = this.props
-    const { settingList } = this.state
+    const { settingList, newSettingList, current, expandState } = this.state
     const classDark = isDark ? 'dark' : 'light'
 
     const classSettingItem = cx({
       'setting-item': true
     })
     const stylePage = {
-      color: hexToRgba(primary, 0.8)
-    }
-    const styleList = {
-      margin: `${46 + systemInfo.statusBarHeight}PX auto`
+      color: hexToRgba(primary, 0.6)
     }
 
     return (
       <View
-        className={`my-setting-list ${classDark}`}
+        className={`setting-list ${classDark}`}
         style={stylePage}
       >
-        <ScrollView 
-          enableFlex={true}
-          scrollY={true}
-          className={`list ${classDark}`}
-          >
-          <View
-            style={styleList}
-          >
-            <View
-              className={`avatar-back ${classDark}`}
-            >
-              <View
-                className={`avatar ${classDark}`}
-              >
-                <MyAvatar />
-              </View>
-              <View>
-                LIUYIYUE
-              </View>
-            </View>
-            {/* <View
-              className={classSettingItem}
-            >
-              <View
-                className={classItemTitle}
-              >
-                <View
-                  className={classTitleIcon}
-                ></View>
-                <View
-                  className={classTitleText}
-                >
-                  <View
-                    className={classTextName}
-                  ></View>
-                  <View
-                    className={classTextDesc}
-                  ></View>
-                </View>
-              </View>
-              <View
-                className={classItemContent}
-              ></View>
-            </View> */}
-            {
-              settingList.map(item => {
-                return (
-                  <MySettingItem 
-                    key={item.type}
-                    title={item.title}
-                    desc={item.desc}
-                    type={item.type}
-                  />
-                )
-              })
-            }
-          </View>
-        </ScrollView>
+        {
+          newSettingList.map(item => {
+            return (
+              <NewSettingItem 
+                key={item.id}
+                itemID={item.id}
+                title={item.title}
+                type={item.type}
+                position={item.position}
+                current={current}
+                expandState={expandState}
+                isDark={isDark}
+                onExpand={(id, expand) => this.onExpand(id, expand)}
+              />
+            )
+          })
+        }
       </View>
     )
   }
 }
 
-export default MySettingList as ComponentType
+export default NewSettingList as ComponentType

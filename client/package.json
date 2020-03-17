@@ -45,6 +45,7 @@
     "@tarojs/taro-weapp": "2.0.0-beta.12",
     "classnames": "^2.2.6",
     "hex-to-rgba": "^2.0.1",
+    "immutable": "^4.0.0-rc.12",
     "mobx": "4.8.0",
     "nerv-devtools": "^1.5.5",
     "nervjs": "^1.5.5"

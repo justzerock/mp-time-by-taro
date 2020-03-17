@@ -1,4 +1,4 @@
-$light: #dde1e7;
+$light: #E3EDF7;
 $dark: #233541;
 
 $shadow-out-light:-3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
@@ -26,7 +26,7 @@ $shadow-text-dark: 1PX 1PX 2PX $dark, 0 0 0 $dark, 1PX 1PX 2PX $dark;
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: all .3s;
+  transition: all .25s ease-in-out;
   &.light {
     background: $light;
     box-shadow: $shadow-out-light;

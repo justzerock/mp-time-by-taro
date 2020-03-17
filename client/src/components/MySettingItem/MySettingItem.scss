@@ -1,8 +1,8 @@
-$cube: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-$normal: all .3s;
+$cube: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+$normal: all .25s ease-in-out;
 $radius: 15PX;
 
-$light: #dde1e7;
+$light: #E3EDF7;
 $dark: #233541;
 
 $shadow-out-light:-3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
@@ -14,7 +14,7 @@ $shadow-touch-light:-1.5PX -1.5PX 3.5PX 0 rgba($color: #fff, $alpha: .45),
 $shadow-switch-light:inset -3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .4),
 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
 $light-gradient: radial-gradient(at 5px 5px,#ffd97d, #d9a15d );
-$light-switch: inset 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .8);
+$light-switch: inset 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .4);
 $shadow-icon-light: .5PX .5PX 1PX $light, 0 0 0 $dark, .5PX .5PX 1PX $light;
 $shadow-text-light: 1PX 1PX 2PX $light, 0 0 0 $dark, 1PX 1PX 2PX $light;
 
@@ -58,7 +58,7 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
     position: relative;
     justify-content: center;
     align-items: center;
-    transition: transform .3s;
+    transition: transform .25s ease-in-out;
   }
   .item-title {
     flex: 3;
@@ -100,7 +100,8 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
       width: 56PX;
       border-radius: 24PX;
       position: relative;
-      transition: $normal;
+      transition: background .25s;
+      will-change: background;
       .switch {
         position: absolute;
         display: flex;
@@ -109,15 +110,16 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
         width: 32PX;
         height: 32PX;
         border-radius: 16PX;
-        transition: $normal;
+        will-change: background, left;
+        transition: background .25s, left .25s;
       }
       &.light {
         box-shadow: $light-switch;
-        background: rgba($color: $dark, $alpha: .1);
+        background: rgba($color: $dark, $alpha: .03);
         .switch {
           box-shadow: $shadow-out-light;
           background: $light;
-          text-shadow: $shadow-icon-light;
+          //text-shadow: $shadow-icon-light;
           left: -1PX;
         }
       }
@@ -127,7 +129,7 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
         .switch {
           box-shadow: $shadow-out-dark;
           background: $dark;
-          text-shadow: $shadow-icon-dark;
+          //text-shadow: $shadow-icon-dark;
           left: 25PX;
         }
       }
@@ -224,6 +226,66 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
     .item-life {
       input {
         text-align: center;
+      }
+    }
+    .week-group, .view-group {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-direction: column;
+      height: 22vw;
+      .week-label, .view-label {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 16vw;
+        height: 8vw;
+        border-radius: 8vw;
+        position: relative;
+        transition: $normal;
+        font-size: 3.5vw;
+        &.active {
+          &::before {
+            content: '';
+            position: absolute;
+            width: 1vw;
+            height: 1vw;
+            border-radius: 1vw;
+            background: #55f696;
+            box-shadow: 0 0 1vw #55f696;
+            left: -4vw;
+          }
+        }
+      }
+      .view-label {
+        &.active {
+          &::before {
+            background: #f2ac55;
+            box-shadow: 0 0 1vw #f2ac55;
+          }
+        }
+      }
+      &.light {
+        .week-label, .view-label {
+          box-shadow: $shadow-out-light;
+          &.touch {
+            box-shadow: $shadow-touch-light, $shadow-inset-light;
+          }
+          &.active {
+            box-shadow: $shadow-out-light, $shadow-inset-light;
+          }
+        }
+      }
+      &.dark {
+        .week-label, .view-label {
+          box-shadow: $shadow-out-dark;
+          &.touch {
+            box-shadow: $shadow-touch-dark, $shadow-inset-dark;
+          }
+          &.active {
+            box-shadow: $shadow-out-dark, $shadow-inset-dark;
+          }
+        }
       }
     }
   }

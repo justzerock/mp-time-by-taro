@@ -1,6 +1,6 @@
-$light: #dde1e7;
+$light: #E3EDF7;
 $dark: #233541;
-$cube: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+$cube: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 $shadow-out-light:-3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
 $shadow-out-dark:-3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
@@ -9,7 +9,7 @@ $radius: 15PX;
 .index {
   height: 100%;
   width: 100%;
-  transition: all .3s;
+  transition: all .25s ease-in-out;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -36,13 +36,16 @@ $radius: 15PX;
       flex-direction: column;
       .scroll-list {
         display: flex;
-        justify-content: center;
         align-items: center;
         flex-direction: column;
         position: relative;
         height: 100%;
         width: 100%;
+        overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
+        .list {
+          margin: auto;
+        }
       }
     }
   }
@@ -53,7 +56,7 @@ $radius: 15PX;
     flex-direction: column;
     position: relative;
     border-radius: $radius;
-    transition: all .3s;
+    transition: all .25s;
   }
 
   .float-btn {

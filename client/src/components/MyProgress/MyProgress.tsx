@@ -14,21 +14,6 @@ import MyCounter from '../MyCounter/MyCounter'
 let cx = classNames.bind(styles)
 
 type PageStateProps = {
-  themeStore: {
-    isDark: boolean,
-    primary: string,
-    colors: Array<string>,
-    wStart: number,
-    systemInfo: object,
-    birthday: string,
-    avglife: number,
-    explife: number,
-    toggleDarkMode: Function,
-    setPrimaryColor: Function,
-    setExpLife: Function,
-    setBirthDay: Function,
-    setUpdateData: Function
-  },
   name: string,
   title: string,
   percent: number,
@@ -38,13 +23,14 @@ type PageStateProps = {
   width: string,
   barHeight: number,
   isDark: boolean,
-  isAnim: boolean,
+  isDetail: boolean,
   type: string,
   birthday: string,
   avglife: number,
   explife: number,
   colorLight: string,
-  colorDark: string
+  colorDark: string,
+  primary: string
 }
 
 interface MyProgress {
@@ -64,18 +50,19 @@ class MyProgress extends Component {
     width: '84vw',
     barHeight: 60,
     isDark: false,
-    isAnim: true,
+    isDetail: false,
     type: 'year',
     birthday: '',
     avglife: 77,
     explife: 0,
     colorLight: '#dde1e7',
-    colorDark: '#233541'
+    colorDark: '#233541',
+    primary: '#329188'
   }
   
   state = {
-    counterValue: this.props.percent * .5,
-    detail: false,
+    counterValue: 0,
+    detail: this.props.isDetail,
     life: this.props.explife ? this.props.explife : this.props.avglife,
     progressTouch: false
   }
@@ -96,12 +83,12 @@ class MyProgress extends Component {
       this.setState({
         counterValue: this.props.percent
       })
-    }, 500)
+    }, 1000)
   }
 
   componentDidUpdate (prevProps) {
-    const { isDark, percent } = this.props
-    if (isDark !== prevProps.isDark || percent !== prevProps.percent) {
+    const { percent } = this.props
+    if ( percent !== prevProps.percent) {
       this.animatePercent(percent)
     }
   }
@@ -161,7 +148,7 @@ class MyProgress extends Component {
 
   render () {
 
-    const { themeStore: { primary },  name, title, time, percent, color, width, barHeight, isDark, isAnim, icon, type, birthday, colorLight, colorDark } = this.props
+    const { primary, name, title, time, percent, color, width, barHeight, isDark, icon, type, birthday, colorLight, colorDark } = this.props
 
     const { counterValue, detail, progressTouch } = this.state
 
@@ -225,28 +212,28 @@ class MyProgress extends Component {
       color: color,
       width: width,
       height: detail ? barHeight*2 + 'PX' : barHeight + 'PX',
-      borderRadius: `${barHeight / 4}PX`,
+      borderRadius: `${barHeight / 2}PX`,
       margin: '4vw',
     }
     let styleBarcolor = {
       width: detail ? '0' : counterValue + '%',
-      borderRadius: `${barHeight / 4}PX`,
+      borderRadius: `${barHeight / 2}PX`,
       background: color
     }
     let stylePercent = {
       color: counterValue <= 50 ? hexToRgba(color, 0.6) : hexToRgba('#efefef', 0.8),
-      textShadow: textShadow('percent'),
+      //textShadow: textShadow('percent'),
       opacity: detail ? 0 : 1
     }
     let styleTypeName = {
       right: barHeight / 4 + 'PX',
       opacity: detail ? 0 : 1,
-      textShadow: textShadow('type'),
+      //textShadow: textShadow('type'),
       color: hexToRgba(color, 0.6)
     }
     let styleDetail = {
       width: width,
-      textShadow: textShadow('detail'),
+      //textShadow: textShadow('detail'),
       color: hexToRgba(primary, 0.6),
       opacity: detail ? 1 : 0
     }

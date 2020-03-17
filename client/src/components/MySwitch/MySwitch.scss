@@ -6,7 +6,7 @@ $shadow-color: rgba($color: #000000, $alpha: .08);
 $shadow-none: 0 0 0 0 $shadow-color;
 $shadow-normal: 0 0 8PX 0 $shadow-color;
 $shadow-hover: 0 0 12PX 0 $shadow-color;
-$transition: all .2s ease-in-out;
+$transition: all .25s ease-in-out;
 $icon-size: 28PX;
 .my-switch {
   height: $icon-size;

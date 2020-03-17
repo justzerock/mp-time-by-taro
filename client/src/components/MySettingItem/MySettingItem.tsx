@@ -6,27 +6,33 @@ import { observer, inject } from '@tarojs/mobx'
 
 import classNames from 'classnames/bind'
 import hexToRgba from 'hex-to-rgba'
+import { is } from 'immutable'
 
 import styles from './MySettingItem.scss'
 import MyIcon from '../MyIcon/MyIcon'
+import MySwitcher from '../MySwitcher/MySwitcher'
 
-let cx = classNames.bind(styles)
+const cx = classNames.bind(styles)
 
 type PageStateProps = {
   themeStore: {
     isDark: boolean,
+    isDetail: boolean,
     primary: string,
     colors: Array<string>,
-    wStart: number,
+    weekStartDay: number,
     systemInfo: object,
     birthday: string,
     avglife: number,
     explife: number,
     toggleDarkMode: Function,
+    setDarkMode: Function,
     setPrimaryColor: Function,
     setExpLife: Function,
     setBirthDay: Function,
-    setUpdateData: Function
+    setUpdateData: Function,
+    setWeekStartDay: Function,
+    setViewMode: Function
   },
   title: string,
   desc: string,
@@ -50,6 +56,8 @@ class MySettingItem extends Component {
     aTouch: false,
     cTouch: false,
     colorIndex: '',
+    wTouch: false,
+    weekIndex: '',
     transAction: false,
     transX: '0'
   }
@@ -73,6 +81,21 @@ class MySettingItem extends Component {
 
   componentWillReact () {}
 
+  shouldComponentUpdate(nextProps, nextState) {
+    const thisState = this.state || {}
+    for (const key in nextState) {
+      if (nextState.hasOwnProperty(key) &&
+        !is(thisState[key], nextState[key])) {
+        return true;
+      }
+    }
+    return false
+  }
+
+  componentDidUpdate () {
+    console.log('updated')
+  }
+
   // 切换亮暗模式
   toggleDarkMode = () => {
     const { themeStore } = this.props
@@ -81,7 +104,7 @@ class MySettingItem extends Component {
 
   // 当触摸设置选项
   onItemTouch(e) {
-    let type = e.type
+    const type = e.type
     switch(type) {
       case 'touchstart':
         this.setState({
@@ -98,7 +121,7 @@ class MySettingItem extends Component {
 
   // 当触摸主题设置按钮时
   onActionTouch(e) {
-    let type = e.type
+    const type = e.type
     switch(type) {
       case 'touchstart':
         this.setState({
@@ -115,7 +138,7 @@ class MySettingItem extends Component {
 
   // 当触摸颜色按钮时
   onColorTouch(e, index) {
-    let type = e.type
+    const type = e.type
     switch(type) {
       case 'touchstart':
         this.setState({
@@ -131,7 +154,25 @@ class MySettingItem extends Component {
         break
     }
   }
-
+  
+  // 当触摸周按钮时
+  onWeekTouch(e, index) {
+    const type = e.type
+    switch(type) {
+      case 'touchstart':
+        this.setState({
+          wTouch: true,
+          weekIndex: index
+        })
+        break
+      case 'touchend':
+        this.setState({
+          wTouch: false,
+          weekIndex: ''
+        })
+        break
+    }
+  }
   // 设置主题色
   setPrimaryColor(color) {
     const { themeStore } = this.props
@@ -168,70 +209,96 @@ class MySettingItem extends Component {
   // 设置出生年月
   onDateChange(e) {
     const { themeStore } = this.props
-    let today = new Date().toLocaleDateString('zh')
+    const today = new Date().toLocaleDateString('zh')
     let birthday = e.detail.value.replace(/-/g, '/')
     birthday = birthday > today ? today : birthday 
     themeStore.setBirthDay(birthday)
     themeStore.setUpdateData(0, true)
   }
+  
+  // 修改每周起始日，默认周日
+  onWeekChange(day) {
+    const { themeStore } = this.props
+    themeStore.setWeekStartDay(day)
+    themeStore.setUpdateData(0, true)
+  }
+  
+  // 修改默认视图
+  onViewChange(isDetail) {
+    const { themeStore } = this.props
+    themeStore.setViewMode(isDetail)
+  }
 
   render () {
-    const { themeStore: { isDark, primary, colors, wStart, birthday, explife, avglife}, title, desc, type } = this.props
-    const { iTouch, aTouch, cTouch, colorIndex, transX, transAction } = this.state
-    let classSettingItem = cx({
+    const { themeStore: { isDark, isDetail, primary, colors, weekStartDay, birthday, explife, avglife}, title, desc, type } = this.props
+    const { iTouch, aTouch, cTouch, colorIndex, wTouch, weekIndex, transX, transAction } = this.state
+    const classSettingItem = cx({
       'setting-item': true,
       'light': !isDark,
       'dark': isDark,
       'touch': iTouch
     })
-    let classTextDesc = cx({
+    const classTextDesc = cx({
       'text-desc': true,
       'light': !isDark,
       'dark': isDark,
     })
-    let classItemSwitch = cx({
+    const classItemSwitch = cx({
       'item-switch': true,
       'light': !isDark,
       'dark': isDark,
     })
-    let classSwitch = cx({
+    const classSwitch = cx({
       'switch': true,
       'light': !isDark,
       'dark': isDark,
     })
-    let classThemeBtn = cx({
+    const classThemeBtn = cx({
       'theme-btn': true,
       'light': !isDark,
       'dark': isDark,
       'touch': aTouch
     })
-    let classColors = cx({
+    const classColors = cx({
       'colors': true,
       'light': !isDark,
       'dark': isDark,
     })
+    const classWeekGroup = cx({
+      'week-group': true,
+      'light': !isDark,
+      'dark': isDark,
+    })
+    const classViewGroup = cx({
+      'view-group': true,
+      'light': !isDark,
+      'dark': isDark,
+    })
 
-    let getIconName = () => {
+    const getIconName = () => {
       let iconName = type
       if (type === 'week') {
-        iconName = 'week-' + wStart
+        iconName = 'week-' + weekStartDay
       }
       return iconName
     }
-    let getColorBG = (color) => {
+    const getColorBG = (color) => {
       return {background: hexToRgba(color, 0.8)}
     }
-    let getColorTouch = (index) => {
+    const getColorTouch = (index) => {
       return cTouch && colorIndex === index ? 'touch' : ''
     }
+    const getWeekTouch = (index) => {
+      return wTouch && weekIndex === index ? 'touch' : ''
+    }
 
-    let styleSwitch = {
+    const styleSwitch = {
       background: hexToRgba(primary, 0.8)
     }
-    let styleTitle = {
+    const styleTitle = {
       transform: `translateX(${transX})`
     }
-    let styleAction = {
+    const styleAction = {
       transform: `translateX(${transX})`
     }
     return (
@@ -272,21 +339,7 @@ class MySettingItem extends Component {
         >
           {
             type === 'mode' ?
-              <View
-                className={classItemSwitch}
-                style={isDark ? styleSwitch : ''}
-                onClick={this.toggleDarkMode}
-              >
-                <View 
-                  className={classSwitch}
-                >
-                  <MyIcon 
-                    name={isDark ? 'moon' : 'sun'}
-                    size='18'
-                    color={isDark ? hexToRgba('#DDE1E7', 0.8) : hexToRgba('#FFBD6D', 0.8)}
-                  />
-                </View>
-              </View> : 
+              <MySwitcher /> : 
             type === 'theme' ?
              <View
               className={`item-theme`}
@@ -349,13 +402,45 @@ class MySettingItem extends Component {
               </View> :
             type === 'week' ? 
               <View
-                className='item-content'
+                className={classWeekGroup}
               >
-                {
-                  wStart ? '周一' : '周日'
-                }
+                <View 
+                  className={`week-label ${weekStartDay ? '' : 'active'} ${getWeekTouch('w0')}`}
+                  onClick={()=> this.onWeekChange(0)}
+                  onTouchStart={e=>this.onWeekTouch(e, 'w0')}
+                  onTouchEnd={e=>this.onWeekTouch(e, 'w0')}
+                  >
+                  周日
+                </View>
+                <View 
+                  className={`week-label ${weekStartDay ? 'active' : ''} ${getWeekTouch('w1')}`}
+                  onClick={()=> this.onWeekChange(1)}
+                  onTouchStart={e=>this.onWeekTouch(e, 'w1')}
+                  onTouchEnd={e=>this.onWeekTouch(e, 'w1')}
+                >
+                  周一
+                </View>
               </View> :
-              <View>进度条</View>
+              <View
+                className={classViewGroup}
+              >
+                <View 
+                  className={`view-label ${isDetail ? '' : 'active'} ${getWeekTouch('v0')}`}
+                  onClick={()=> this.onViewChange(false)}
+                  onTouchStart={e=>this.onWeekTouch(e, 'v0')}
+                  onTouchEnd={e=>this.onWeekTouch(e, 'v0')}
+                  >
+                  进度
+                </View>
+                <View 
+                  className={`view-label ${isDetail ? 'active' : ''} ${getWeekTouch('v1')}`}
+                  onClick={()=> this.onViewChange(true)}
+                  onTouchStart={e=>this.onWeekTouch(e, 'v1')}
+                  onTouchEnd={e=>this.onWeekTouch(e, 'v1')}
+                >
+                  详情
+                </View>
+              </View>
           }
         </View>
       </View>

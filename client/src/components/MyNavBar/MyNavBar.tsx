@@ -6,6 +6,7 @@ import { observer, inject } from '@tarojs/mobx'
 import classNames from 'classnames/bind'
 
 import styles from './MyNavBar.scss'
+import MySwitcher from '../MySwitcher/MySwitcher'
 
 let cx = classNames.bind(styles)
 
@@ -93,7 +94,7 @@ class MyNavBar extends Component {
         className={classNavBar}
         style={styleNavBar}
       >
-        <View
+        {/* <View
           className={classIndicator}
         >
           <View
@@ -102,6 +103,9 @@ class MyNavBar extends Component {
           <View
             className={classIndicatorTwo}
           ></View>
+        </View> */}
+        <View>
+          <MySwitcher />
         </View>
         <Text 
           className={classTitle} 

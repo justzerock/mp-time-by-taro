@@ -10,14 +10,16 @@ import MyNavBar from '../../components/MyNavBar/MyNavBar'
 import MyProgress from '../../components/MyProgress/MyProgress'
 import MyFloatButton from '../../components/MyFloatButton/MyFloatButton'
 import MyActionLayer from '../../components/MyActionLayer/MyActionLayer'
-import MySettingList from '../../components/MySettinglist/MySettingList'
+import NewSettingList from '../../components/NewSettingList/NewSettingList'
 import '../../assets/myfont.scss'
 
 let cx = classNames.bind(styles)
 
 type PageStateProps = {
   themeStore: {
+    primary: string,
     isDark: boolean,
+    isDetail: boolean,
     isRight: boolean,
     hasHomeBar: boolean,
     systemInfo: object,
@@ -27,14 +29,17 @@ type PageStateProps = {
     avglife: number,
     explife: number,
     setListData: Function,
+    setUpdateData: Function,
+    setNavBarTitle: Function,
     getListData: Function,
     getSystemInfo: Function,
-    setNavBarTitle: Function,
     getMenuButton: Function,
     getPrimaryColor: Function,
     getExpLife: Function,
     getBirthDay: Function,
-    setUpdateData: Function
+    getDarkMode: Function,
+    getWeekStartDay: Function,
+    getViewMode: Function
   }
 }
 
@@ -86,7 +91,10 @@ class Index extends Component {
     const { themeStore } = this.props
     themeStore.getExpLife()
     themeStore.getBirthDay()
+    themeStore.getWeekStartDay()
     themeStore.getPrimaryColor()
+    themeStore.getDarkMode()
+    themeStore.getViewMode()
     themeStore.getSystemInfo()
     themeStore.getMenuButton()
     setTimeout(() => {
@@ -133,7 +141,7 @@ class Index extends Component {
   }
 
   render () {
-    const { themeStore: { isDark, isRight, hasHomeBar, systemInfo, list } } = this.props
+    const { themeStore: { primary, isDark, isDetail, isRight, hasHomeBar, systemInfo, list } } = this.props
     const { expand } = this.state
 
     let classIndex = cx({
@@ -147,11 +155,6 @@ class Index extends Component {
     let classSwiperItem = cx({
       'swiper-item': true
     })
-    let classListWrap = cx({
-      'list-wrap': true,
-      'light': !isDark,
-      'dark': isDark
-    })
     let classList = cx({
       'list': true
     })
@@ -163,11 +166,8 @@ class Index extends Component {
       'scroll-list': true
     })
 
-    let styleListWrap = {
-      marginTop: `${(44 + systemInfo.statusBarHeight)/2}PX`
-    }
     let styleList = {
-      margin: `${46 + systemInfo.statusBarHeight}PX auto`
+      padding: `${46 + systemInfo.statusBarHeight}PX 0`
     }
     let styleFloatBtn = {
       bottom: hasHomeBar ? '44PX' : '4vw'
@@ -184,12 +184,11 @@ class Index extends Component {
           <SwiperItem
             className={classSwiperItem}
           >
-              <ScrollView 
-                enableFlex={true}
-                scrollY={true}
+              <View 
                 className={classScrollList}
               >
                 <View 
+                  className={classList}
                   style={styleList}
                 >
                   {
@@ -208,18 +207,20 @@ class Index extends Component {
                             color={item.color}
                             type={item.type}
                             isDark={isDark}
+                            isDetail={isDetail}
+                            primary={primary}
                           />
                         )
                       }
                     )
                   }
                 </View>
-              </ScrollView>
+              </View>
           </SwiperItem>
           <SwiperItem
             className={classSwiperItem}
           >
-            <MySettingList />
+            <NewSettingList />
           </SwiperItem>
         </Swiper>
         <View
