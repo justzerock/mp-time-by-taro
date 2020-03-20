@@ -29,10 +29,6 @@ class MyActionLayer extends Component {
   static defaultProps = {
     expand: false
   }
-  
-  state = {
-    touch: false
-  }
   /**
    * 指定config的类型声明为: Taro.Config
    *
@@ -62,28 +58,10 @@ class MyActionLayer extends Component {
     themeStore.setListData(newList, Date.now(), false)
   }
 
-  onTouch(e) {
-    let type = e.type
-    switch(type) {
-      case 'touchstart':
-        this.setState({
-          touch: true
-        })
-        break
-      case 'touchend':
-        this.setState({
-          touch: false
-        })
-        break
-    }
-  }
-
   render () {
     const { themeStore: { isDark, hasHomeBar, list } , expand, onAdd } = this.props
-    const { touch } = this.state
     let classExpand = expand ? 'open' : 'close'
     let classDark = isDark ? 'dark' : 'light'
-    let classTouch = touch ? 'touch' : ''
     let styleMain = {
       paddingBottom: hasHomeBar ? '44PX' : '4vw'
     }
@@ -113,10 +91,8 @@ class MyActionLayer extends Component {
             </View>
             添加进度条
             <View
-              className={`close-btn ${classDark} ${classTouch}`}
+              className={`close-btn ${classDark}`}
               onClick={onAdd}
-              onTouchStart={this.onTouch}
-              onTouchEnd={this.onTouch}
             >
               <MyIcon 
                 name='close'

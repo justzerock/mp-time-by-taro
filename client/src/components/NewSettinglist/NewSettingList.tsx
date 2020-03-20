@@ -71,7 +71,7 @@ class NewSettingList extends Component {
     ],
     newSettingList: [
       {
-        title: '主题风格',
+        title: '主题颜色',
         type: 'theme',
         position: 'lt',
         id: 1
@@ -83,7 +83,7 @@ class NewSettingList extends Component {
         id: 2
       },
       {
-        title: '星期首日',
+        title: '周起始日',
         type: 'week',
         position: 'lb',
         id: 3

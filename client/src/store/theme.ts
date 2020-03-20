@@ -38,16 +38,17 @@ const themeStore = observable({
   avglife: 77,
   explife: 0,
   weekStartDay: 0,
-  isDetail: false,
+  isDetail: true,
   list: [
     {
       name: '年进度',
       title:'',
       percent: 0,
       icon: 'earth',
-      color: '#D8000C',
-      selected: true,
-      type: 'year'
+      color: '#4D89FB',
+      selected: false,
+      type: 'year',
+      detail: 0
     },
     {
       name: '月进度',
@@ -55,8 +56,9 @@ const themeStore = observable({
       percent: 0,
       icon: 'moon',
       color: '#00CCEB',
-      selected: true,
-      type: 'month'
+      selected: false,
+      type: 'month',
+      detail: 0
     },
     {
       name: '周进度',
@@ -65,7 +67,8 @@ const themeStore = observable({
       icon: 'week',
       color: '#00CA94',
       selected: false,
-      type: 'week'
+      type: 'week',
+      detail: 0
     },
     {
       name: '日进度',
@@ -73,17 +76,19 @@ const themeStore = observable({
       percent: 0,
       icon: 'sun',
       color: '#FFBF65',
-      selected: true,
-      type: 'day'
+      selected: false,
+      type: 'day',
+      detail: 0
     },
     {
       name: '人生进度',
       title:'',
       percent: 0,
-      icon: 'face',
+      icon: 'birth',
       color: '#FF5680',
-      selected: false,
-      type: 'life'
+      selected: true,
+      type: 'life',
+      detail: 0
     }
   ],
   updateTime: Date.now(),
@@ -115,14 +120,14 @@ const themeStore = observable({
         if (type === 'week' ) {
           tpobj = timePercent(type, this.weekStartDay)
         } else if (type === 'life') {
-          tpobj = this.birthday === '' ? {time:0, percent:0} : timePercent(type, 0, date1, date2)
+          tpobj = this.birthday === '' ? {time:0, percent:0, detail:0} : timePercent(type, 0, date1, date2)
         } else {
           tpobj = timePercent(type)
         }
         return {
           type: type,
           name: item.name,
-          title: this.getName(type, tpobj.time),
+          title: this.getName(type, tpobj.time, tpobj.detail),
           icon: item.icon,
           color: item.color,
           selected: item.selected,
@@ -134,24 +139,24 @@ const themeStore = observable({
   },
 
   // 返回标题
-  getName(type, time) {
+  getName(type, time, detail) {
     let name = ''
     let week = ['日', '一', '二', '三', '四', '五', '六']
     switch(type) {
       case 'year':
-        name = time + '年，本年已过去 '
+        name = time + ' 年，本年已过去 ' + detail + ' 天'
         break
       case 'month':
-        name = time + '月，本月已过去 '
+        name = time + ' 月，本月已过去 ' + detail + ' 天'
         break
       case 'week':
-        name = '星期' + week[time] + '，本周已过去 '
+        name = '星期' + week[time] + '，本周已过去 ' + detail + ' 天'
         break
       case 'day':
-        name = time + '日，本日已过去 '
+        name = time + ' 日，本日已过去 ' + detail + ' 小时'
         break
       case 'life':
-        name = time + '岁，预期人生已过去 '
+        name = time + ' 岁，人生已过去 ' + detail + ' 天，目标 ' + (this.explife ? this.explife : this.avglife) + ' 岁'
         break
     }
     return name
@@ -318,7 +323,7 @@ const themeStore = observable({
       res => this.isDetail = res.data
     )
     .catch(
-      () => this.setViewMode(false)
+      () => this.setViewMode(true)
     )
   },
 

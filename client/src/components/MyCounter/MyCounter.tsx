@@ -15,7 +15,7 @@ class MyCounter extends Component {
   static defaultProps = {
     commas: true,
     timeout: 500,
-    steps: 20
+    steps: 10
   }
   
   constructor(props) {

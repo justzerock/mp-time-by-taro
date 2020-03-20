@@ -6,12 +6,13 @@ import { observer, inject } from '@tarojs/mobx'
 
 import classNames from 'classnames/bind'
 import hexToRgba from 'hex-to-rgba'
+import { is } from 'immutable'
 
 import styles from './MyProgress.scss'
 import MyIcon from '../MyIcon/MyIcon'
 import MyCounter from '../MyCounter/MyCounter'
 
-let cx = classNames.bind(styles)
+const cx = classNames.bind(styles)
 
 type PageStateProps = {
   name: string,
@@ -24,13 +25,11 @@ type PageStateProps = {
   barHeight: number,
   isDark: boolean,
   isDetail: boolean,
+  weekStartDay: number,
   type: string,
   birthday: string,
   avglife: number,
-  explife: number,
-  colorLight: string,
-  colorDark: string,
-  primary: string
+  explife: number
 }
 
 interface MyProgress {
@@ -51,20 +50,17 @@ class MyProgress extends Component {
     barHeight: 60,
     isDark: false,
     isDetail: false,
+    weekStartDay: 0,
     type: 'year',
     birthday: '',
     avglife: 77,
-    explife: 0,
-    colorLight: '#dde1e7',
-    colorDark: '#233541',
-    primary: '#329188'
+    explife: 0
   }
   
   state = {
     counterValue: 0,
     detail: this.props.isDetail,
     life: this.props.explife ? this.props.explife : this.props.avglife,
-    progressTouch: false
   }
 
   /**
@@ -129,123 +125,120 @@ class MyProgress extends Component {
     })
     this.animatePercent(percent)
   }
-  
-  onProgressTouch(e) {
-    let type = e.type
-    switch(type) {
-      case 'touchstart':
-        this.setState({
-          progressTouch: true
-        })
-        break
-      case 'touchend':
-        this.setState({
-          progressTouch: false
-        })
-        break
-    }
-  }
 
   render () {
 
-    const { primary, name, title, time, percent, color, width, barHeight, isDark, icon, type, birthday, colorLight, colorDark } = this.props
+    const { name, title, color, width, barHeight, isDark, icon, type, weekStartDay, birthday } = this.props
 
-    const { counterValue, detail, progressTouch } = this.state
+    const { counterValue, detail } = this.state
 
-    let getShadow = (c1, c2) => {
+    const getShadow = (c1, c2) => {
       return `1PX 1PX 2PX ${c1}, 0 0 0 ${c2}, 1PX 1PX 2PX ${c1}`
     }
-    let textShadow = (type) => {
+    const textShadow = (type) => {
       let shadow
-      if ( (type === 'percent' && counterValue > 50) || type === 'title'  ) {
-        shadow = getShadow(color, colorDark)
-      } else if (isDark) {
-        shadow = '1PX 1PX 2PX rgba(0,0,0,0.4)'
-      } else {
-        shadow = getShadow(colorLight, colorDark)
+      if (isDark) {
+        shadow = '1PX 1PX 2PX rgba(0,0,0,0.2)'
+      } else if ( (is(type, 'percent') && counterValue > 50) ) {
+        shadow = getShadow(hexToRgba(color, 0.7), '#233541')
       }
       return shadow
     }
 
-    let classProgress = cx({
+    const classProgress = cx({
       'my-progress': true,
       'light': !isDark,
       'dark': isDark,
-      'touch': progressTouch,
       'detail': detail
     })
-    let classTypeName = cx({
+    const classTypeName = cx({
       'type-name': true
     })
-    let classDetail = cx({
-      'detail': true
+    const classDetail = cx({
+      'detail': true,
+      'light': !isDark,
+      'dark': isDark,
     })
-    let classDetailIcon = cx({
+    const classDetailIcon = cx({
       'detail-icon': true,
       'light': !isDark,
       'dark': isDark
     })
-    let classDetailTitle = cx({
+    const classDetailTitle = cx({
       'detail-title': true
     })
-    let classDetailName = cx({
+    const classDetailName = cx({
       'detail-name': true
     })
-    let classDetailDesc = cx({
+    const classDetailDesc = cx({
       'detail-desc': true
     })
-    let classDetailPercent = cx({
+    const classDetailPercent = cx({
       'detail-percent': true
     })
-    let classBarcolor = cx({
+    const classDetailProgress = cx({
+      'detail-progress': true,
+      'light': !isDark,
+      'dark': isDark
+    })
+    const classDetailProgressPercent = cx({
+      'detail-progress-percent': true,
+      'light': !isDark,
+      'dark': isDark
+    })
+    const classBarcolor = cx({
       'bar-color': true,
       'light': !isDark,
       'dark': isDark
     })
-    let classPercent = cx({
+    const classPercent = cx({
       'percent': true,
       'left': counterValue > 50,
       'right': counterValue <= 50
     })
+    const classTopShadow = cx({
+      'top-shadow': !detail,
+      'light': !isDark,
+      'dark': isDark
+    })
 
-    let styleProgress = {
+    const styleProgress = {
       color: color,
       width: width,
-      height: detail ? barHeight*2 + 'PX' : barHeight + 'PX',
+      height: detail ? barHeight*2.5 + 'PX' : barHeight + 'PX',
       borderRadius: `${barHeight / 2}PX`,
       margin: '4vw',
     }
-    let styleBarcolor = {
+    const styleBarcolor = {
       width: detail ? '0' : counterValue + '%',
       borderRadius: `${barHeight / 2}PX`,
-      background: color
+      background: hexToRgba(color, 0.7)
     }
-    let stylePercent = {
-      color: counterValue <= 50 ? hexToRgba(color, 0.6) : hexToRgba('#efefef', 0.8),
-      //textShadow: textShadow('percent'),
+    const stylePercent = {
+      color: counterValue <= 50 ? hexToRgba(color, 0.6) : hexToRgba('#efefef', 0.9),
+      textShadow: textShadow('percent'),
       opacity: detail ? 0 : 1
     }
-    let styleTypeName = {
+    const styleTypeName = {
       right: barHeight / 4 + 'PX',
-      opacity: detail ? 0 : 1,
-      //textShadow: textShadow('type'),
+      opacity: detail ? 0 : (100 - counterValue)/100,
       color: hexToRgba(color, 0.6)
     }
-    let styleDetail = {
+    const styleDetail = {
       width: width,
-      //textShadow: textShadow('detail'),
-      color: hexToRgba(primary, 0.6),
+      color: hexToRgba(color, 0.6),
       opacity: detail ? 1 : 0
     }
-    let styleDetailIcon = {
+    const styleDetailProgress = {
+      background: hexToRgba(color, 0.1)
     }
-    let styleDetailTitle = {}
-    let styleDetailName = {}
-    let styleDetailDesc = {
-      color: hexToRgba(primary, 0.6)
+    const styleDetailProgressPercent = {
+      background: hexToRgba(color, 0.5),
+      width: counterValue + '%'
     }
-    let styleDetailPercent = {
-      color: hexToRgba(primary, 0.6)
+
+    const styleTopShadow = {
+      borderRadius: `${barHeight / 2}PX`,
     }
 
     return (
@@ -253,8 +246,6 @@ class MyProgress extends Component {
         className={classProgress}
         style={styleProgress}
         onClick={this.showDetail}
-        onTouchStart={this.onProgressTouch}
-        onTouchEnd={this.onProgressTouch}
       >
         <View
           className={classTypeName}
@@ -268,12 +259,9 @@ class MyProgress extends Component {
         >
           <View
             className={classDetailIcon}
-            style={styleDetailIcon}
           >
             <MyIcon 
-              name={icon}
-              size={barHeight*0.6}
-              color={hexToRgba(primary, 0.6)}
+              name={is(icon, 'week') ? 'week-' + weekStartDay : icon }
             />
           </View>
           <View
@@ -286,18 +274,34 @@ class MyProgress extends Component {
             </View>
             <View
               className={classDetailDesc}
-              style={styleDetailDesc}
             >
               {title}
             </View>
           </View>
+          {
+            is(birthday, '') && is(type, 'life') ?
+            <View
+              className='set-tip'
+            >
+              左滑设置生日 -->
+            </View> : ''
+          }
           <View
-            className={classDetailPercent}
-            style={styleDetailPercent}
+            className={classDetailProgress}
+            style={styleDetailProgress}
           >
-            <MyCounter 
-              value={counterValue}
-            />
+            <View 
+              className={classDetailProgressPercent}
+              style={styleDetailProgressPercent}
+            >
+              <View
+                className={classDetailPercent}
+              >
+                <MyCounter 
+                  value={counterValue}
+                />
+              </View>
+            </View>
           </View>
         </View>
         <View 
@@ -313,6 +317,10 @@ class MyProgress extends Component {
             />
           </View>
         </View>
+        <View 
+          className={classTopShadow}
+          style={styleTopShadow}
+        />
       </View>
     )
   }

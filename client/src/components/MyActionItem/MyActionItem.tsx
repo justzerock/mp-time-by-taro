@@ -3,7 +3,6 @@ import { ComponentType } from 'react'
 import Taro, { Component } from '@tarojs/taro'
 import { View, Picker, Input } from '@tarojs/components'
 import './MyActionItem.scss'
-import '../../assets/iconfont.scss'
 import MyCounter from '../MyCounter/MyCounter'
 
 class MyActionItem extends Component {
@@ -20,7 +19,6 @@ class MyActionItem extends Component {
     edit: false,
     dateSel: '1993-1-1',
     life: 77,
-    touch: false
   }
   /**
    * 指定config的类型声明为: Taro.Config
@@ -53,36 +51,16 @@ class MyActionItem extends Component {
     }
   }
 
-  onTouch(e) {
-    let type = e.type
-    switch(type) {
-      case 'touchstart':
-        this.setState({
-          touch: true
-        })
-        break
-      case 'touchend':
-        this.setState({
-          touch: false
-        })
-        break
-    }
-  }
-
   render () {
     const { isDark, name, percent, color, selected, type, onEditItem, onToggleItem } = this.props
-    const { touch } = this.state
     let classDark = isDark ? 'dark' : 'light'
-    let classTouch = touch ? 'touch' : ''
     let styleColor = {
       background: color
     }
     return (
       <View
-        className={`my-action-item ${classDark} ${classTouch}`}
+        className={`my-action-item ${classDark}`}
         onClick={onToggleItem}
-        onTouchStart={this.onTouch}
-        onTouchEnd={this.onTouch}
       > 
         <View
           className={`color-block ${classDark}`}
@@ -93,9 +71,13 @@ class MyActionItem extends Component {
         >
           { name }
         </View>
-        <MyCounter
-          value={percent}
-        />
+        <View
+          className='item-percent'
+        >
+          <MyCounter
+            value={percent}
+          />
+        </View>
       </View>
     )
   }

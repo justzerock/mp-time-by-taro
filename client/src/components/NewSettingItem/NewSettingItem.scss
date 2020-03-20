@@ -9,7 +9,7 @@ $shadow-out-light:-3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
 $shadow-inset-light:inset -3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
 inset 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
-$shadow-touch-light:-1.5PX -1.5PX 3.5PX 0 rgba($color: #fff, $alpha: .45),
+$shadow-active-light:-1.5PX -1.5PX 3.5PX 0 rgba($color: #fff, $alpha: .45),
 1.5PX 1.5PX 2.5PX 0 rgba($color: #5E6879, $alpha: .28);
 $shadow-switch-light:inset -3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .4),
 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
@@ -18,12 +18,11 @@ $light-switch: inset 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .4);
 $shadow-icon-light: .5PX .5PX 1PX $light, 0 0 0 $dark, .5PX .5PX 1PX $light;
 $shadow-text-light: 1PX 1PX 2PX $light, 0 0 0 rgba($color: $dark, $alpha: .6), 1PX 1PX 2PX $light;
 
-
 $shadow-out-dark:-3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
 3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
-$shadow-inset-dark:inset -3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
-inset 3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
-$shadow-touch-dark:-1.5PX -1.5PX 3.5PX 0 rgba($color: #2a404e, $alpha: .8),
+$shadow-inset-dark:inset -3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .05),
+inset 3PX 3PX 5PX 0 rgba($color: #000, $alpha: .2);
+$shadow-active-dark:-1.5PX -1.5PX 3.5PX 0 rgba($color: #2a404e, $alpha: .8),
 1.5PX 1.5PX 2.5PX 0 rgba($color: #1c2a34, $alpha: .8);
 $shadow-switch-dark:inset -3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .4),
 3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
@@ -45,15 +44,15 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
   &.light {
     box-shadow: $shadow-out-light;
     text-shadow: $shadow-text-light;
-    &.touch {
-      box-shadow: $shadow-touch-light;
+    &:active {
+      box-shadow: $shadow-active-light;
     }
   }
   &.dark {
     box-shadow: $shadow-out-dark;
     text-shadow: $shadow-text-dark;
-    &.touch {
-      box-shadow: $shadow-touch-dark;
+    &:active {
+      box-shadow: $shadow-active-dark;
     }
   }
   &.expand {
@@ -115,9 +114,15 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
     }
     &.light {
       box-shadow: $shadow-out-light;
+      &:active {
+        box-shadow: $shadow-active-light, $shadow-inset-light;
+      }
     }
     &.dark {
       box-shadow: $shadow-out-dark;
+      &:active {
+        box-shadow: $shadow-active-dark, $shadow-inset-dark;
+      }
     }
   }
   .type-icon {
@@ -138,7 +143,6 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
     left: 20PX;
     bottom: 20PX;
     font-size: 14PX;
-    text-shadow: none;
     &.expand {
       opacity: 0;
       transform: scale(0);
@@ -158,6 +162,8 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
       opacity: 1;
       transform: scale(1);
     }
+    
+    // 主题选项样式
     .primary {
       display: flex;
       align-items: center;
@@ -184,11 +190,17 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
             &.current {
               box-shadow: $shadow-inset-light;
             }
+            &:active {
+              box-shadow: $shadow-active-light, $shadow-inset-light;
+            }
           }
           &.dark {
             box-shadow: $shadow-out-dark;
             &.current {
               box-shadow: $shadow-inset-dark;
+            }
+            &:active {
+              box-shadow: $shadow-active-dark, $shadow-inset-dark;
             }
           }
           .color-item {
@@ -199,20 +211,12 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
             justify-content: center;
             align-items: center;
             transition: $normal;
-            &.light {
-              &.current {
-                box-shadow: $shadow-out-light;
-              }
-            }
-            &.dark {
-              &.current {
-                box-shadow: $shadow-out-dark;
-              }
-            }
           }
         }
       }
     }
+
+    // 人生进度选项样式
     .life {
       display: flex;
       flex: 1;
@@ -237,7 +241,7 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
         width: 60vw;
         height: 20vw;
         border-radius: 15PX;
-        font-size: 8vw;
+        font-size: 6vw;
         .range {
           display: flex;
           justify-content: center;
@@ -248,7 +252,9 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
           font-size: 12PX;
           opacity: 0.8;
           color: #B4C0CB;
-          font-family: initial;
+          .number {
+            font-family: initial;
+          }
         }
         .birth-text, .age-text {
           display: flex;
@@ -258,7 +264,7 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
           position: absolute;
           z-index: -1;
           .birth-name, .age-name {
-            font-size: 16PX;
+            font-size: 14PX;
           }
         }
         .picker {
@@ -277,6 +283,153 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
           text-align: center;
           opacity: 0;
           transition: $normal;
+        }
+      }
+    }
+
+    // 周起始选项样式
+    .week {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      .week-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 30vw;
+        height: 12vw;
+        margin: 5vw;
+        border-radius: 12vw;
+        font-size: 4vw;
+        position: relative;
+        transition: $normal;
+        &.light {
+          box-shadow: $shadow-out-light;
+          &.current, &:active {
+            box-shadow: $shadow-active-light, $shadow-inset-light;
+          }
+          &::before {
+            box-shadow: $shadow-inset-light;
+          }
+        }
+        &.dark {
+          box-shadow: $shadow-out-dark;
+          &.current, &:active {
+            box-shadow: $shadow-active-dark, $shadow-inset-dark;
+          }
+          &::before {
+            box-shadow: $shadow-inset-dark;
+          }
+        }
+        &::before {
+          content: '';
+          position: absolute;
+          left: -5vw;
+          width: 10PX;
+          height: 10PX;
+          border-radius: 50%;
+        }
+        &.current {
+          &::before {
+            background: #75C3FD;
+            box-shadow: 0 0 10PX #75C3FD;
+          }
+        }
+      }
+    }
+
+    // 视图选项样式
+    .view {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+      .view-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 4vw;
+        font-size: 10vw;
+        transition: $normal;
+        &.light {
+          &.default {
+            color: rgba($color: #000000, $alpha: .4);
+            opacity: 0.4;
+          }
+        }
+        &.dark {
+          &.default {
+            color: rgba($color: #fff, $alpha: .4);
+            opacity: 0.4;
+          }
+        }
+      }
+      .switch {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 30vw;
+        height: 12vw;
+        border-radius: 6vw;
+        position: relative;
+        &.light {
+          box-shadow: $shadow-out-light, $shadow-inset-light;
+          &:active {
+            box-shadow: $shadow-active-light, $shadow-inset-light;
+          }
+        }
+        &.dark {
+          box-shadow: $shadow-out-dark, $shadow-inset-dark;
+          &:active {
+            box-shadow: $shadow-active-dark, $shadow-inset-dark;
+          }
+        }
+        .title {
+          display: flex;
+          position: absolute;
+          justify-content: center;
+          align-items: center;
+          width: 20vw;
+          height: 12vw;
+          transition: $normal;
+          &.default {
+            opacity: 0;
+          }
+          &.left {
+            left: 0;
+          }
+          &.right {
+            left: 10vw;
+          }
+        }
+        .btn {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: absolute;
+          width: 8vw;
+          height: 8vw;
+          border-radius: 50%;
+          transition: $normal;
+          &.light {
+            box-shadow: $shadow-out-light;
+            &:active {
+              box-shadow: $shadow-active-light;
+            }
+          }
+          &.dark {
+            box-shadow: $shadow-out-dark;
+            &:active {
+              box-shadow: $shadow-active-dark;
+            }
+          }
+          &.left {
+            left: 2vw;
+          }
+          &.right {
+            left: 20vw;
+          }
         }
       }
     }

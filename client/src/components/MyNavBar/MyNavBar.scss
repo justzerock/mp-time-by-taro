@@ -2,6 +2,9 @@ $cube: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 $normal: all .25s ease-in-out;
 $light: #E3EDF7;
 $dark: #233541;
+$dot: 16PX;
+$bar: 30PX;
+$cur-color: #FF5F5C;
 
 $shadow-out-light:-3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
@@ -17,9 +20,6 @@ inset 3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
 $shadow-touch-dark:-1.5PX -1.5PX 3.5PX 0 rgba($color: #2a404e, $alpha: .8),
 1.5PX 1.5PX 2.5PX 0 rgba($color: #1c2a34, $alpha: .8);
 
-$dot: 16PX;
-$bar: 30PX;
-$cur-color: #FF5F5C;
 .my-nav-bar {
   position: fixed;
   top: 0;

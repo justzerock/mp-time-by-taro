@@ -69,16 +69,13 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
     position: relative;
     width: 60PX;
     height: 30PX;
-    border: 2PX solid;
     border-radius: 15PX;
     transition: box-shadow .25s, border-color .25s;
     &.light {
       box-shadow: $shadow-inset-light;
-      border-color: $light;
     }
     &.dark {
       box-shadow: $shadow-inset-dark;
-      border-color: $dark;
     }
     .my-icon {
       display: flex;
@@ -94,14 +91,14 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
         box-shadow: $shadow-out-light;
         left: 5PX;
         color: rgba($color: #FFBD6D, $alpha: 0.8);
-        animation: left .3s;
+        animation: left 1s;
       }
       &.dark {
         background: $dark;
         box-shadow: $shadow-out-dark;
         left: 30PX;
         color: rgba($color: #DDE1E7, $alpha: 0.8);
-        animation: right .3s;
+        animation: right 1s;
       }
     }
   }

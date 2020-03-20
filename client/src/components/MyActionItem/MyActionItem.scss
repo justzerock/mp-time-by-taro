@@ -9,7 +9,7 @@ $shadow-out-light:-3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
 $shadow-inset-light:inset -3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
 inset 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
-$shadow-touch-light:-1.5PX -1.5PX 3.5PX 0 rgba($color: #fff, $alpha: .45),
+$shadow-active-light:-1.5PX -1.5PX 3.5PX 0 rgba($color: #fff, $alpha: .45),
 1.5PX 1.5PX 2.5PX 0 rgba($color: #5E6879, $alpha: .28);
 $shadow-text-light: 1PX 1PX 2PX $light, 0 0 0 $dark, 1PX 1PX 2PX $light;
 
@@ -17,7 +17,7 @@ $shadow-out-dark:-3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
 3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
 $shadow-inset-dark:inset -3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
 inset 3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
-$shadow-touch-dark:-1.5PX -1.5PX 3.5PX 0 rgba($color: #2a404e, $alpha: .8),
+$shadow-active-dark:-1.5PX -1.5PX 3.5PX 0 rgba($color: #2a404e, $alpha: .8),
 1.5PX 1.5PX 2.5PX 0 rgba($color: #1c2a34, $alpha: .8);
 $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
 
@@ -30,6 +30,9 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
   position: relative;
   justify-content: space-evenly;
   align-items: center;
+  .item-percent {
+    font-size: 20PX;
+  }
   .color-block {
     position: absolute;
     width: 20PX;
@@ -49,8 +52,8 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
     background: $light;
     box-shadow: $shadow-out-light;
     //text-shadow: $shadow-text-light;
-    &.touch {
-      box-shadow: $shadow-inset-light, $shadow-touch-light;
+    &:active {
+      box-shadow: $shadow-inset-light, $shadow-active-light;
     }
   }
   &.dark {
@@ -58,8 +61,8 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
     background: $dark;
     box-shadow: $shadow-out-dark;
     //text-shadow: $shadow-text-dark;
-    &.touch {
-      box-shadow: $shadow-inset-dark, $shadow-touch-dark;
+    &:active {
+      box-shadow: $shadow-inset-dark, $shadow-active-dark;
     }
   }
 }

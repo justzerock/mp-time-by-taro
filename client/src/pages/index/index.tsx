@@ -28,6 +28,7 @@ type PageStateProps = {
     birthday: Array<number>,
     avglife: number,
     explife: number,
+    weekStartDay: number,
     setListData: Function,
     setUpdateData: Function,
     setNavBarTitle: Function,
@@ -102,7 +103,7 @@ class Index extends Component {
     }, 100)
     this._interval = setInterval(() => {
       themeStore.setUpdateData(0, true)
-    }, 600 * 1000)
+    }, 60 * 1000)
   }
 
   onAddToggle = () => {
@@ -141,7 +142,7 @@ class Index extends Component {
   }
 
   render () {
-    const { themeStore: { primary, isDark, isDetail, isRight, hasHomeBar, systemInfo, list } } = this.props
+    const { themeStore: { primary, isDark, isDetail, weekStartDay, birthday, isRight, hasHomeBar, systemInfo, list } } = this.props
     const { expand } = this.state
 
     let classIndex = cx({
@@ -208,6 +209,8 @@ class Index extends Component {
                             type={item.type}
                             isDark={isDark}
                             isDetail={isDetail}
+                            birthday={birthday}
+                            weekStartDay={weekStartDay}
                             primary={primary}
                           />
                         )

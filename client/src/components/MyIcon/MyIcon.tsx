@@ -3,7 +3,7 @@ import { ComponentType } from 'react'
 import Taro, { Component } from '@tarojs/taro'
 import { View } from '@tarojs/components'
 import './MyIcon.scss'
-import '../../assets/iconfont/iconfont.css'
+import '../../assets/iconfont.css'
 
 class MyIcon extends Component {
   static defaultProps = {

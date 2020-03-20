@@ -10,7 +10,6 @@ import { is } from 'immutable'
 
 import style from './NewSettingItem.scss'
 import MyIcon from '../MyIcon/MyIcon'
-import MySwitcher from '../MySwitcher/MySwitcher'
 
 const cx = classNames.bind(style)
 
@@ -56,7 +55,6 @@ class NewSettingItem extends Component {
   }
 
   state = {
-    iTouch: false,
     expand: false,
     colorSel: this.props.themeStore.primary,
     isFocus: false
@@ -80,23 +78,6 @@ class NewSettingItem extends Component {
   componentDidHide () { }
 
   componentWillReact () {
-  }
-
-  // 当触摸设置选项
-  onItemTouch(e) {
-    const type = e.type
-    switch(type) {
-      case 'touchstart':
-        this.setState({
-          iTouch: true
-        })
-        break
-      case 'touchend':
-        this.setState({
-          iTouch: false
-        })
-        break
-    }
   }
 
   // 当打开选项
@@ -130,11 +111,22 @@ class NewSettingItem extends Component {
   // 设置出生年月
   onDateChange(e) {
     const { themeStore } = this.props
-    const today = new Date().toLocaleDateString('zh')
-    let birthday = e.detail.value.replace(/-/g, '/')
-    birthday = birthday > today ? today : birthday 
+    const today = this.dateToString(new Date())
+    let birthday = e.detail.value
+    let now = Date.now()
+    let birth = new Date(birthday).getTime()
+    birthday = now > birth ? birthday : today 
     themeStore.setBirthDay(birthday)
     themeStore.setUpdateData(0, true)
+  }
+
+  // 转换日期格式
+  dateToString() {
+    let date = new Date()
+    let year = date.getFullYear()
+    let month = date.getMonth() + 1
+    let day = date.getDate()
+    return year + '-' + month + '-' + day
   }
 
   // 输入寿命聚焦
@@ -165,14 +157,27 @@ class NewSettingItem extends Component {
     })
   }
 
+  // 设置周起始日
+  setWeekStartDay(day) {
+    const { themeStore } = this.props
+    if (is(day, themeStore.weekStartDay)) return
+    themeStore.setWeekStartDay(day)
+  }
+  
+  // 设置视图模式
+  setViewMode(isDetail) {
+    const { themeStore } = this.props
+    if (is(isDetail, themeStore.isDetail)) return
+    themeStore.setViewMode(isDetail)
+  }
+
   render () {
-    const { themeStore: {isDark, colors, primary, birthday, explife, avglife}, title, type, position, itemID, current, expandState } = this.props
-    const { iTouch, expand, isFocus } = this.state
+    const { themeStore: {isDark, isDetail, colors, primary, birthday, explife, avglife, weekStartDay}, title, type, position, itemID, current, expandState } = this.props
+    const { expand, isFocus } = this.state
     const classItem = cx({
       'setting-item': true,
       'light': !isDark,
       'dark': isDark,
-      'touch': iTouch,
       'expand': expand,
       'default': !expand && is(expandState, 'default'),
       'none': !expand && is(expandState, 'expand'),
@@ -223,11 +228,66 @@ class NewSettingItem extends Component {
       'light': !isDark,
       'dark': isDark,
     })
+    const classWeek =cx({
+      'week': true,
+      'light': !isDark,
+      'dark': isDark,
+    })
+    const classSunday = cx({
+      'week-item': true,
+      'light': !isDark,
+      'dark': isDark,
+      'current': !weekStartDay
+    })
+    const classMonday = cx({
+      'week-item': true,
+      'light': !isDark,
+      'dark': isDark,
+      'current': weekStartDay
+    })
+    const classView =cx({
+      'view': true,
+      'light': !isDark,
+      'dark': isDark,
+    })
+    const classIconProgress = cx({
+      'view-icon': true,
+      'light': !isDark,
+      'dark': isDark,
+      'default': isDetail
+    })
+    const classIconDetail = cx({
+      'view-icon': true,
+      'light': !isDark,
+      'dark': isDark,
+      'default': !isDetail
+    })
+    const classSwicth = cx({
+      'switch': true,
+      'light': !isDark,
+      'dark': isDark,
+    })
+    const classSwitchBtn = cx({
+      'btn': true,
+      'light': !isDark,
+      'dark': isDark,
+      'left': !isDetail,
+      'right': isDetail
+    })
+    const classTitleProgress = cx({
+      'title': true,
+      'right': true,
+      'default': isDetail
+    })
+    const classTitleDetail = cx({
+      'title': true,
+      'left': true,
+      'default': !isDetail
+    })
+    
     return (
       <View
         className={classItem}
-        onTouchStart={this.onItemTouch}
-        onTouchEnd={this.onItemTouch}
         >
         <View 
           className={classOpenLayer}
@@ -245,7 +305,7 @@ class NewSettingItem extends Component {
           className={classTypeIcon}
         >
           <MyIcon 
-            name={type}
+            name={is(type, 'week') ?  'week-' + weekStartDay : is(type, 'view') ? 'view-' + Number(isDetail) : type}
           />
         </View>
         <View
@@ -261,11 +321,6 @@ class NewSettingItem extends Component {
           <View
             className='primary'
           >
-            {/* <View
-              className='color-hex'
-            >
-              主题色
-            </View> */}
             <View
               className={classColorGroup}
             >
@@ -297,14 +352,14 @@ class NewSettingItem extends Component {
             >
               <Picker
                 mode='date'
-                start='1900/01/01'
-                value={ is(birthday, '') ? new Date().toLocaleDateString('zh') : birthday}
-                end={new Date().toLocaleDateString('zh')}
+                start='1900-01-01'
+                value={ is(birthday, '') ? this.dateToString(new Date()) : birthday}
+                end={this.dateToString(new Date())}
                 onChange={this.onDateChange}
                 className='birth-day'
               >
                 <View className='picker'>
-                  {is(birthday, '')  ? '点击设置' : birthday}
+                  生日：{birthday}
                 </View>
               </Picker>
               <View
@@ -313,14 +368,14 @@ class NewSettingItem extends Component {
                 <View
                   className='birth-name'
                 >
-                  生日:{is(birthday, '')  ? '点击设置' : ''}
+                  生日:
                 </View>
-                {birthday}
+                {is(birthday, '')  ? '点击设置' : birthday}
               </View>
               <View
                 className='range'
               >
-                生日范围：1900至今
+                生日范围：<View className='number'>1900</View> - 至今
               </View>
             </View>
             <View
@@ -349,7 +404,7 @@ class NewSettingItem extends Component {
               <View
                 className='range'
               >
-                寿命范围：50-150
+                寿命范围：<View className='number'>50-150</View>
               </View>
             </View>
           </View> :
@@ -357,11 +412,55 @@ class NewSettingItem extends Component {
           <View
             className={classWeek}
           >
-            
+            <View
+              className={classSunday}
+              onClick={() => this.setWeekStartDay(0)}
+              >
+              周日
+            </View>
+            <View
+              className={classMonday}
+              onClick={() => this.setWeekStartDay(1)}
+            >
+              周一
+            </View>
           </View> :
-          is(type, 'view') ?
-          <View></View> :
-          <View></View>
+          <View
+            className={classView}
+          >
+            <View
+              className={classIconProgress}
+            >
+              <MyIcon 
+                name='view-0'
+              />
+            </View>
+            <View 
+              className={classSwicth}
+              onClick={() => this.setViewMode(!isDetail)}
+            >
+              <View 
+                className={classSwitchBtn} 
+              />
+              <View 
+                className={classTitleProgress}
+              >
+                简洁
+              </View>
+              <View 
+                className={classTitleDetail}
+              >
+                详细
+              </View>
+            </View>
+            <View
+              className={classIconDetail}
+            >
+              <MyIcon 
+                name='view-1'
+              />
+            </View>
+          </View>
         }
         </View>
       </View>
