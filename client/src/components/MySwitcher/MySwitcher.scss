@@ -40,7 +40,7 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 5PX;
+    margin: 10PX;
     font-size: 20PX;
     &.light {
       text-shadow: $shadow-text-light;

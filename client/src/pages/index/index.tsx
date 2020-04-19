@@ -22,9 +22,8 @@ type PageStateProps = {
     isDetail: boolean,
     isRight: boolean,
     hasHomeBar: boolean,
-    systemInfo: object,
+    navInfo: object,
     list: Array<Object>,
-    updateTime: number,
     birthday: Array<number>,
     avglife: number,
     explife: number,
@@ -33,8 +32,7 @@ type PageStateProps = {
     setUpdateData: Function,
     setNavBarTitle: Function,
     getListData: Function,
-    getSystemInfo: Function,
-    getMenuButton: Function,
+    getNavInfo: Function,
     getPrimaryColor: Function,
     getExpLife: Function,
     getBirthDay: Function,
@@ -76,9 +74,7 @@ class Index extends Component {
   componentDidMount () { 
   }
   
-  componentWillUnmount () { 
-    clearInterval(this._interval)
-  }
+  componentWillUnmount () { }
   
   componentDidShow () {
   }
@@ -96,16 +92,37 @@ class Index extends Component {
     themeStore.getPrimaryColor()
     themeStore.getDarkMode()
     themeStore.getViewMode()
-    themeStore.getSystemInfo()
-    themeStore.getMenuButton()
+    themeStore.getNavInfo()
     setTimeout(() => {
       themeStore.getListData()
     }, 100)
-    this._interval = setInterval(() => {
-      themeStore.setUpdateData(0, true)
-    }, 60 * 1000)
+
+    /**  
+     * code start
+     */
+    const myDate = new Date()
+    const myDateS = myDate.getSeconds()
+    const myDateMs = 1000 - myDate.getMilliseconds()
+    setTimeout(function () {
+      update()
+    },60000 - myDateS - myDateMs)
+    // 减去秒数与毫秒数，下次执行即为整分钟
+    function update() {
+      themeStore.setUpdateData()
+      setTimeout(function () {
+        update()
+      },60000)
+    }
+    /** 
+     * code end
+     * 本段代码参考
+     * 作者：神也看不懂
+     * 标题：JS整时整分整点事件
+     * https://blog.csdn.net/NaXieNianDeii/article/details/103015069
+     */
   }
 
+  // 开启悬浮操作窗
   onAddToggle = () => {
     const { expand } = this.state
     this.setState({
@@ -113,18 +130,14 @@ class Index extends Component {
     })
   }
 
+  // 关闭悬浮操作窗
   onAddCancle = () => {
     this.setState({
       expand: false
     })
   }
 
-  onDateChange = (e) => {
-    this.setState({
-      dateSel: e.detail.value
-    })
-  }
-
+  // 当滑动页面
   onSwipItem = (e) => {
     const { themeStore } = this.props
     let current = e.detail.current
@@ -133,16 +146,8 @@ class Index extends Component {
     themeStore.setNavBarTitle(title, isRight)
   }
 
-  removeItem = (type) => {
-    const { themeStore } = this.props
-    let newList = themeStore.list
-    let index = newList.findIndex(item => item.type === type)
-    newList[index].selected = false
-    themeStore.setListData(newList, Date.now(), false)
-  }
-
   render () {
-    const { themeStore: { primary, isDark, isDetail, weekStartDay, birthday, isRight, hasHomeBar, systemInfo, list } } = this.props
+    const { themeStore: { primary, isDark, isDetail, weekStartDay, birthday, isRight, hasHomeBar, navInfo, list } } = this.props
     const { expand } = this.state
 
     let classIndex = cx({
@@ -168,7 +173,7 @@ class Index extends Component {
     })
 
     let styleList = {
-      padding: `${46 + systemInfo.statusBarHeight}PX 0`
+      padding: `calc(46PX + ${navInfo.navTop}) 0`
     }
     let styleFloatBtn = {
       bottom: hasHomeBar ? '44PX' : '4vw'

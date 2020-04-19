@@ -71,7 +71,7 @@ class NewSettingList extends Component {
     ],
     newSettingList: [
       {
-        title: '主题颜色',
+        title: '菜单颜色',
         type: 'theme',
         position: 'lt',
         id: 1

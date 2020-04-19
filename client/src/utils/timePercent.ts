@@ -52,10 +52,12 @@ const timePercent = (type: string, wStart = 0, date1= new Date(), date2= new Dat
   }
 }
 
+// 时间转天数
 const getPassedDays = (time) => {
   return Math.floor(time/86400000)
 }
 
+// 计算本周过去的天数
 const getDays = (wStart, weekDay) => {
   let days = weekDay
   if (wStart) {
@@ -68,10 +70,12 @@ const getDays = (wStart, weekDay) => {
   return days
 }
 
+// 获取日期毫秒值
 const getMyTime = (year: number, month: number, day: number) => {
   return new Date(year, month, day).getTime()
 }
 
+// 获取百分比
 const getPercent = (percent: number) => {
   return Math.floor(percent * 1000) / 10
 }

@@ -142,7 +142,7 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
     position: absolute;
     left: 20PX;
     bottom: 20PX;
-    font-size: 14PX;
+    font-size: 15PX;
     &.expand {
       opacity: 0;
       transform: scale(0);
@@ -392,6 +392,7 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
           align-items: center;
           width: 20vw;
           height: 12vw;
+          font-size: 4vw;
           transition: $normal;
           &.default {
             opacity: 0;

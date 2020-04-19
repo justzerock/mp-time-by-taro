@@ -17,8 +17,8 @@ $radius: 15PX;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'MFMiMeng_Noncommercial-Regular';
   position: fixed;
+  //font-family: 'webfont3';
   &.light {
     background: $light;
     color: rgba($color: $dark, $alpha: 0.6);

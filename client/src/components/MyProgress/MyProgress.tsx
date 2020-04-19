@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { ComponentType } from 'react'
 import Taro, { Component } from '@tarojs/taro'
-import { View } from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
 import { observer, inject } from '@tarojs/mobx'
 
 import classNames from 'classnames/bind'
@@ -205,7 +205,7 @@ class MyProgress extends Component {
     const styleProgress = {
       color: color,
       width: width,
-      height: detail ? barHeight*2.5 + 'PX' : barHeight + 'PX',
+      height: detail ? barHeight*2.3 + 'PX' : barHeight + 'PX',
       borderRadius: `${barHeight / 2}PX`,
       margin: '4vw',
     }
@@ -272,18 +272,24 @@ class MyProgress extends Component {
             >
               {name}
             </View>
-            <View
+            <Text
               className={classDetailDesc}
             >
-              {title}
-            </View>
+              {
+                is(type, 'life') && is(birthday, '') ?
+                '未设置出生年月，左滑设置生日' :
+                title
+              }
+            </Text>
           </View>
           {
             is(birthday, '') && is(type, 'life') ?
             <View
               className='set-tip'
             >
-              左滑设置生日 -->
+              <MyIcon 
+                name='swipe-left'
+              />
             </View> : ''
           }
           <View

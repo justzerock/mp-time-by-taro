@@ -104,7 +104,7 @@ class NewSettingItem extends Component {
     if( is(color, themeStore.primary) ) {
       return
     } else {
-      themeStore.setPrimaryColor(color)
+      themeStore.setPrimaryColor(color, false)
     }
   } 
 
@@ -116,13 +116,12 @@ class NewSettingItem extends Component {
     let now = Date.now()
     let birth = new Date(birthday).getTime()
     birthday = now > birth ? birthday : today 
-    themeStore.setBirthDay(birthday)
-    themeStore.setUpdateData(0, true)
+    themeStore.setBirthDay(birthday, false)
+    themeStore.setUpdateData()
   }
 
   // 转换日期格式
-  dateToString() {
-    let date = new Date()
+  dateToString(date) {
     let year = date.getFullYear()
     let month = date.getMonth() + 1
     let day = date.getDate()
@@ -150,8 +149,8 @@ class NewSettingItem extends Component {
     const { themeStore } = this.props
     let life = e.detail.value
     life = life > 150 ? 150 : life < 50 ? 50 : life
-    themeStore.setExpLife(Number(life))
-    themeStore.setUpdateData(0, true)
+    themeStore.setExpLife(Number(life), false)
+    themeStore.setUpdateData()
     this.setState({
       isFocus: false
     })
@@ -161,14 +160,14 @@ class NewSettingItem extends Component {
   setWeekStartDay(day) {
     const { themeStore } = this.props
     if (is(day, themeStore.weekStartDay)) return
-    themeStore.setWeekStartDay(day)
+    themeStore.setWeekStartDay(day, false)
   }
   
   // 设置视图模式
   setViewMode(isDetail) {
     const { themeStore } = this.props
     if (is(isDetail, themeStore.isDetail)) return
-    themeStore.setViewMode(isDetail)
+    themeStore.setViewMode(isDetail, false)
   }
 
   render () {
@@ -375,7 +374,7 @@ class NewSettingItem extends Component {
               <View
                 className='range'
               >
-                生日范围：<View className='number'>1900</View> - 至今
+                生日范围：<View className='number'>1900 </View> - 至今
               </View>
             </View>
             <View
@@ -404,7 +403,7 @@ class NewSettingItem extends Component {
               <View
                 className='range'
               >
-                寿命范围：<View className='number'>50-150</View>
+                寿命范围：<View className='number'>50 - 150</View>
               </View>
             </View>
           </View> :

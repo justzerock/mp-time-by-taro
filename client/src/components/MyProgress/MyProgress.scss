@@ -144,6 +144,22 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
       display: flex;
       position: absolute;
       right: 20PX;
+      font-size: 20PX;
+      animation: swipe 2s ease-in-out infinite;
+    }
+    @keyframes swipe {
+      0% {
+        opacity: 0;
+        transform: translateX(0);
+      }
+      10% {
+        opacity: 1;
+        transform: translateX(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(-100PX);
+      }
     }
     .detail-progress {
       display: flex;
@@ -179,7 +195,7 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
           flex: 1;
           position: absolute;
           right: 0;
-          top: -22PX;
+          top: -26PX;
           font-size: 18PX;
           transform: translateX(50%);
         }

@@ -1,7 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro'
 import { Provider } from '@tarojs/mobx'
 import Index from './pages/index'
-
 import themeStore from './store/theme'
 
 import './app.scss'
@@ -26,7 +25,7 @@ class App extends Component {
    */
   config: Config = {
     pages: [
-      'pages/index/index'
+      'pages/index/index',
     ],
     window: {
       navigationStyle: 'custom',

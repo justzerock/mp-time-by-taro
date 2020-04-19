@@ -5,20 +5,18 @@ import tp from '../utils/timePercent'
 const { timePercent } = tp
 
 const themeStore = observable({
-  systemInfo: {
-    statusBarHeight: 20,
-    model: 'iPhone',
-    windowWidth: 375
-  },
-  menuButton: {
-    width: 87,
-    height: 32,
-    top: 26,
-    bottom: 58,
-    left: 278,
-    right: 365
-  },
-  primary: '#7789A1',
+  // 导航栏信息
+  navInfo: {
+    navTop: '20PX',
+    navHeight: '44PX',
+    menuWidth: '95PX',
+    menuHeight: '40PX',
+    menuTop: '22PX',
+    menuLeft: '274PX'
+  },  
+  // 主题色
+  primary: '#7789A1', 
+  // 预设颜色值
   colors: [
     '#7789A1',
     '#329188',
@@ -29,16 +27,26 @@ const themeStore = observable({
     '#5574E3',
     '#33DFE6',
     '#5FDFB7',
-  ],
-  navBarTitle: '亦时',
-  isRight: false,
-  isDark: false,
-  hasHomeBar: false,
-  birthday: '',
-  avglife: 77,
-  explife: 0,
-  weekStartDay: 0,
-  isDetail: true,
+  ],  
+  // 标题
+  navBarTitle: '亦时', 
+  // 是否为右侧页面 
+  isRight: false, 
+  // 是否为暗色模式
+  isDark: false,  
+  // 是否有HomeBar
+  hasHomeBar: false,  
+  // 生日
+  birthday: '', 
+  // 平均寿命
+  avglife: 77,  
+  // 期望寿命
+  explife: 0, 
+  // 每周起始日
+  weekStartDay: 0,  
+  // 默认显示详情
+  isDetail: true, 
+  // 预设值
   list: [
     {
       name: '年进度',
@@ -90,8 +98,7 @@ const themeStore = observable({
       type: 'life',
       detail: 0
     }
-  ],
-  updateTime: Date.now(),
+  ],  
 
   // 已封装的云函数
   getDbFn(fn, param) {
@@ -156,7 +163,7 @@ const themeStore = observable({
         name = time + ' 日，本日已过去 ' + detail + ' 小时'
         break
       case 'life':
-        name = time + ' 岁，人生已过去 ' + detail + ' 天，目标 ' + (this.explife ? this.explife : this.avglife) + ' 岁'
+        name = time + ' 岁，人生已过去 ' + detail + ' 天\n目标 ' + (this.explife ? this.explife : this.avglife) + ' 岁'
         break
     }
     return name
@@ -165,28 +172,14 @@ const themeStore = observable({
   // 初始化数据
   setInitData() {
     let list = this.updateList()
-    this.setListData(list, Date.now(), true)
+    this.setListData(list, true)
     this.setDarkMode(false)
   },
 
-  // 超过10分钟便更新数据
-  setUpdateData(updateTime, force) {
+  // 更新数据
+  setUpdateData() {
     let list = this.updateList()
-    this.setListData(list, Date.now(), false)
-    /* if (force) {
-    } else {
-      let timeDiff = (Date.now() - updateTime)/(60*1000)
-      if (timeDiff > 10) {
-        this.setListData(list, Date.now(), false)
-      } else {
-        Taro.getStorage({key: 'list'})
-        .then(
-          res => {
-            this.list = res.data
-          }
-        )
-      }
-    } */
+    this.setListData(list, false)
   },
 
   // 获取云端数据
@@ -197,8 +190,13 @@ const themeStore = observable({
         if (res.result.data.length > 0) {
           let obj = res.result.data[0]
           this.setDarkMode(obj.isDark)
-          this.setLocalListData(obj.list, obj.updateTime)
-          this.setUpdateData(obj.updateTime, false)
+          this.setPrimaryColor(obj.primary, true)
+          this.setBirthDay(obj.birthday, true)
+          this.setExpLife(obj.explife, true)
+          this.setWeekStartDay(obj.weekStartDay, true)
+          this.setViewMode(obj.isDetail, true)
+          this.setLocalListData(obj.list)
+          this.setUpdateData()
         } else {
           this.setInitData()
         }
@@ -214,7 +212,7 @@ const themeStore = observable({
     this.isDark = !this.isDark
     this.setNavBarColor(this.isDark)
     Taro.setStorage({key: 'isDark', data: this.isDark})
-    //this.getDbFn('setDarkMode', {isDark: this.isDark})
+    this.getDbFn('setDarkMode', {isDark: this.isDark})
   },
   setDarkMode(isDark) {
     this.isDark = isDark
@@ -243,9 +241,10 @@ const themeStore = observable({
   },
 
   // 设置主题色
-  setPrimaryColor(color) {
-    this.primary = color
-    Taro.setStorage({key: 'primary', data: color})
+  setPrimaryColor(primary, isFirst) {
+    this.primary = primary
+    Taro.setStorage({key: 'primary', data: primary})
+    if(!isFirst) this.getDbFn('setPrimaryColor', {primary})
   },
 
   // 获取主题色
@@ -255,14 +254,15 @@ const themeStore = observable({
       res => this.primary = res.data
     )
     .catch(
-      () => this.setPrimaryColor(this.primary)
+      () => this.setPrimaryColor(this.primary, true)
     )
   },
 
   // 设置期望寿命
-  setExpLife(life) {
-    this.explife = life
-    Taro.setStorage({key: 'explife', data: life})
+  setExpLife(explife, isFirst) {
+    this.explife = explife
+    Taro.setStorage({key: 'explife', data: explife})
+    if(!isFirst) this.getDbFn('setExpLife', {explife})
   },
 
   // 获取期望寿命
@@ -272,14 +272,18 @@ const themeStore = observable({
       res => this.explife = res.data
     )
     .catch(
-      () => this.setExpLife(0)
+      () => this.setExpLife(0, true)
     )
   },
 
   // 设置生日
-  setBirthDay(date) {
-    this.birthday = date
-    Taro.setStorage({key: 'birthday', data: date})
+  setBirthDay(birthday, isFirst) {
+    this.birthday = birthday
+    Taro.setStorage({key: 'birthday', data: birthday})
+    if(!isFirst) {
+      this.getDbFn('setBirthDay', {birthday})
+      console.log(birthday)
+    }
   },
 
   // 获取生日
@@ -289,14 +293,15 @@ const themeStore = observable({
       res => this.birthday = res.data
     )
     .catch(
-      () => this.setBirthDay('')
+      () => this.setBirthDay('', true)
     )
   },
 
   // 设置周首日
-  setWeekStartDay(day) {
-    this.weekStartDay = day
-    Taro.setStorage({key: 'weekStartDay', data: day})
+  setWeekStartDay(weekStartDay, isFirst) {
+    this.weekStartDay = weekStartDay
+    Taro.setStorage({key: 'weekStartDay', data: weekStartDay})
+    if(!isFirst) this.getDbFn('setWeekStartDay', {weekStartDay})
   },
 
   // 获取周首日
@@ -306,14 +311,15 @@ const themeStore = observable({
       res => this.weekStartDay = res.data
     )
     .catch(
-      () => this.setWeekStartDay(0)
+      () => this.setWeekStartDay(0, true)
     )
   },
 
   // 设置视图显示详情
-  setViewMode(isDetail) {
+  setViewMode(isDetail, isFirst) {
     this.isDetail = isDetail
     Taro.setStorage({key: 'isDetail', data: isDetail})
+    if(!isFirst) this.getDbFn('setViewMode', {isDetail})
   },
 
   // 获取视图设置
@@ -323,55 +329,62 @@ const themeStore = observable({
       res => this.isDetail = res.data
     )
     .catch(
-      () => this.setViewMode(true)
+      () => this.setViewMode(true, true)
     )
   },
 
-  //  获取菜单按钮信息
-  getMenuButton() {
-    Taro.getStorage({key: 'menuButton'})
+  // 设置导航栏尺寸
+  getNavInfo() {
+    Taro.getStorage({key: 'navInfo'})
     .then(
-      res => this.menuButton = res.data
+      res => {
+        this.navInfo = res.data
+        this.setHomeBar(res.data.model)
+      }
     )
     .catch(
       () => {
+        let sysInfo
+        let menuInfo
         try {
-          let menuButton = Taro.getMenuButtonBoundingClientRect()
-          this.menuButton = menuButton
-          Taro.setStorage({key: 'menuButton', data: menuButton})
+          sysInfo = Taro.getSystemInfoSync()
+          menuInfo = Taro.getMenuButtonBoundingClientRect()
         } catch (error) {
-          console.log(error)
+          sysInfo = {
+            statusBarHeight: 20,
+            model: 'iPhone',
+            windowWidth: 375
+          }
+          menuInfo = {
+            width: 87,
+            height: 32,
+            top: 26,
+            bottom: 58,
+            left: 278,
+            right: 365
+          }
         }
+        let navInfo = {
+          navTop: sysInfo.statusBarHeight + 'PX',
+          navHeight: (menuInfo.top - sysInfo.statusBarHeight)*2 + menuInfo.height + 'PX',
+          menuWidth: menuInfo.width + 8 + 'PX',
+          menuHeight: menuInfo.height + 8 + 'PX',
+          menuTop: menuInfo.top - 4 + 'PX',
+          menuLeft: menuInfo.left - 4 + 'PX',
+          model: sysInfo.model
+        }
+        this.navInfo = navInfo
+        this.setHomeBar(navInfo.model)
+        Taro.setStorage({key: 'navInfo', data: navInfo})
       }
     )
   },
 
   //  用于判断底部空间
   setHomeBar(model) {
-    if (model.search('iPhone X') !== -1 || model.search('iPhone 11') !== -1) {
+    if (model.search('iPhone X') !== -1 || model.search('iPhone 1') !== -1) {
       this.hasHomeBar = true
     }
-  },
-
-  // 系统信息
-  getSystemInfo() {
-    Taro.getStorage({key: 'systemInfo'})
-    .then(
-      res => {
-        this.systemInfo = res.data
-        this.setHomeBar(res.data.model)
-      } 
-    )
-    .catch(
-      () => Taro.getSystemInfo()
-      .then(
-        res => {
-          this.systemInfo = res
-          this.setHomeBar(res.model)
-          Taro.setStorage({key: 'systemInfo', data: res})
-        }
-      )
-    )
   },
 
   // 设置标题
@@ -381,24 +394,20 @@ const themeStore = observable({
   },
 
   // 将list存到本地
-  setLocalListData(list, updateTime) {
+  setLocalListData(list) {
     this.list = list
-    this.updateTime = updateTime
     Taro.setStorage({key: 'list', data: list})
-    Taro.setStorage({key: 'updateTime', data: updateTime})
   },
   // 更新list
-  setListData(list, updateTime, isFirst) {
+  setListData(list, isFirst) {
     this.list = list
-    this.updateTime = updateTime
     Taro.setStorage({key: 'list', data: list})
-    Taro.setStorage({key: 'updateTime', data: updateTime})
     isFirst ? 
-    this.getDbFn('setInitData', {list, updateTime})
+    this.getDbFn('setInitData', {list})
     .then(
       () => console.log('初始化数据')
     ) :
-    this.getDbFn('setListData', {list, updateTime})
+    this.getDbFn('setListData', {list})
     .then(
       () => console.log('更新数据')
     )
@@ -409,7 +418,7 @@ const themeStore = observable({
     .then(
       res => {
         this.list = res.data
-        this.setUpdateData(0, true)
+        this.setUpdateData()
       }
     )
     .catch(

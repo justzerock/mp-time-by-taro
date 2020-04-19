@@ -24,7 +24,6 @@ $shadow-touch-dark:-1.5PX -1.5PX 3.5PX 0 rgba($color: #2a404e, $alpha: .8),
   position: fixed;
   top: 0;
   left: 0;
-  height: 44PX;
   width: 100%;
   display: flex;
   justify-content: flex-start;
@@ -68,14 +67,14 @@ $shadow-touch-dark:-1.5PX -1.5PX 3.5PX 0 rgba($color: #2a404e, $alpha: .8),
   .capsule {
     position: absolute;
     transition: $normal;
-    will-change: box-shadow, border, background;
+    will-change: box-shadow, background;
     &.light {
       box-shadow: $shadow-out-light;
-      border: 4PX solid $light;
+      //border: 4PX solid $light;
     }
     &.dark {
       box-shadow: $shadow-out-dark;
-      border: 4PX solid $dark;
+      //border: 4PX solid $dark;
     }
   }
 }

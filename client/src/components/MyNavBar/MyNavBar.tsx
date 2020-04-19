@@ -16,7 +16,8 @@ type PageStateProps = {
     isRight: boolean,
     navBarTitle: string,
     systemInfo: object,
-    menuButton: object
+    menuButton: object,
+    navInfo: object
   }
 }
 
@@ -49,7 +50,7 @@ class MyNavBar extends Component {
   componentWillReact () { }
 
   render () {
-    const { themeStore: { isDark, isRight, navBarTitle, systemInfo, menuButton } } = this.props
+    const { themeStore: { isDark, isRight, navBarTitle, systemInfo, menuButton, navInfo } } = this.props
     let classNavBar = cx({
       'my-nav-bar': true,
       'light': !isDark,
@@ -81,13 +82,15 @@ class MyNavBar extends Component {
     })
     
     let styleNavBar = {
-      paddingTop: systemInfo.statusBarHeight + 'PX'
+      paddingTop: navInfo.navTop,
+      height: navInfo.navHeight
     }
     let styleCapsule = {
-      width: menuButton.width + 'PX',
-      height: menuButton.height + 'PX',
-      borderRadius: menuButton.height + 'PX',
-      left: menuButton.left - 4 + 'PX'
+      width: navInfo.menuWidth,
+      height: navInfo.menuHeight,
+      borderRadius: navInfo.menuHeight,
+      left: navInfo.menuLeft,
+      top: navInfo.menuTop
     }
     return (
       <View 
