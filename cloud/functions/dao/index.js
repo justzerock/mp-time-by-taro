@@ -112,7 +112,7 @@ exports.main = async (event, context) => {
           _openid: openid
         })
           .update({
-            date: {
+            data: {
               birthday: birthday
             }
           })
@@ -128,7 +128,7 @@ exports.main = async (event, context) => {
           _openid: openid
         })
           .update({
-            date: {
+            data: {
               weekStartDay: weekStartDay
             }
           })
@@ -144,7 +144,7 @@ exports.main = async (event, context) => {
           _openid: openid
         })
           .update({
-            date: {
+            data: {
               isDetail: isDetail
             }
           })

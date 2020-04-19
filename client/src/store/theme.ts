@@ -280,10 +280,7 @@ const themeStore = observable({
   setBirthDay(birthday, isFirst) {
     this.birthday = birthday
     Taro.setStorage({key: 'birthday', data: birthday})
-    if(!isFirst) {
-      this.getDbFn('setBirthDay', {birthday})
-      console.log(birthday)
-    }
+    if(!isFirst) this.getDbFn('setBirthDay', {birthday})
   },
 
   // 获取生日
