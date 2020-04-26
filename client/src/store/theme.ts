@@ -16,6 +16,8 @@ const themeStore = observable({
     windowWidth: 375,
     windowHeight: 667
   },  
+  // 分享时显示
+  isShare: false,
   // 主题色
   primary: '#7789A1', 
   // 预设颜色值

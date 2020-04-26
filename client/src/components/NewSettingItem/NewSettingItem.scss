@@ -199,6 +199,7 @@
           height: 8vw;
           border-radius: 4vw;
           position: relative;
+          transition: background .25s ease-in-out .1s;
           .btn-circle {
             position: absolute;
             width: 6vw;

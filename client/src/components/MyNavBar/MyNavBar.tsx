@@ -7,13 +7,15 @@ import classNames from 'classnames/bind'
 
 import styles from './MyNavBar.scss'
 import MySwitcher from '../MySwitcher/MySwitcher'
+import MyIcon from '../MyIcon/MyIcon'
 
-let cx = classNames.bind(styles)
+const cx = classNames.bind(styles)
 
 type PageStateProps = {
   themeStore: {
     isDark: boolean,
     isRight: boolean,
+    isShare: boolean,
     navBarTitle: string,
     systemInfo: object,
     menuButton: object,
@@ -50,42 +52,43 @@ class MyNavBar extends Component {
   componentWillReact () { }
 
   render () {
-    const { themeStore: { isDark, isRight, navBarTitle, systemInfo, menuButton, navInfo } } = this.props
-    let classNavBar = cx({
+    const { themeStore: { isDark, isRight, navBarTitle, isShare, navInfo } } = this.props
+    const classNavBar = cx({
       'my-nav-bar': true,
       'light': !isDark,
       'dark': isDark
     })
-    let classTitle = cx({
+    const classTitle = cx({
       'my-title': true
     })
-    let classIndicator = cx({
+    /* const classIndicator = cx({
       'Indicator': true
     })
-    let classIndicatorOne = cx({
+    const classIndicatorOne = cx({
       'one': true,
       'light': !isDark,
       'dark': isDark,
       'cur': !isRight
     })
-    let classIndicatorTwo = cx({
+    const classIndicatorTwo = cx({
       'two': true,
       'light': !isDark,
       'dark': isDark,
       'cur': isRight
-    })
+    }) */
 
-    let classCapsule = cx({
+    const classCapsule = cx({
       'capsule': true,
       'light': !isDark,
-      'dark': isDark
+      'dark': isDark,
+      'share': isShare
     })
     
-    let styleNavBar = {
+    const styleNavBar = {
       paddingTop: navInfo.navTop,
       height: navInfo.navHeight
     }
-    let styleCapsule = {
+    const styleCapsule = {
       width: navInfo.menuWidth,
       height: navInfo.menuHeight,
       borderRadius: navInfo.menuHeight,
@@ -118,7 +121,25 @@ class MyNavBar extends Component {
         <View
           className={classCapsule}
           style={styleCapsule}
-        ></View>
+        >
+          <View
+            className='more'
+          >
+            <MyIcon 
+              name='more'
+            />
+          </View>
+          <View
+            className='close-circle'
+          >
+            <MyIcon 
+              name='close-circle'
+            />
+          </View>
+          <View 
+            className='middle-line'
+          ></View>
+        </View>
       </View>
     )
   }

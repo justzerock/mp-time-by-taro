@@ -21,6 +21,7 @@ type PageStateProps = {
     isDark: boolean,
     isDetail: boolean,
     isRight: boolean,
+    isShare: boolean,
     hasHomeBar: boolean,
     navInfo: object,
     list: Array<Object>,
@@ -85,6 +86,18 @@ class Index extends Component {
   }
 
   componentWillReact () { }
+
+  onShareAppMessage () {
+    const { themeStore } = this.props
+    themeStore.isShare = true
+    setTimeout(() => {
+      themeStore.isShare = false
+    }, 1000);
+    return {
+      title: '👍 亦时 - 人生进度条',
+      path: '/pages/index/index'
+    }
+  }
 
   onUpdate = () => {
     const { themeStore } = this.props
@@ -155,7 +168,7 @@ class Index extends Component {
   }
 
   render () {
-    const { themeStore: { primary, usePrimary, isDark, isDetail, weekStartDay, birthday, isRight, hasHomeBar, navInfo, list } } = this.props
+    const { themeStore: { primary, usePrimary, isDark, isDetail, isShare, weekStartDay, birthday, isRight, hasHomeBar, navInfo, list } } = this.props
     const { expand } = this.state
 
     let classIndex = cx({
@@ -170,7 +183,8 @@ class Index extends Component {
       'swiper-item': true
     })
     let classList = cx({
-      'list': true
+      'list': true,
+      'share': isShare
     })
     let classFloatBtn = cx({
       'float-btn': true,

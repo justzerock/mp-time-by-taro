@@ -52,15 +52,55 @@ $cur-color: #FF5F5C;
     position: absolute;
     transition: $normal;
     will-change: box-shadow, background;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 16PX;
     &.light {
       box-shadow: boxShadow(light, out, $normalSize);
       background: $light;
+      text-shadow: textShadow(light);
+      .middle-line {
+        background: rgba($color: #000, $alpha: 0.2);
+      }
       //border: 4PX solid $light;
     }
     &.dark {
       box-shadow: boxShadow(dark, out, $normalSize);
       background: $dark;
+      text-shadow: textShadow(dark);
+      .middle-line {
+        background: rgba($color: #fff, $alpha: 0.1);
+      }
       //border: 4PX solid $dark;
+    }
+    &.share {
+      .more, .close-circle, .middle-line {
+        opacity: 1;
+      }
+    }
+    .more {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+    }
+    .close-circle {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+    }
+    .middle-line {
+      position: absolute;
+      width: 1px;
+      height: 50%;
+      border-radius: 1px;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
     }
   }
 }
