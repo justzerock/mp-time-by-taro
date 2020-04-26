@@ -1,35 +1,4 @@
-$cube: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-$normal: all .25s ease-in-out;
-$radius: 15PX;
-
-$light: #E3EDF7;
-$dark: #233541;
-
-$shadow-out-light:-3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
-3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
-$shadow-inset-light:inset -3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
-inset 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
-$shadow-active-light:-1.5PX -1.5PX 3.5PX 0 rgba($color: #fff, $alpha: .45),
-1.5PX 1.5PX 2.5PX 0 rgba($color: #5E6879, $alpha: .28);
-$shadow-switch-light:inset -3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .4),
-3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
-$light-gradient: radial-gradient(at 5px 5px,#ffd97d, #d9a15d );
-$light-switch: inset 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .4);
-$shadow-icon-light: .5PX .5PX 1PX $light, 0 0 0 $dark, .5PX .5PX 1PX $light;
-$shadow-text-light: 1PX 1PX 2PX $light, 0 0 0 rgba($color: $dark, $alpha: .6), 1PX 1PX 2PX $light;
-
-$shadow-out-dark:-3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
-3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
-$shadow-inset-dark:inset -3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .05),
-inset 3PX 3PX 5PX 0 rgba($color: #000, $alpha: .2);
-$shadow-active-dark:-1.5PX -1.5PX 3.5PX 0 rgba($color: #2a404e, $alpha: .8),
-1.5PX 1.5PX 2.5PX 0 rgba($color: #1c2a34, $alpha: .8);
-$shadow-switch-dark:inset -3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .4),
-3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
-$dark-gradient: radial-gradient(at 0px 0px, rgba($color: #233541, $alpha: 0) 50%, rgba($color: #DDE1E7, $alpha: 0.8) 50%);
-$dark-switch: inset 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .8);
-$shadow-icon-dark: .5PX .5PX 1PX rgba(0,0,0,.4);
-$shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
+@import '../../assets/variables.scss';
 
 .setting-item {
   display: flex;
@@ -42,23 +11,22 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
   transition: $normal;
   position: absolute;
   &.light {
-    box-shadow: $shadow-out-light;
-    text-shadow: $shadow-text-light;
+    box-shadow: boxShadow(light, out, $normalSize);
+    text-shadow: textShadow(light);
     &:active {
-      box-shadow: $shadow-active-light;
+      box-shadow: boxShadow(light, out, $activeSize);
     }
   }
   &.dark {
-    box-shadow: $shadow-out-dark;
-    text-shadow: $shadow-text-dark;
+    box-shadow: boxShadow(dark, out, $normalSize);
+    text-shadow: textShadow(dark);
     &:active {
-      box-shadow: $shadow-active-dark;
+      box-shadow: boxShadow(dark, out, $activeSize);
     }
   }
   &.expand {
     width: 85vw;
     height: 85vw;
-    animation: expand .5s;
     z-index: 11;
   }
   &.none {
@@ -113,15 +81,15 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
       transform: scale(1);
     }
     &.light {
-      box-shadow: $shadow-out-light;
+      box-shadow: boxShadow(light, out, $normalSize);
       &:active {
-        box-shadow: $shadow-active-light, $shadow-inset-light;
+        box-shadow: boxShadow(light, out, $activeSize), boxShadow(light, inset, $normalSize);
       }
     }
     &.dark {
-      box-shadow: $shadow-out-dark;
+      box-shadow: boxShadow(dark, out, $normalSize);
       &:active {
-        box-shadow: $shadow-active-dark, $shadow-inset-dark;
+        box-shadow: boxShadow(dark, out, $activeSize), boxShadow(dark, inset, $normalSize);
       }
     }
   }
@@ -169,6 +137,77 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
       align-items: center;
       justify-content: space-around;
       flex-direction: column;
+      .set-use-primary {
+        position: absolute;
+        height: 8vw;
+        font-size: 4vw;
+        line-height: 6vw;
+        top: -10vw;
+        right: -10vw;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        &.light {
+          .set-btn {
+            box-shadow: boxShadow(light, out, $smallSize), boxShadow(light, inset, $smallSize);
+            .btn-circle {
+              background: $light;
+              box-shadow: boxShadow(light, out, $normalSize);
+              &:active {
+                box-shadow: boxShadow(light, out, $activeSize);
+              }
+            }
+          }
+        }
+        &.dark {
+          .set-btn {
+            box-shadow: boxShadow(dark, out, $smallSize), boxShadow(dark, inset, $smallSize);
+            .btn-circle {
+              box-shadow: boxShadow(dark, out, $normalSize);
+              background: $dark;
+              &:active {
+                box-shadow: boxShadow(dark, out, $activeSize);
+              }
+            }
+          }
+        }
+        &.open {
+          .set-btn {
+            .btn-circle {
+              left: 8vw;
+            }
+          }
+        }
+        &.close {
+          .set-btn {
+            .btn-circle {
+              left: 1vw;
+            }
+          }
+        }
+        .set-title {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-right: 10PX;
+        }
+        .set-btn {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 15vw;
+          height: 8vw;
+          border-radius: 4vw;
+          position: relative;
+          .btn-circle {
+            position: absolute;
+            width: 6vw;
+            height: 6vw;
+            border-radius: 50%;
+            transition: $normal;
+          }
+        }
+      }
       .color-hex {
         width: 100%;
         text-align: left;
@@ -186,21 +225,21 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
           margin: 3vw;
           transition: $normal;
           &.light {
-            box-shadow: $shadow-out-light;
+            box-shadow: boxShadow(light, out, $normalSize);
             &.current {
-              box-shadow: $shadow-inset-light;
+              box-shadow: boxShadow(light, inset, $smallSize), boxShadow(light, out, $normalSize);
             }
             &:active {
-              box-shadow: $shadow-active-light, $shadow-inset-light;
+              box-shadow: boxShadow(light, inset, $smallSize), boxShadow(light, out, $activeSize);
             }
           }
           &.dark {
-            box-shadow: $shadow-out-dark;
+            box-shadow: boxShadow(dark, out, $normalSize);
             &.current {
-              box-shadow: $shadow-inset-dark;
+              box-shadow: boxShadow(dark, inset, $smallSize), boxShadow(dark, out, $normalSize);
             }
             &:active {
-              box-shadow: $shadow-active-dark, $shadow-inset-dark;
+              box-shadow: boxShadow(dark, inset, $smallSize), boxShadow(dark, out, $activeSize);
             }
           }
           .color-item {
@@ -225,12 +264,12 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
       flex-direction: column;
       &.light {
         .birthday, .age {
-          box-shadow: $shadow-inset-light;
+          box-shadow: boxShadow(light, inset, $normalSize);
         }
       }
       &.dark {
         .birthday, .age {
-          box-shadow: $shadow-inset-dark;
+          box-shadow: boxShadow(dark, inset, $normalSize);
         }
       }
       .birthday, .age {
@@ -305,21 +344,21 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
         position: relative;
         transition: $normal;
         &.light {
-          box-shadow: $shadow-out-light;
+          box-shadow: boxShadow(light, out, $normalSize);
           &.current, &:active {
-            box-shadow: $shadow-active-light, $shadow-inset-light;
+            box-shadow: boxShadow(light, out, $activeSize), boxShadow(light, inset, $normalSize);
           }
           &::before {
-            box-shadow: $shadow-inset-light;
+            box-shadow: boxShadow(light, inset, $normalSize);
           }
         }
         &.dark {
-          box-shadow: $shadow-out-dark;
+          box-shadow: boxShadow(dark, out, $normalSize);
           &.current, &:active {
-            box-shadow: $shadow-active-dark, $shadow-inset-dark;
+            box-shadow: boxShadow(dark, out, $activeSize), boxShadow(dark, inset, $normalSize);
           }
           &::before {
-            box-shadow: $shadow-inset-dark;
+            box-shadow: boxShadow(dark, inset, $normalSize);
           }
         }
         &::before {
@@ -374,15 +413,15 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
         border-radius: 6vw;
         position: relative;
         &.light {
-          box-shadow: $shadow-out-light, $shadow-inset-light;
+          box-shadow: boxShadow(light, out, $normalSize), boxShadow(light, inset, $normalSize);
           &:active {
-            box-shadow: $shadow-active-light, $shadow-inset-light;
+            box-shadow: boxShadow(light, out, $activeSize), boxShadow(light, inset, $normalSize);
           }
         }
         &.dark {
-          box-shadow: $shadow-out-dark, $shadow-inset-dark;
+          box-shadow: boxShadow(dark, out, $normalSize), boxShadow(dark, inset, $normalSize);
           &:active {
-            box-shadow: $shadow-active-dark, $shadow-inset-dark;
+            box-shadow: boxShadow(dark, out, $activeSize), boxShadow(dark, inset, $normalSize);
           }
         }
         .title {
@@ -414,15 +453,15 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
           border-radius: 50%;
           transition: $normal;
           &.light {
-            box-shadow: $shadow-out-light;
+            box-shadow: boxShadow(light, out, $normalSize);
             &:active {
-              box-shadow: $shadow-active-light;
+              box-shadow: boxShadow(light, out, $activeSize);
             }
           }
           &.dark {
-            box-shadow: $shadow-out-dark;
+            box-shadow: boxShadow(dark, out, $normalSize);
             &:active {
-              box-shadow: $shadow-active-dark;
+              box-shadow: boxShadow(dark, out, $activeSize);
             }
           }
           &.left {
@@ -437,21 +476,3 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
   }
 }
 
-@keyframes expand {
-  0% {
-    width: 40vw;
-    height: 40vw;
-  }
-  60% {
-    width: 86vw;
-    height: 86vw;
-  }
-  85% {
-    width: 84vw;
-    height: 84vw;
-  }
-  100% {
-    width: 85vw;
-    height: 85vw;
-  }
-}

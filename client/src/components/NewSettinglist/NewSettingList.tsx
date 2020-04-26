@@ -1,17 +1,13 @@
 // eslint-disable-next-line no-unused-vars
 import { ComponentType } from 'react'
 import Taro, { Component } from '@tarojs/taro'
-import { View, ScrollView } from '@tarojs/components'
+import { View } from '@tarojs/components'
 import { observer, inject } from '@tarojs/mobx'
 
-import classNames from 'classnames/bind'
 import hexToRgba from 'hex-to-rgba'
 
-import styles from './NewSettingList.scss'
+import './NewSettingList.scss'
 import NewSettingItem from '../NewSettingItem/NewSettingItem'
-import MyAvatar from '../MyAvatar/MyAvatar'
-
-const cx = classNames.bind(styles)
 
 type PageStateProps = {
   themeStore: {
@@ -32,71 +28,37 @@ interface NewSettingList {
 @inject('themeStore')
 @observer
 class NewSettingList extends Component {
-  static defaultProps = {
-  }
   state = {
-    touch: false,
-    key: '',
-    settingList: [
-      {
-        title: '亮暗模式',
-        desc: '切换亮色、暗色模式',
-        type: 'mode'
-      },
-      {
-        title: '主题风格',
-        desc: '选择主要颜色',
-        type: 'theme'
-      },
-      {
-        title: '出生年月',
-        desc: '范围 1900至今',
-        type: 'birth'
-      },
-      {
-        title: '期望寿命',
-        desc: '范围 50～150',
-        type: 'life'
-      },
-      {
-        title: '星期首日',
-        desc: '选择每星期开始的第一天',
-        type: 'week'
-      },
-      {
-        title: '默认视图',
-        desc: '切换默认进度条、详情',
-        type: 'view'
-      }
-    ],
     newSettingList: [
       {
-        title: '菜单颜色',
+        title: '主题颜色',
         type: 'theme',
         position: 'lt',
-        id: 1
+        itemID: 0,
+        state: 'normal'
       },
       {
         title: '人生进度',
         type: 'life',
         position: 'rt',
-        id: 2
+        itemID: 1,
+        state: 'normal'
       },
       {
         title: '周起始日',
         type: 'week',
         position: 'lb',
-        id: 3
+        itemID: 2,
+        state: 'normal'
       },
       {
         title: '默认视图',
         type: 'view',
         position: 'rb',
-        id: 4
+        itemID: 3,
+        state: 'normal'
       },
-    ],
-    expandState: 'default',
-    current: 0
+    ]
   }
   /**
    * 指定config的类型声明为: Taro.Config
@@ -123,20 +85,29 @@ class NewSettingList extends Component {
     themeStore.toggleDarkMode()
   }
 
-  onExpand = (expand) => {
+  onExpand = (itemID, expand) => {
+    const { newSettingList } = this.state
+    for (let i in newSettingList) {
+      if(expand) {
+        if(i == itemID) {
+          newSettingList[i].state = 'zoom'
+        } else {
+          newSettingList[i].state = 'none'
+        }
+      } else {
+        newSettingList[i].state = 'normal'
+      }
+    }
     this.setState({
-      expandState: expand ? 'expand' : 'default'
+      newSettingList: newSettingList
     })
   }
 
   render () {
-    const { themeStore: {systemInfo, isDark, primary } } = this.props
-    const { settingList, newSettingList, current, expandState } = this.state
+    const { themeStore: { isDark, primary } } = this.props
+    const { newSettingList } = this.state
     const classDark = isDark ? 'dark' : 'light'
 
-    const classSettingItem = cx({
-      'setting-item': true
-    })
     const stylePage = {
       color: hexToRgba(primary, 0.6)
     }
@@ -150,15 +121,14 @@ class NewSettingList extends Component {
           newSettingList.map(item => {
             return (
               <NewSettingItem 
-                key={item.id}
-                itemID={item.id}
+                key={item.itemID}
+                itemID={item.itemID}
                 title={item.title}
                 type={item.type}
                 position={item.position}
-                current={current}
-                expandState={expandState}
+                state={item.state}
                 isDark={isDark}
-                onExpand={(id, expand) => this.onExpand(id, expand)}
+                onExpand={(itemID, expand) => this.onExpand(itemID, expand)}
               />
             )
           })

@@ -29,6 +29,7 @@ class MyActionLayer extends Component {
   static defaultProps = {
     expand: false
   }
+
   /**
    * 指定config的类型声明为: Taro.Config
    *
@@ -54,16 +55,17 @@ class MyActionLayer extends Component {
     const { themeStore } = this.props
     let newList = themeStore.list
     let index = newList.findIndex(item => item.type === type)
-    newList[index].selected = selected
-    themeStore.setListData(newList, Date.now(), false)
+    newList[index].selected = !selected
+    themeStore.setListData(newList, false)
   }
 
   render () {
     const { themeStore: { isDark, hasHomeBar, list } , expand, onAdd } = this.props
-    let classExpand = expand ? 'open' : 'close'
-    let classDark = isDark ? 'dark' : 'light'
-    let styleMain = {
-      paddingBottom: hasHomeBar ? '44PX' : '4vw'
+
+    const classExpand = expand ? 'open' : 'close'
+    const classDark = isDark ? 'dark' : 'light'
+    const styleMain = {
+      paddingBottom: hasHomeBar ? '44PX' : '6vw'
     }
     return (
       <View
@@ -85,8 +87,6 @@ class MyActionLayer extends Component {
             >
               <MyIcon 
                 name='progress'
-                size='20'
-                color={isDark ? hexToRgba('#dedede', 0.8) : hexToRgba('#233541', 0.6)}
               />
             </View>
             添加进度条
@@ -96,8 +96,6 @@ class MyActionLayer extends Component {
             >
               <MyIcon 
                 name='close'
-                size='20'
-                color={isDark ? hexToRgba('#dedede', 0.8) : hexToRgba('#233541', 0.6)}
               />
             </View>
           </View>
@@ -125,7 +123,7 @@ class MyActionLayer extends Component {
                         selected={item.selected}
                         type={item.type}
                         isDark={isDark}
-                        onToggleItem={()=>this.toggleItem(item.type, true)}
+                        onToggleItem={(type, selected)=>this.toggleItem(type, selected)}
                       />
                     )
                   }
@@ -152,7 +150,7 @@ class MyActionLayer extends Component {
                         selected={item.selected}
                         type={item.type}
                         isDark={isDark}
-                        onToggleItem={()=>this.toggleItem(item.type, false)}
+                        onToggleItem={(type, selected)=>this.toggleItem(type, selected)}
                       />
                     )
                   }

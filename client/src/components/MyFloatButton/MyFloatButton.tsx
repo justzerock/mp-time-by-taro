@@ -10,7 +10,8 @@ import MyIcon from '../MyIcon/MyIcon'
 
 class MyFloatButton extends Component {
   static defaultProps = {
-    isDark: false
+    isDark: false,
+    primary: '#7789A1'
   }
   /**
    * 指定config的类型声明为: Taro.Config
@@ -34,11 +35,12 @@ class MyFloatButton extends Component {
   }
 
   render () {
-    const { isDark, onAdd } = this.props
+    const { isDark, onAdd, primary } = this.props
     let classDark = isDark ? 'dark' : 'light'
     return (
       <View
         className={`my-float-button ${classDark}`}
+        style={{color: primary}}
         onClick={onAdd}
       >
         <MyIcon 

@@ -1,28 +1,12 @@
-$normal: all .25s ease-in-out;
+@import '../../assets/variables.scss';
 
-$light: #E3EDF7;
-$dark: #233541;
 $light-text: rgba($color: $light, $alpha: .8);
 $dark-text: rgba($color: $dark, $alpha: .6);
 $added: #FFBD6D;
 $addable: #0BC84D;
-
-$shadow-out-light:-3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
-3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
-$shadow-inset-light:inset -3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
-inset 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
-$shadow-active-light:-1.5PX -1.5PX 3.5PX 0 rgba($color: #fff, $alpha: .45),
-1.5PX 1.5PX 2.5PX 0 rgba($color: #5E6879, $alpha: .28);
-$shadow-text-light: 1PX 1PX 2PX $light, 0 0 0 $dark, 1PX 1PX 2PX $light;
+$color-white: rgba($color: #fff, $alpha: .05);
+$color-black: rgba($color: #000, $alpha: .25);
 $shadow-circle-light: inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3), inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3);
-
-$shadow-out-dark:-3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
-3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
-$shadow-inset-dark:inset -3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
-inset 3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
-$shadow-active-dark:-1.5PX -1.5PX 3.5PX 0 rgba($color: #2a404e, $alpha: .8),
-1.5PX 1.5PX 2.5PX 0 rgba($color: #1c2a34, $alpha: .8);
-$shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
 $shadow-circle-dark: inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3), inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3);
 
 .my-action-layer {
@@ -30,7 +14,7 @@ $shadow-circle-dark: inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3), inset 2PX 2PX 
     height: 100%;
     width: 100%;
     position: fixed;
-    background: rgba($color: #000000, $alpha: .1);
+    background: rgba($color: #000, $alpha: .1);
     top: 0;
     left: 0;
     transition: $normal;
@@ -68,14 +52,14 @@ $shadow-circle-dark: inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3), inset 2PX 2PX 
       color: $dark-text;
       background: $light;
       border-color: $light;
-      box-shadow: $shadow-inset-light;
+      box-shadow: boxShadow(light, inset, $normalSize);
       //text-shadow: $shadow-text-light;
     }
     &.dark {
       color: $light-text;
       background: $dark;
       border-color: $dark;
-      box-shadow: $shadow-inset-dark;
+      box-shadow: boxShadow(dark, inset, $normalSize);
       //text-shadow: $shadow-text-dark;
     }
     .action-title {
@@ -99,17 +83,17 @@ $shadow-circle-dark: inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3), inset 2PX 2PX 
         border-radius: 30PX;
         transition: $normal;
         &.light {
-          box-shadow: $shadow-out-light;
+          box-shadow: boxShadow(light, out, $normalSize);
           //text-shadow: $shadow-text-light;
           &:active {
-            box-shadow: $shadow-inset-light, $shadow-active-light;
+            box-shadow: boxShadow(light, inset, $normalSize), boxShadow(light, out, $activeSize);
           }
         }
         &.dark {
-          box-shadow: $shadow-out-dark;
+          box-shadow: boxShadow(dark, out, $normalSize);
           //text-shadow: $shadow-text-dark;
           &:active {
-            box-shadow: $shadow-inset-dark, $shadow-active-dark;
+            box-shadow: boxShadow(dark, inset, $normalSize), boxShadow(dark, out, $activeSize);
           }
         }
       }
@@ -117,6 +101,7 @@ $shadow-circle-dark: inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3), inset 2PX 2PX 
     .action-list {
       overflow-y: scroll;
       -webkit-overflow-scrolling: active;
+      overflow-x: hidden;
       .action-list-added, .action-list-addable {
         display: flex;
         justify-content: space-between;

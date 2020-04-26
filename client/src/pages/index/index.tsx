@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { ComponentType } from 'react'
 import Taro, { Component } from '@tarojs/taro'
-import { View, Swiper, SwiperItem, ScrollView } from '@tarojs/components'
+import { View, Swiper, SwiperItem } from '@tarojs/components'
 import { observer, inject } from '@tarojs/mobx'
 import classNames from 'classnames/bind'
 
@@ -28,12 +28,14 @@ type PageStateProps = {
     avglife: number,
     explife: number,
     weekStartDay: number,
+    usePrimary: boolean,
     setListData: Function,
     setUpdateData: Function,
     setNavBarTitle: Function,
     getListData: Function,
     getNavInfo: Function,
     getPrimaryColor: Function,
+    getUsePrimary: Function,
     getExpLife: Function,
     getBirthDay: Function,
     getDarkMode: Function,
@@ -90,6 +92,7 @@ class Index extends Component {
     themeStore.getBirthDay()
     themeStore.getWeekStartDay()
     themeStore.getPrimaryColor()
+    themeStore.getUsePrimary()
     themeStore.getDarkMode()
     themeStore.getViewMode()
     themeStore.getNavInfo()
@@ -101,7 +104,7 @@ class Index extends Component {
      * code start
      */
     const myDate = new Date()
-    const myDateS = myDate.getSeconds()
+    const myDateS = myDate.getSeconds()*1000
     const myDateMs = 1000 - myDate.getMilliseconds()
     setTimeout(function () {
       update()
@@ -146,8 +149,13 @@ class Index extends Component {
     themeStore.setNavBarTitle(title, isRight)
   }
 
+  // 滚动事件
+  onScroll = (e) => {
+    console.log(e)
+  }
+
   render () {
-    const { themeStore: { primary, isDark, isDetail, weekStartDay, birthday, isRight, hasHomeBar, navInfo, list } } = this.props
+    const { themeStore: { primary, usePrimary, isDark, isDetail, weekStartDay, birthday, isRight, hasHomeBar, navInfo, list } } = this.props
     const { expand } = this.state
 
     let classIndex = cx({
@@ -217,6 +225,9 @@ class Index extends Component {
                             birthday={birthday}
                             weekStartDay={weekStartDay}
                             primary={primary}
+                            usePrimary={usePrimary}
+                            windowWidth={navInfo.windowWidth}
+                            windowHeight={navInfo.windowHeight}
                           />
                         )
                       }
@@ -237,6 +248,7 @@ class Index extends Component {
         >
           <MyFloatButton 
             isDark={isDark}
+            primary={primary}
             onAdd={this.onAddToggle}
           />
         </View>

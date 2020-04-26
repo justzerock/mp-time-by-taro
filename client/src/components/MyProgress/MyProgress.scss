@@ -1,38 +1,4 @@
-$cubic: all .25s cubic-bezier(.25,.46,.45,.94);
-$normal: all .25s ease-in-out;
-$light: #E3EDF7;
-$dark: #233541;
-$radius: 15PX;
-
-// 亮色阴影
-$shadow-out-light:-4PX -4PX 6PX 0 rgba($color: #fff, $alpha: .45),
-4PX 4PX 6PX 0 rgba($color: #000, $alpha: .1);
-$shadow-inset-light:inset -4PX -4PX 6PX 0 rgba($color: #fff, $alpha: .25),
-inset 4PX 4PX 6PX 0 rgba($color: #000, $alpha: .1);
-$shadow-detail-inset-light:inset -1PX -1PX 2PX 0 rgba($color: #fff, $alpha: .25),
-inset 1PX 1PX 2PX 0 rgba($color: #000, $alpha: .1);
-$shadow-detail-out-light: -1PX -1PX 2PX 0 rgba($color: #fff, $alpha: .25),
- 1PX 1PX 2PX 0 rgba($color: #000, $alpha: .1);
-$shadow-active-light:-1.5PX -1.5PX 3.5PX 0 rgba($color: #fff, $alpha: .45),
-1.5PX 1.5PX 2.5PX 0 rgba($color: #000, $alpha: .1);
-$shadow-bar-light:inset -4PX -4PX 6PX 0 rgba($color: #2a404e, $alpha: .1),
-4PX 4PX 6PX 0 rgba($color: #000, $alpha: .1);
-$shadow-text-light: 1PX 1PX 2PX $light, 0 0 0 rgba($color: $dark, $alpha: .6), 1PX 1PX 2PX $light;
-
-// 暗色阴影
-$shadow-out-dark:-4PX -4PX 6PX 0 rgba($color: #2a404e, $alpha: .8),
-4PX 4PX 6PX 0 rgba($color: #1c2a34, $alpha: .8);
-$shadow-inset-dark:inset -4PX -4PX 6PX 0 rgba($color: #fff, $alpha: .05),
-inset 4PX 4PX 6PX 0 rgba($color: #000, $alpha: .25);
-$shadow-detail-inset-dark:inset -1PX -1PX 2PX 0 rgba($color: #fff, $alpha: .05),
-inset 1PX 1PX 2PX 0 rgba($color: #000, $alpha: .25);
-$shadow-detail-out-dark: -1PX -1PX 2PX 0 rgba($color: #fff, $alpha: .05),
- 1PX 1PX 2PX 0 rgba($color: #000, $alpha: .25);
-$shadow-active-dark:-1.5PX -1.5PX 3.5PX 0 rgba($color: #2a404e, $alpha: .8),
-1.5PX 1.5PX 2.5PX 0 rgba($color: #1c2a34, $alpha: .8);
-$shadow-bar-dark:inset -4PX -4PX 6PX 0 rgba($color: #2a404e, $alpha: .4),
-4PX 4PX 6PX 0 rgba($color: #1c2a34, $alpha: .8);
-$shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
+@import '../../assets/variables.scss';
 
 .my-progress {
   display: flex;
@@ -40,7 +6,6 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
   align-items: center;
   flex-direction: row;
   position: relative;
-  overflow: hidden;
   transition: $cubic;
   border: 2PX solid;
   box-sizing: border-box;
@@ -50,48 +15,74 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
     width: 100%;
     height: 100%;
     transition: $normal;
+    overflow: hidden;
     &.light {
-      box-shadow: $shadow-inset-light;
+      box-shadow: boxShadow(light, inset, $normalSize);
     }
     &.dark {
-      box-shadow: $shadow-inset-dark;
+      box-shadow: boxShadow(dark, inset, $normalSize);
+    }
+    .bar-color {
+      position: absolute;
+      height: 100%;
+      left: 0;
+      top: 0;
+      transition: $cubic;
+      .bar-title {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        white-space: nowrap;
+        touch-action: none;
+      }
+      .percent {
+        position: absolute;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: $cubic;
+        font-size: 30PX;
+        &.left {
+          right: 10PX;
+        }
+        &.right {
+          right: -10PX;
+          transform: translateX(100%);
+        }
+      }
     }
   }
   &.light {
     border-color: rgba($color: #fff, $alpha: .2);
-    box-shadow: $shadow-detail-out-light;
+    box-shadow: boxShadow(light, out, $smallSize);
     &.detail {
       border-color: rgba($color: #fff, $alpha: 0);
-      box-shadow: $shadow-out-light;
+      box-shadow: boxShadow(light, out, $normalSize);
       &:active {
-        box-shadow: $shadow-active-light, $shadow-inset-light;
+        box-shadow: boxShadow(light, out, $activeSize), boxShadow(light, inset, $activeSize);
       }
     }
     &:active {
-      box-shadow: $shadow-active-light, $shadow-inset-light;
+      box-shadow: boxShadow(light, out, $activeSize), boxShadow(light, inset, $normalSize);
     }
   }
   &.dark {
     border-color: rgba($color: #fff, $alpha: .02);
-    box-shadow: $shadow-detail-out-dark;
+    box-shadow: boxShadow(dark, out, $smallSize);
     &.detail {
       border-color: rgba($color: #fff, $alpha: 0);
-      box-shadow: $shadow-out-dark;
+      box-shadow: boxShadow(dark, out, $normalSize);
       &:active {
-        box-shadow: $shadow-active-dark, $shadow-inset-dark;
+        box-shadow: boxShadow(dark, out, $activeSize), boxShadow(dark, inset, $activeSize);
       }
     }
     &:active {
-      box-shadow: $shadow-active-dark, $shadow-inset-dark;
-    }
-  }
-  
-  @keyframes shadow-light {
-    0% {
-      box-shadow: 0 0 0 rgba(0,0,0,0);
-    }
-    100% {
-      box-shadow: $shadow-out-light;
+      box-shadow: boxShadow(dark, out, $activeSize), boxShadow(dark, inset, $normalSize);
     }
   }
 
@@ -172,11 +163,11 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
       bottom: 20PX;
       &.light {
         border-color: #E8F1F8;
-        box-shadow: $shadow-detail-inset-light, $shadow-detail-out-light;
+        box-shadow: boxShadow(light, inset, $smallSize), boxShadow(light, out, $smallSize);
       }
       &.dark {
         border-color: #253944;
-        box-shadow: $shadow-detail-inset-dark, $shadow-detail-out-dark;
+        box-shadow: boxShadow(dark, inset, $smallSize), boxShadow(dark, out, $smallSize);
       }
       .detail-progress-percent {
         display: flex;
@@ -199,46 +190,6 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
           font-size: 18PX;
           transform: translateX(50%);
         }
-      }
-    }
-  }
-  .bar-color {
-    position: absolute;
-    height: 100%;
-    left: 0;
-    top: 0;
-    transition: $cubic;
-    /* &.light {
-      box-shadow: $shadow-bar-light;
-    }
-    &.dark {
-      box-shadow: $shadow-bar-dark;
-    } */
-    .bar-title {
-      height: 100%;
-      width: 100%;
-      position: absolute;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      white-space: nowrap;
-      touch-action: none;
-    }
-    .percent {
-      position: absolute;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transition: $cubic;
-      font-size: 30PX;
-      &.left {
-        right: 10PX;
-      }
-      &.right {
-        right: -10PX;
-        transform: translateX(100%);
       }
     }
   }

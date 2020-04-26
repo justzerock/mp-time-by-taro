@@ -16,9 +16,6 @@ class MyActionItem extends Component {
   }
 
   state = {
-    edit: false,
-    dateSel: '1993-1-1',
-    life: 77,
   }
 
   componentWillMount () {}
@@ -34,26 +31,23 @@ class MyActionItem extends Component {
   componentWillReact () {
   }
 
-  onEditItem = () => {
-    const { type } = this.props
-    const { edit } = this.state
-    if (['week', 'life'].indexOf(type) !== -1) {
-      this.setState({
-        edit: !edit
-      })
-    }
+  // 添加移除进度条
+  toggleItem = () => {
+    const {type, selected} = this.props
+    this.props.onToggleItem(type, selected)
   }
-
+  
   render () {
-    const { isDark, name, percent, color, selected, type, onEditItem, onToggleItem } = this.props
-    let classDark = isDark ? 'dark' : 'light'
-    let styleColor = {
+    const { isDark, name, percent, color, selected, type, onEditItem, onToggleItem, onColorSet } = this.props
+
+    const classDark = isDark ? 'dark' : 'light'
+    const styleColor = {
       background: color
     }
     return (
       <View
         className={`my-action-item ${classDark}`}
-        onClick={onToggleItem}
+        onClick={this.toggleItem}
       > 
         <View
           className={`color-block ${classDark}`}

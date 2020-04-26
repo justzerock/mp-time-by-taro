@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { ComponentType } from 'react'
 import Taro, { Component } from '@tarojs/taro'
-import { View, Picker, Input } from '@tarojs/components'
+import { View, Text, Picker, Input } from '@tarojs/components'
 import { observer, inject } from '@tarojs/mobx'
 
 import classNames from 'classnames/bind'
@@ -18,6 +18,7 @@ type PageStateProps = {
     isDark: boolean,
     isDetail: boolean,
     primary: string,
+    usePrimary: boolean,
     colors: Array<string>,
     weekStartDay: number,
     systemInfo: object,
@@ -27,6 +28,7 @@ type PageStateProps = {
     toggleDarkMode: Function,
     setDarkMode: Function,
     setPrimaryColor: Function,
+    setUsePrimary: Function,
     setExpLife: Function,
     setBirthDay: Function,
     setUpdateData: Function,
@@ -35,7 +37,10 @@ type PageStateProps = {
   },
   title: string,
   desc: string,
-  type: string
+  type: string,
+  itemID: number,
+  state: string,
+  position: string
 }
 
 interface NewSettingItem {
@@ -49,9 +54,8 @@ class NewSettingItem extends Component {
     title: '主题风格',
     type: 'theme',
     position: 'lt',
-    itemID: 1,
-    current: 0,
-    expandState: 'default'
+    itemID: 0,
+    state: 'normal',
   }
 
   state = {
@@ -81,21 +85,21 @@ class NewSettingItem extends Component {
   }
 
   // 当打开选项
-  onItemOpen() {
+  onItemOpen(itemID) {
     const { expand } = this.state
     if (expand) return
     this.setState({
       expand: true
     })
-    this.props.onExpand(true)
+    this.props.onExpand(itemID, true)
   }
 
   // 当关闭选项
-  onItemClose() {
+  onItemClose(itemID) {
     this.setState({
       expand: false
     })
-    this.props.onExpand(false)
+    this.props.onExpand(itemID, false)
   }
 
   // 设置主题色
@@ -169,17 +173,23 @@ class NewSettingItem extends Component {
     if (is(isDetail, themeStore.isDetail)) return
     themeStore.setViewMode(isDetail, false)
   }
+  
+  // 设置使用主题色
+  setUsePrimary() {
+    const { themeStore } = this.props
+    themeStore.setUsePrimary(!themeStore.usePrimary, false)
+  }
 
   render () {
-    const { themeStore: {isDark, isDetail, colors, primary, birthday, explife, avglife, weekStartDay}, title, type, position, itemID, current, expandState } = this.props
+    const { themeStore: {isDark, isDetail, colors, primary, usePrimary, birthday, explife, avglife, weekStartDay}, title, type, position, itemID, state } = this.props
     const { expand, isFocus } = this.state
     const classItem = cx({
       'setting-item': true,
       'light': !isDark,
       'dark': isDark,
-      'expand': expand,
-      'default': !expand && is(expandState, 'default'),
-      'none': !expand && is(expandState, 'expand'),
+      'expand': is(state, 'zoom'),
+      'default': is(state, 'normal'),
+      'none': is(state, 'none'),
       'lt': is(position, 'lt'),
       'rt': is(position, 'rt'),
       'lb': is(position, 'lb'),
@@ -283,6 +293,17 @@ class NewSettingItem extends Component {
       'left': true,
       'default': !isDetail
     })
+
+    const styleSetBtn = {
+      background: usePrimary ? primary : ''
+    }
+    const classSetBtn = cx({
+      'set-use-primary': true,
+      'light': !isDark,
+      'dark': isDark,
+      'open': usePrimary,
+      'close': !usePrimary
+    })
     
     return (
       <View
@@ -290,11 +311,11 @@ class NewSettingItem extends Component {
         >
         <View 
           className={classOpenLayer}
-          onClick={this.onItemOpen}
+          onClick={()=>this.onItemOpen(itemID)}
         />
         <View
           className={classBack}
-          onClick={this.onItemClose}
+          onClick={()=>this.onItemClose(itemID)}
         >
           <MyIcon 
             name='back'
@@ -321,6 +342,24 @@ class NewSettingItem extends Component {
             className='primary'
           >
             <View
+              className={classSetBtn}
+              onClick={this.setUsePrimary}
+            >
+              <View
+                className='set-title'
+              >
+                应用到进度条
+              </View>
+              <View
+                className='set-btn'
+                style={styleSetBtn}
+              >
+                <View
+                  className='btn-circle'
+                ></View>
+              </View>        
+            </View>
+            <View
               className={classColorGroup}
             >
             {
@@ -329,7 +368,7 @@ class NewSettingItem extends Component {
                   <View 
                     key={index+color}
                     className={`${classColorBG} ${is(primary, color) ? 'current' : ''}`}
-                    style={{background: is(primary, color) ? hexToRgba(color, 0.1) : hexToRgba(color, 0)}}
+                    style={{background: is(primary, color) ? hexToRgba(color, 0.05) : hexToRgba(color, 0)}}
                     onClick={()=>this.setPrimaryColor(color)}
                   >
                     <View 
@@ -374,7 +413,7 @@ class NewSettingItem extends Component {
               <View
                 className='range'
               >
-                生日范围：<View className='number'>1900 </View> - 至今
+                生日范围：<Text className='number' space='nbsp'>1900 </Text> - 至今
               </View>
             </View>
             <View

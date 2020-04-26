@@ -1,25 +1,7 @@
-$light: #E3EDF7;
-$dark: #233541;
+@import '../../assets/variables.scss';
+
 $light-text: rgba($color: $light, $alpha: .8);
 $dark-text: rgba($color: $dark, $alpha: .6);
-$added: #FFBD6D;
-$addable: #0BC84D;
-
-$shadow-out-light:-3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
-3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
-$shadow-inset-light:inset -3PX -3PX 7PX 0 rgba($color: #fff, $alpha: .45),
-inset 3PX 3PX 5PX 0 rgba($color: #5E6879, $alpha: .28);
-$shadow-active-light:-1.5PX -1.5PX 3.5PX 0 rgba($color: #fff, $alpha: .45),
-1.5PX 1.5PX 2.5PX 0 rgba($color: #5E6879, $alpha: .28);
-$shadow-text-light: 1PX 1PX 2PX $light, 0 0 0 $dark, 1PX 1PX 2PX $light;
-
-$shadow-out-dark:-3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
-3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
-$shadow-inset-dark:inset -3PX -3PX 7PX 0 rgba($color: #2a404e, $alpha: .8),
-inset 3PX 3PX 5PX 0 rgba($color: #1c2a34, $alpha: .8);
-$shadow-active-dark:-1.5PX -1.5PX 3.5PX 0 rgba($color: #2a404e, $alpha: .8),
-1.5PX 1.5PX 2.5PX 0 rgba($color: #1c2a34, $alpha: .8);
-$shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
 
 .my-action-item {
   display: flex;
@@ -41,28 +23,28 @@ $shadow-text-dark: 1PX 1PX 2PX rgba(0,0,0,.4);
     right: 10PX;
     bottom: 10PX;
     &.light {
-      box-shadow: $shadow-inset-light;
+      box-shadow: boxShadow(light, inset, $normalSize);
     }
     &.dark {
-      box-shadow: $shadow-inset-dark;
+      box-shadow: boxShadow(dark, inset, $normalSize);
     }
   }
   &.light {
     color: $dark-text;
     background: $light;
-    box-shadow: $shadow-out-light;
+    box-shadow: boxShadow(light, out, $normalSize);
     //text-shadow: $shadow-text-light;
     &:active {
-      box-shadow: $shadow-inset-light, $shadow-active-light;
+      box-shadow: boxShadow(light, inset, $normalSize), boxShadow(light, out, $activeSize);
     }
   }
   &.dark {
     color: $light-text;
     background: $dark;
-    box-shadow: $shadow-out-dark;
+    box-shadow: boxShadow(dark, out, $normalSize);
     //text-shadow: $shadow-text-dark;
     &:active {
-      box-shadow: $shadow-inset-dark, $shadow-active-dark;
+      box-shadow: boxShadow(dark, inset, $normalSize), boxShadow(dark, out, $activeSize);
     }
   }
 }

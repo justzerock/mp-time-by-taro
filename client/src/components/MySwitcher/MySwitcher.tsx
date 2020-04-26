@@ -6,7 +6,6 @@ import { observer, inject } from '@tarojs/mobx'
 
 import classNames from 'classnames/bind'
 import hexToRgba from 'hex-to-rgba'
-import { is } from 'immutable'
 
 import styles from './MySwitcher.scss'
 import MyIcon from '../MyIcon/MyIcon'

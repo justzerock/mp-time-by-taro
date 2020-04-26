@@ -12,22 +12,26 @@ const themeStore = observable({
     menuWidth: '95PX',
     menuHeight: '40PX',
     menuTop: '22PX',
-    menuLeft: '274PX'
+    menuLeft: '274PX',
+    windowWidth: 375,
+    windowHeight: 667
   },  
   // 主题色
   primary: '#7789A1', 
   // 预设颜色值
   colors: [
     '#7789A1',
-    '#329188',
     '#5C8AC1',
+    '#4D89FB',
     '#FF5C5D',
-    '#FFA054',
-    '#73C2FC',
-    '#5574E3',
-    '#33DFE6',
-    '#5FDFB7',
-  ],  
+    '#FFBF65',
+    '#FF5680',
+    '#00CCEB',
+    '#00CA94',
+    '#329188',
+  ], 
+  // 统一使用主题色
+  usePrimary: false, 
   // 标题
   navBarTitle: '亦时', 
   // 是否为右侧页面 
@@ -93,7 +97,7 @@ const themeStore = observable({
       title:'',
       percent: 0,
       icon: 'birth',
-      color: '#FF5680',
+      color: '#FF5C5D',
       selected: true,
       type: 'life',
       detail: 0
@@ -191,6 +195,7 @@ const themeStore = observable({
           let obj = res.result.data[0]
           this.setDarkMode(obj.isDark)
           this.setPrimaryColor(obj.primary, true)
+          this.setUsePrimary(obj.usePrimary, true)
           this.setBirthDay(obj.birthday, true)
           this.setExpLife(obj.explife, true)
           this.setWeekStartDay(obj.weekStartDay, true)
@@ -255,6 +260,24 @@ const themeStore = observable({
     )
     .catch(
       () => this.setPrimaryColor(this.primary, true)
+    )
+  },
+
+  // 统一使用主题色
+  setUsePrimary(usePrimary, isFirst) {
+    this.usePrimary = usePrimary
+    Taro.setStorage({key: 'usePrimary', data: usePrimary})
+    if(!isFirst) this.getDbFn('setUsePrimary', {usePrimary})
+  },
+
+  // 统一使用主题色
+  getUsePrimary() {
+    Taro.getStorage({key: 'usePrimary'})
+    .then(
+      res => this.usePrimary = res.data
+    )
+    .catch(
+      () => this.setUsePrimary(this.usePrimary, true)
     )
   },
 
@@ -350,7 +373,8 @@ const themeStore = observable({
           sysInfo = {
             statusBarHeight: 20,
             model: 'iPhone',
-            windowWidth: 375
+            windowWidth: 375,
+            windowHeight: 667
           }
           menuInfo = {
             width: 87,
@@ -368,7 +392,9 @@ const themeStore = observable({
           menuHeight: menuInfo.height + 8 + 'PX',
           menuTop: menuInfo.top - 4 + 'PX',
           menuLeft: menuInfo.left - 4 + 'PX',
-          model: sysInfo.model
+          model: sysInfo.model,
+          windowWidth: sysInfo.windowWidth,
+          windowHeight: sysInfo.windowHeight
         }
         this.navInfo = navInfo
         this.setHomeBar(navInfo.model)

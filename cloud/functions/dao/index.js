@@ -89,6 +89,22 @@ exports.main = async (event, context) => {
       }
     },
 
+    // 统一使用主题色
+    setUsePrimary: async ({ usePrimary }) => {
+      try {
+        return await userData.where({
+          _openid: openid
+        })
+          .update({
+            data: {
+              usePrimary: usePrimary
+            }
+          })
+      } catch (e) {
+        console.error(e)
+      }
+    },
+
     // 设置期望寿命
     setExpLife: async ({ explife }) => {
       try {

@@ -1,0 +1,49 @@
+$normalSize: 3PX;
+$smallSize: 1PX;
+$activeSize: 1.5PX;
+
+$cubic: all .25s cubic-bezier(.25,.46,.45,.94);
+$normal: all .25s ease-in-out;
+//$light: #E0E5EC;
+//$light: #E9EDF0;
+$light: #F4F2F1;
+$dark: #414141;
+$radius: 15PX;
+
+// 盒子阴影
+@function boxShadow($mode: light, $type: out, $baseSize: 3PX) {
+  $shadowSizeLT: (-$baseSize) (-$baseSize) $baseSize*1.5 0;
+  $shadowSizeRB: $baseSize $baseSize $baseSize*1.5 0;
+  $shadowSizeLT: map-get((
+    out: $shadowSizeLT,
+    inset: inset $shadowSizeLT
+  ), $type);
+  $shadowSizeRB: map-get((
+    out: $shadowSizeRB,
+    inset: inset $shadowSizeRB
+  ), $type);
+
+  $colorLT: map-get((
+    light: rgba($color: #fff, $alpha: .5),
+    dark: rgba($color: #fff, $alpha: .05)
+  ), $mode);
+  $colorRB: map-get((
+    light: rgba($color: #000, $alpha: .1),
+    dark: rgba($color: #000, $alpha: .25)
+  ), $mode);
+
+  $boxShadow: $shadowSizeLT $colorLT, $shadowSizeRB $colorRB;
+
+  @return $boxShadow;
+}
+
+// 文本阴影
+@function textShadow($mode: light) {
+  $baseLight: 1PX 1PX 2PX $light;
+  $baseDark: 0 0 0 rgba($color: $dark, $alpha: 0.6);
+  $textShadow: $baseLight, $baseDark, $baseLight;
+  @if ($mode == 'dark') {
+    $textShadow: 1PX 1PX 2PX rgba(0,0,0, 0.4);
+  }
+  @return $textShadow;
+}
