@@ -47,7 +47,7 @@ class MyActionItem extends Component {
     return (
       <View
         className={`my-action-item ${classDark}`}
-        onClick={this.toggleItem}
+        onClick={() => onToggleItem(type, selected)}
       > 
         <View
           className={`color-block ${classDark}`}

@@ -1,0 +1,55 @@
+@import '../../assets/variables.scss';
+
+.swicth {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin: auto calc(var(--size) * 0.5);
+  width: calc(var(--size) * 2);
+  height: var(--size);
+  border-radius: calc(var(--size) / 2);
+  background: rgba($color: #000000, $alpha: .06);
+  transition: background .25s ease-in-out;
+  &::before {
+    content: '';
+    display: flex;
+    position: absolute;
+    width: calc(var(--size) * 0.6);
+    height: calc(var(--size) * 0.6);
+    border-radius: calc(var(--size) * 0.3);
+    left: calc(var(--size) * 0.2);
+    top: calc(var(--size) * 0.2);
+    transition: left .25s ease-in-out, width .25s ease-in-out;
+  }
+  &:active {
+    &::before {
+      width: calc(var(--size) * 0.8);
+    }
+  }
+  &.open {
+    background: var(--color);
+    &::before {
+      left: calc(var(--size) * 1.2);
+    }
+    &:active {
+      &::before {
+        left: var(--size);
+      }
+    }
+  }
+  &.light {
+    box-shadow: boxShadow(light, out, $normalSize), boxShadow(light, inset, $smallSize);
+    &::before {
+      background: $light;
+      box-shadow: boxShadow(light, out, $smallSize);
+    }
+  }
+  &.dark {
+    box-shadow: boxShadow(dark, out, $normalSize), boxShadow(dark, inset, $smallSize);
+    &::before {
+      background: $dark;
+      box-shadow: boxShadow(dark, out, $smallSize);
+    }
+  }
+}

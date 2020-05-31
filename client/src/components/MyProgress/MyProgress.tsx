@@ -11,7 +11,7 @@ import { is } from 'immutable'
 import styles from './MyProgress.scss'
 import MyIcon from '../MyIcon/MyIcon'
 import MyCounter from '../MyCounter/MyCounter'
-import MyColorSet from '../MyColorSet/MyColorSet'
+import MyProgressColor from '../MyProgressColor/MyProgressColor'
 
 const cx = classNames.bind(styles)
 
@@ -23,7 +23,7 @@ type PageStateProps = {
   icon: string,
   time: number,
   width: string,
-  barHeight: number,
+  barHeight: string,
   isDark: boolean,
   isDetail: boolean,
   weekStartDay: number,
@@ -34,7 +34,9 @@ type PageStateProps = {
   primary: string,
   usePrimary: boolean,
   windowWidth: number,
-  windowHeight: number
+  windowHeight: number,
+  onCloseListFullLayer: Function,
+  onShowListFullLayer: Function
 }
 
 interface MyProgress {
@@ -51,8 +53,8 @@ class MyProgress extends Component {
     color: '#009BEC',
     icon: 'earth',
     time: 2020,
-    width: '84vw',
-    barHeight: 60,
+    width: '90vw',
+    barHeight: '18vw',
     isDark: false,
     isDetail: false,
     weekStartDay: 0,
@@ -63,16 +65,16 @@ class MyProgress extends Component {
     primary: '#7789A1',
     usePrimary: false,
     windowWidth: 375,
-    windowHeight: 667
+    windowHeight: 667,
   }
   
   state = {
     counterValue: 0,
     detail: this.props.isDetail,
     life: this.props.explife ? this.props.explife : this.props.avglife,
-    showColorSet: false,
     isTop: true,
-    arrowPosition: 'left'
+    arrowPosition: 'left',
+    showColorSet: false
   }
 
   /**
@@ -131,12 +133,13 @@ class MyProgress extends Component {
 
   // 切换详情
   showDetail = () => {
-    const { percent } = this.props
+    const { percent, onCloseListFullLayer } = this.props
     const { detail, showColorSet } = this.state
     if (showColorSet) {
       this.setState({
         showColorSet: false
       })
+      onCloseListFullLayer()
       return
     } else {
       this.setState({
@@ -147,12 +150,12 @@ class MyProgress extends Component {
   }
 
   // 显示颜色设置
-  showColorSet = (e) => {
-    const { windowWidth, windowHeight } = this.props
+  onShowColorSet = (e) => {
+    const { windowWidth, windowHeight, onShowListFullLayer } = this.props
     const { showColorSet } = this.state
     const { currentTarget: {x, y, offsetLeft} } = e
-    if (showColorSet) return
-    // 进度条宽度84vw
+    if (showColorSet ) return
+    // 进度条宽度90vw
     const percent = (x - offsetLeft) / (windowWidth * 0.84)
     const arrowPosition = percent <= 0.33 ? 'left' : percent <= 0.67 ? 'center' : 'right'
     const isTop = y > windowHeight / 2 ? false : true
@@ -161,20 +164,39 @@ class MyProgress extends Component {
       showColorSet: true,
       arrowPosition: arrowPosition
     })
+    onShowListFullLayer()
+  }
+
+  onToggleColorSet = () => {
+    const { showColorSet } = this.state
+    console.log('set')
+    this.setState({
+      showColorSet: !showColorSet,
+    })
   }
 
   // 颜色设置
   onSetBarColor = () => {
-    this.setState({
-      showColorSet: false
-    })
+    const { onCloseListFullLayer } = this.props
+    onCloseListFullLayer()
+  }
+
+  // 转换颜色值
+  hexToRgb = (hex)=> {
+    hex = hex.slice(1)
+    var bigint = parseInt(hex, 16);
+    var r = (bigint >> 16) & 255;
+    var g = (bigint >> 8) & 255;
+    var b = bigint & 255;
+
+    return r + "," + g + "," + b;
   }
 
   render () {
 
     const { name, title, color, primary, usePrimary, width, barHeight, isDark, icon, type, weekStartDay, birthday } = this.props
 
-    const { counterValue, detail, showColorSet, isTop, arrowPosition} = this.state
+    const { counterValue, detail, showColorSet} = this.state
 
     
     // 主题色
@@ -188,17 +210,33 @@ class MyProgress extends Component {
       let shadow
       if (isDark) {
         shadow = '1PX 1PX 2PX rgba(0,0,0,0.2)'
-      } else if ( (is(type, 'percent') && counterValue > 50) ) {
-        shadow = getShadow(hexToRgba(primaryColor, 0.7), '#233541')
+      } else if ( (is(type, 'percent') && counterValue > 50) || is(type, 'icon') ) {
+        shadow = getShadow(hexToRgba(primaryColor, 0.7), '#5a5a5a')
+      } else {
+        shadow = getShadow(hexToRgba('#F4F5FB', 0.7), '#5a5a5a')
       }
       return shadow
+    }
+    const getPercentColor = () => {
+      let color
+      if (!detail && counterValue > 50) {
+        color = hexToRgba('#ffffff', 0.9)
+      } else {
+        if(isDark) {
+          color = hexToRgba('#ffffff', 0.6)
+        } else {
+          color = hexToRgba('#5a5a5a', 0.6)
+        }
+      }
+      return color
     }
 
     const classProgress = cx({
       'my-progress': true,
       'light': !isDark,
       'dark': isDark,
-      'detail': detail
+      'detail': detail,
+      'on-top': showColorSet
     })
     const classTypeName = cx({
       'type-name': true
@@ -211,10 +249,12 @@ class MyProgress extends Component {
     const classDetailIcon = cx({
       'detail-icon': true,
       'light': !isDark,
-      'dark': isDark
+      'dark': isDark,
+      'show': detail
     })
     const classDetailTitle = cx({
-      'detail-title': true
+      'detail-title': true,
+      'show': detail
     })
     const classDetailName = cx({
       'detail-name': true
@@ -230,73 +270,82 @@ class MyProgress extends Component {
       'light': !isDark,
       'dark': isDark
     })
-    const classDetailProgressPercent = cx({
-      'detail-progress-percent': true,
+    const classDetailProgressBar = cx({
+      'detail-progress-bar': true,
       'light': !isDark,
       'dark': isDark
     })
-    const classBarcolor = cx({
-      'bar-color': true,
-      'light': !isDark,
-      'dark': isDark
-    })
-    const classPercent = cx({
-      'percent': true,
-      'left': counterValue > 50,
-      'right': counterValue <= 50
-    })
-    const classTopShadow = cx({
-      'top-shadow': !detail,
-      'light': !isDark,
-      'dark': isDark
+    const classLeftCircle = cx({
+      'left-circle': true
     })
 
     const styleProgress = {
-      color: primaryColor,
+      //color: primaryColor,
       width: width,
-      height: detail ? barHeight*2.3 + 'PX' : barHeight + 'PX',
-      borderRadius: `${barHeight / 2}PX`,
+      height: detail ? `calc(${barHeight} * 2)` : barHeight,
+      borderRadius: `${detail ? '2vw' : `calc(${barHeight} / 2)`}`,
       margin: '4vw auto',
     }
-    const styleBarcolor = {
-      width: detail ? '0' : counterValue + '%',
-      borderRadius: `${barHeight / 2}PX`,
-      background: hexToRgba(primaryColor, 0.7)
-    }
-    const stylePercent = {
-      color: counterValue <= 50 ? 
-        hexToRgba(primaryColor, 0.6) : 
-        isDark ? 
-        hexToRgba('#414141', 0.9) : hexToRgba('#F4F2F1', 0.9),
-      textShadow: textShadow('percent'),
-      opacity: detail ? 0 : 1
-    }
     const styleTypeName = {
-      right: barHeight / 4 + 'PX',
+      right: `calc(${barHeight} / 4)`,
       opacity: detail ? 0 : (100 - counterValue)/100,
-      color: hexToRgba(primaryColor, 0.6)
     }
     const styleDetail = {
       width: width,
-      color: hexToRgba(primaryColor, 0.6),
-      opacity: detail ? 1 : 0
+      opacity: showColorSet ? 0 : 1
     }
-    const styleDetailProgress = {
-      background: hexToRgba(primaryColor, 0.1)
-    }
-    const styleDetailProgressPercent = {
-      background: hexToRgba(primaryColor, 0.5),
-      width: counterValue + '%'
-    }
-    const styleTopShadow = {
-      borderRadius: `${barHeight / 2}PX`,
-    }
+    const styleColorTitle = `
+      --primary-rgb: ${this.hexToRgb(primaryColor)};
+      --clip-width: ${showColorSet ? '28vw' : '15vw'};
+      --clip-height: ${showColorSet ? '90%' : '50%'};
+      --text-shadow: ${textShadow('icon')};
+      --box-opacity: ${showColorSet || detail ? 1 : 0};
+      --title-opacity: ${showColorSet ? 1 : 0};
+      --title-color: ${isDark ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.9)'};
+      --transform: ${detail ? 'scale(1)' : 'scale(0)'};
+      --border-radius: ${detail ? '2vw' : '7.5vw'};
+    `
+    const styleColorAction = `
+      --action-opacity: ${showColorSet ? 1 : 0};
+    `
+    const styleLeftCircle = `
+      --circle-color: ${this.hexToRgb(primaryColor)};
+      --opacity: ${detail ? 1 : 0};
+      --transform: ${detail ? 'scale(1) translate(-50%, -50%)' : 'scale(0) translate(-50%, -50%)'};
+      --clip-path: ${detail ? '5PX' : '30PX'};
+    `
+    const styleDetailIcon = `
+      --icon-color: ${isDark ? 'rgba(255,255,255,0.7)' : 'rgba(255,255,255,0.9)'};
+      --text-shadow: ${textShadow('icon')};
+    `
+    const styleDetailProgress = `
+      --width: ${detail ? 'calc(100% - 40PX)' : '100%'};
+      --height: ${detail ? '10PX' : '100%'};
+      --border-radius: ${detail ? '10PX' : '30PX'};
+      --bottom: ${detail ? '30PX' : '0'};
+    `
+
+    const styleDetailProgressBar = `
+      --width: ${counterValue + '%'};
+      --height: ${detail ? '10PX' : '100%'};
+      --primary-color: ${this.hexToRgb(primaryColor)};
+      --percent: ${100 - counterValue + '%'};
+      --border-radius: ${detail ? '10PX' : '30PX'};
+    `
+
+    const styleDetailPercent = `
+      --left: ${counterValue + '%'};
+      --transform: ${detail ? 'translate(-50%, 20PX)' : counterValue > 50 ? 'translateX(-150%)' : 'translateX(50%)'};
+      --font-size: ${detail ? '20PX' : '30PX'};
+      --color: ${getPercentColor()};
+      --text-shadow: ${ detail ? textShadow('detail') : counterValue > 50 ? textShadow('percent') : textShadow('detail') };
+    `
 
     return (
       <View
         className={classProgress}
         style={styleProgress}
-        onLongPress={this.showColorSet}
+        //onLongPress={this.onShowColorSet}
         >
         <View
           className={classTypeName}
@@ -305,17 +354,38 @@ class MyProgress extends Component {
           {type.toUpperCase()}
         </View>
         <View
+          className={`color-title`}
+          style={styleColorTitle}
+          onClick={this.onToggleColorSet}
+        >
+        </View>
+        <View
+          className={`color-action`}
+          style={styleColorAction}
+        >
+          <MyProgressColor 
+            curColor={primaryColor}
+            type={type}
+          />
+        </View>
+        <View
+          className={classLeftCircle}
+          style={styleLeftCircle}
+        ></View>
+        <View
+          className={classDetailIcon}
+          style={styleDetailIcon}
+          onClick={this.onToggleColorSet}
+        >
+          <MyIcon 
+            name={ showColorSet ? 'close' : is(icon, 'week') ? 'week-' + weekStartDay : icon }
+          />
+        </View>
+        <View
           className={classDetail}
           style={styleDetail}
           onClick={this.showDetail}
         >
-          <View
-            className={classDetailIcon}
-          >
-            <MyIcon 
-              name={is(icon, 'week') ? 'week-' + weekStartDay : icon }
-            />
-          </View>
           <View
             className={classDetailTitle}
           >
@@ -329,59 +399,31 @@ class MyProgress extends Component {
             >
               {
                 is(type, 'life') && is(birthday, '') ?
-                '长按进度条设置颜色\n左滑设置生日\n点击切换视图' :
+                '未设置生日 🎂' :
                 title
               }
             </Text>
           </View>
-          {
-            is(birthday, '') && is(type, 'life') ?
-            <View
-              className='set-tip'
-            >
-              <MyIcon 
-                name='swipe-left'
-              />
-            </View> : ''
-          }
           <View
             className={classDetailProgress}
             style={styleDetailProgress}
           >
-            <View 
-              className={classDetailProgressPercent}
-              style={styleDetailProgressPercent}
-            >
-              <View
-                className={classDetailPercent}
-              >
-                <MyCounter 
-                  value={counterValue}
-                />
-              </View>
-            </View>
-          </View>
-        </View>
-        <View 
-          className={classTopShadow}
-          style={styleTopShadow}
-          onClick={this.showDetail}
-        >
-          <View 
-            className={classBarcolor}
-            style={styleBarcolor}
-          >
             <View
-              className={classPercent}
-              style={stylePercent}
+              className={classDetailPercent}
+              style={styleDetailPercent}
             >
               <MyCounter 
                 value={counterValue}
               />
             </View>
+            <View 
+              className={classDetailProgressBar}
+              style={styleDetailProgressBar}
+            >
+            </View>
           </View>
         </View>
-        <MyColorSet 
+        {/* <MyColorSet 
           isDark={isDark}
           isTop={isTop}
           show={showColorSet}
@@ -389,7 +431,7 @@ class MyProgress extends Component {
           curColor={color}
           type={type}
           onSetBarColor={this.onSetBarColor}
-        />
+        /> */}
       </View>
     )
   }

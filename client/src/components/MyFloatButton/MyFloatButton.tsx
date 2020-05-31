@@ -13,6 +13,9 @@ class MyFloatButton extends Component {
     isDark: false,
     primary: '#7789A1'
   }
+  state = {
+    isOpen: false
+  }
   /**
    * 指定config的类型声明为: Taro.Config
    *
@@ -34,18 +37,59 @@ class MyFloatButton extends Component {
   componentWillReact () {
   }
 
+  onOpenBtn = () => {
+    const { isOpen } = this.state
+    this.setState({
+      isOpen: !isOpen
+    })
+  }
+
   render () {
-    const { isDark, onAdd, primary } = this.props
+    const { isDark, onManage, onShowInfo, onSettingList, primary } = this.props
+    const { isOpen } = this.state
     let classDark = isDark ? 'dark' : 'light'
+    let classOpen = isOpen ? 'open' : 'close'
     return (
       <View
-        className={`my-float-button ${classDark}`}
-        style={{color: primary}}
-        onClick={onAdd}
+        className={`float-btn-group`}
       >
-        <MyIcon 
-          name='plus'
-        />
+        <View
+          className={`main-btn ${classDark} ${classOpen}`}
+          style={{color: primary}}
+          onClick={this.onOpenBtn}
+        >
+          <View
+            className={`icon-wrap`}
+          >
+            <MyIcon 
+              name='plus'
+            />
+          </View>
+        </View>
+        <View
+          className={`setting-btn ${classDark} ${classOpen}`}
+          onClick={onSettingList}
+        >
+          <MyIcon 
+            name='setting'
+          />
+        </View>
+        <View
+          className={`manage-btn ${classDark} ${classOpen}`}
+          onClick={onManage}
+        >
+          <MyIcon
+            name='manage'
+          />
+        </View>
+        <View
+          className={`info-btn ${classDark} ${classOpen}`}
+          onClick={onShowInfo}
+        >
+          <MyIcon
+            name='info'
+          />
+        </View>
       </View>
     )
   }

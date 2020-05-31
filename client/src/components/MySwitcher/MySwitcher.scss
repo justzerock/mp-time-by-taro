@@ -38,7 +38,9 @@
     width: 60PX;
     height: 30PX;
     border-radius: 15PX;
-    transition: box-shadow .25s, border-color .25s, background .25s;
+    transition: box-shadow .25s ease-in-out, 
+      border-color .25s ease-in-out,
+      background .25s ease-in-out;
     &.light {
       box-shadow: boxShadow(light, inset, $normalSize);
       background: $light;
@@ -46,6 +48,14 @@
     &.dark {
       box-shadow: boxShadow(dark, inset, $normalSize);
       background: $dark;
+    }
+    &:active {
+      .my-icon {
+        width: 25PX;
+        &.dark {
+          left: 25PX
+        }
+      }
     }
     .my-icon {
       display: flex;
@@ -55,55 +65,22 @@
       height: 20PX;
       border-radius: 10PX;
       position: absolute;
-      transition: background .25s, box-shadow .25s, left .25s;
+      transition: background .25s ease-in-out, 
+        box-shadow .25s ease-in-out, 
+        left .25s ease-in-out,
+        width .25s ease-in-out;
       &.light {
         background: $light;
         box-shadow: boxShadow(light, out, $normalSize);
         left: 5PX;
         color: rgba($color: #FFBD6D, $alpha: 0.8);
-        animation: left 1s;
       }
       &.dark {
         background: $dark;
         box-shadow: boxShadow(dark, out, $normalSize);
         left: 30PX;
         color: rgba($color: #DDE1E7, $alpha: 0.8);
-        animation: right 1s;
       }
     }
-  }
-}
-
-@keyframes left {
-  0% {
-    left: 30PX;
-  }
-  60% {
-    left: 3PX;
-    width: 18PX;
-  }
-  85% {
-    left: 6PX;
-  }
-  100% {
-    left: 5PX;
-    width: 20PX;
-  }
-}
-
-@keyframes right {
-  0% {
-    left: 5PX;
-  }
-  60% {
-    left: 32PX;
-    width: 18PX;
-  }
-  85% {
-    left: 29PX;
-  }
-  100% {
-    left: 30PX;
-    width: 20PX;
   }
 }

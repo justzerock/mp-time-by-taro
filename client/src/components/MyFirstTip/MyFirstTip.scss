@@ -1,0 +1,57 @@
+@import '../../assets/variables.scss';
+
+.my-tip {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  width: 60vw;
+  height: 30vw;
+  border-radius: 2vw;
+  background: var(--background);
+  z-index: 1001;
+  filter: drop-shadow(0 0 4PX rgba(0,0,0,0.1));
+  transform: var(--transform);
+  transition: transform .25s ease-in-out,
+    background .25s ease-in-out;
+  &.top {
+    left: 10vw;
+    top: var(--top);
+    transform-origin: 8vw 100%;
+    &::before {
+      left: 8vw;
+    }
+  }
+  &.bottom {
+    bottom: var(--bottom);
+    right: 4vw;
+    transform-origin: 56vw 100% ;
+    &::before {
+      right: 4vw;
+    }
+  }
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: -1.8vw;
+    width: 4vw;
+    height: 4vw;
+    transform: rotate(45deg);
+    clip-path: polygon(0 100%, 100% 0, 100% 100%);
+    background: var(--background);
+  }
+  /* .tip-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10vw;
+    .title-icon {
+      margin-right: 10PX;
+    }
+  } */
+  .tip-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+  }
+}

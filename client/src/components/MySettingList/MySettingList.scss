@@ -1,0 +1,210 @@
+@import '../../assets/variables.scss';
+
+.setting-list {
+  display: block;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  min-height: 50vh;
+  max-height: 90vh;
+  border-radius: 50px 50px 0 0;
+  box-sizing: border-box;
+  border: 1vw solid;
+  padding-bottom: var(--padding-bottom);
+  z-index: 1001;
+  transform: translateY(100%);
+  transition: transform .5s ease-in-out;
+  &.show {
+    transform: translateY(0);
+  }
+  &.light {
+    background: $light;
+    border-color: $light;
+    box-shadow: boxShadow(light, inset, $normalSize);
+    text-shadow: textShadow(light);
+    .list-title {
+      .title-action:active {
+        box-shadow: boxShadow(light, inset, $activeSize);
+      }
+    }
+  }
+  &.dark {
+    background: $dark;
+    border-color: $dark;
+    box-shadow: boxShadow(dark, inset, $normalSize);
+    text-shadow: textShadow(dark);
+    .list-title {
+      .title-action:active {
+        box-shadow: boxShadow(dark, inset, $activeSize);
+      }
+    }
+  }
+  .list-title {
+    display: flex;
+    width: 100%;
+    height: 60PX;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    .title-name {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      .title-icon {
+        margin-right: 5PX;
+      }
+    }
+    .title-action {
+      display: flex;
+      position: absolute;
+      justify-content: center;
+      align-items: center;
+      right: 15PX;
+      width: 30PX;
+      height: 30PX;
+      border-radius: 15PX;
+      transition: box-shadow .25s ease-in-out;
+    }
+  }
+  .setting-item {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    position: relative;
+    width: 90%;
+    height: 50PX;
+    margin: 10PX auto;
+    .item-title {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      width: 40%;
+      height: 100%;
+    }
+    .item-action {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      width: 50%;
+      height: 100%;
+      border-radius: 25PX;
+      .action-0, .action-1 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        position: relative;
+        width: 48PX;
+        height: 48PX;
+        font-size: 10PX;
+        margin: 5PX 10PX;
+        border-radius: 5PX;
+        transition: box-shadow .25s ease-in-out, color .25s ease-in-out;
+        &::before {
+          content: '';
+          position: absolute;
+          left: 5PX;
+          top: 5PX;
+          width: 4PX;
+          height: 4PX;
+          border-radius: 2PX;
+          box-shadow: inset 0 0 8PX rgba($color: #000000, $alpha: 0.1);
+          transition: box-shadow .25s ease-in-out, background .25s ease-in-out;
+        }
+        &.current {
+          color: var(--primary);
+          &::before {
+            background: #75C3FD;
+            box-shadow: 0 0 10PX #75C3FD;
+          }
+        }
+        .action-icon {
+          font-size: 15PX;
+        }
+      }
+      .picker, input {
+        width: 100PX;
+        border-radius: 5PX;
+        padding: 10PX;
+        margin: auto 10PX;
+        text-align: center;
+        transition: box-shadow .25s ease-in-out;
+      }
+
+      &.light {
+        .action-0, .action-1, .picker, input {
+          box-shadow: boxShadow(light, out, $normalSize);
+        }
+        .action-0:active, .action-0.current, .action-1:active, .action-1.current, 
+        .picker:active, input:active, input.focus {
+          box-shadow: boxShadow(light, out, $activeSize), boxShadow(light, inset, $activeSize);
+        }
+      }
+      &.dark {
+        .action-0, .action-1, .picker, input {
+          box-shadow: boxShadow(dark, out, $normalSize);
+        }
+        .action-0:active, .action-0.current, .action-1:active, .action-1.current, 
+        .picker:active, input:active, input.focus {
+          box-shadow: boxShadow(dark, out, $activeSize), boxShadow(dark, inset, $activeSize);
+        }
+      }
+    }
+    &.color {
+      width: 95%;
+      box-sizing: border-box;
+      border-radius: 25PX;
+      &.light {
+        box-shadow: boxShadow(light, out, $normalSize);
+        .color-item {
+          box-shadow: boxShadow(light, out, $normalSize);
+          background: $light;
+          &:active, &.current {
+            box-shadow: boxShadow(light, out, $activeSize), boxShadow(light, inset, $activeSize);
+          }
+        }
+      }
+      &.dark {
+        box-shadow: boxShadow(dark, out, $normalSize);
+        .color-item {
+          box-shadow: boxShadow(dark, out, $normalSize);
+          background: $dark;
+          &:active, &.current {
+            box-shadow: boxShadow(dark, out, $activeSize), boxShadow(dark, inset, $activeSize);
+          }
+        }
+      }
+    }
+    .color-item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 8vw;
+      height: 8vw;
+      box-sizing: border-box;
+      border-radius: 4vw;
+      transition: box-shadow .15s ease-in-out;
+      &::before {
+        content: '';
+        position: absolute;
+        width: 4vw;
+        height: 4vw;
+        border-radius: 2vw;
+        background: var(--background);
+        transition: transform .15s ease-in-out;
+      }
+      &.current {
+        &::before {
+          transform: scale(1.5);
+        }
+      }
+      &:active {
+        &::before {
+          transform: scale(1.5);
+        }
+      }
+    }
+  }
+}

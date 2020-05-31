@@ -9,140 +9,116 @@ $color-black: rgba($color: #000, $alpha: .25);
 $shadow-circle-light: inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3), inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3);
 $shadow-circle-dark: inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3), inset 2PX 2PX 2PX 0 rgba(94, 104, 121, 0.3);
 
-.my-action-layer {
-  .full-layer {
-    height: 100%;
-    width: 100%;
-    position: fixed;
-    background: rgba($color: #000, $alpha: .1);
-    top: 0;
-    left: 0;
-    transition: $normal;
-    opacity: 0;
-    &.open {
-      z-index: 1000;
-      opacity: 1;
-    }
-    &.close {
-      z-index: -1;
-    }
+.main {
+  max-height: 90vh;
+  width: 100%;
+  position: absolute;
+  border-radius: 50px 50px 0 0 ;
+  bottom: 0;
+  left: 0;
+  transition: $normal;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  border: 1vw solid;
+  box-sizing: border-box;
+  will-change: transform;
+  z-index: 1002;
+  &.open {
+    transform: translateY(0);
   }
-  .main {
-    max-height: 90vh;
-    width: 100%;
-    position: absolute;
-    border-radius: 40PX 40PX 0 0 ;
-    bottom: 0;
-    left: 0;
-    transition: $normal;
+  &.close {
+    transform: translateY(100%);
+  }
+  &.light {
+    color: $dark-text;
+    background: $light;
+    border-color: $light;
+    box-shadow: boxShadow(light, inset, $normalSize);
+    //text-shadow: $shadow-text-light;
+  }
+  &.dark {
+    color: $light-text;
+    background: $dark;
+    border-color: $dark;
+    box-shadow: boxShadow(dark, inset, $normalSize);
+    //text-shadow: $shadow-text-dark;
+  }
+  .action-title {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    border-top: 2PX solid;
-    &.open {
-      transform: translateY(0);
-      z-index: 2000;
+    align-items: center;
+    height: 60PX;
+    .title-icon {
+      margin-right: 10PX;
     }
-    &.close {
-      transform: translateY(100%);
-      z-index: -1;
-    }
-    &.light {
-      color: $dark-text;
-      background: $light;
-      border-color: $light;
-      box-shadow: boxShadow(light, inset, $normalSize);
-      //text-shadow: $shadow-text-light;
-    }
-    &.dark {
-      color: $light-text;
-      background: $dark;
-      border-color: $dark;
-      box-shadow: boxShadow(dark, inset, $normalSize);
-      //text-shadow: $shadow-text-dark;
-    }
-    .action-title {
+    .close-btn {
+      width: 30PX;
+      height: 30PX;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 18PX;
-      height: 60PX;
-      .title-icon {
-        margin-right: 10PX;
-      }
-      .close-btn {
-        width: 30PX;
-        height: 30PX;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: absolute;
-        right: 4vw;
-        top: 4vw;
-        border-radius: 30PX;
-        transition: $normal;
-        &.light {
-          box-shadow: boxShadow(light, out, $normalSize);
-          //text-shadow: $shadow-text-light;
-          &:active {
-            box-shadow: boxShadow(light, inset, $normalSize), boxShadow(light, out, $activeSize);
-          }
+      position: absolute;
+      right: 15PX;
+      border-radius: 15PX;
+      transition: $normal;
+      &.light {
+        &:active {
+          box-shadow: boxShadow(light, inset, $activeSize);
         }
-        &.dark {
-          box-shadow: boxShadow(dark, out, $normalSize);
-          //text-shadow: $shadow-text-dark;
-          &:active {
-            box-shadow: boxShadow(dark, inset, $normalSize), boxShadow(dark, out, $activeSize);
-          }
+      }
+      &.dark {
+        &:active {
+          box-shadow: boxShadow(dark, inset, $activeSize);
         }
       }
     }
-    .action-list {
-      overflow-y: scroll;
-      -webkit-overflow-scrolling: active;
-      overflow-x: hidden;
-      .action-list-added, .action-list-addable {
+  }
+  .action-list {
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
+    .action-list-added, .action-list-addable {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2vw;
+      flex-wrap: wrap;
+      .list-added-title, .list-addable-title {
+        width: 96vw;
+        height: 30PX;
+        padding-left: calc(4vw + 30PX);
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        padding: 2vw;
-        flex-wrap: wrap;
-        .list-added-title, .list-addable-title {
-          width: 96vw;
-          height: 30PX;
-          padding-left: calc(4vw + 30PX);
-          display: flex;
-          align-items: center;
-          position: relative;
+        position: relative;
+        &::before {
+          content: '';
+          position: absolute;
+          width: 20PX;
+          height: 20PX;
+          border-radius: 20PX;
+          left: 4vw;
+        }
+        &.light {
           &::before {
-            content: '';
-            position: absolute;
-            width: 20PX;
-            height: 20PX;
-            border-radius: 20PX;
-            left: 4vw;
-          }
-          &.light {
-            &::before {
-              box-shadow: $shadow-circle-light;
-            }
-          }
-          &.dark {
-            &::before {
-              box-shadow: $shadow-circle-dark;
-            }
+            box-shadow: $shadow-circle-light;
           }
         }
-        .list-added-title {
+        &.dark {
           &::before {
-            background: $added;
+            box-shadow: $shadow-circle-dark;
           }
         }
-        .list-addable-title {
-          &::before {
-            background: $addable;
-          }
+      }
+      .list-added-title {
+        &::before {
+          background: $added;
+        }
+      }
+      .list-addable-title {
+        &::before {
+          background: $addable;
         }
       }
     }

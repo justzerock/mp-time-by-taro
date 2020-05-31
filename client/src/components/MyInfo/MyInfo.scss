@@ -1,0 +1,92 @@
+@import '../../assets/variables.scss';
+
+.my-info {
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  line-height: 50px;
+  letter-spacing: 5px;
+  width: 80vw;
+  height: 50vh;
+  background: var(--background);
+  box-shadow: 3PX 3PX 6PX rgba(0,0,0,.1), -3PX -3PX 6PX rgba(0,0,0,.1);
+  left: 10vw;
+  bottom: var(--bottom);
+  border-radius: 50px;
+  transition: bottom .25s ease-in-out, 
+    transform .25s ease-in-out;
+  z-index: 1001;
+  transform-origin: calc(86vw - 160PX) 55vh;
+  transform: var(--transform);
+  &::before {
+    content: '';
+    position: absolute;
+    width: 20PX;
+    height: 20PX;
+    transform: rotate(45deg);
+    clip-path: polygon(0% 100%, 100% 100%, 100% 0%);
+    right: calc(160PX - 6vw);
+    bottom: -8PX;
+    background: var(--background);
+    box-shadow: 3PX 3PX 6PX 0 rgba(0,0,0,.1);
+  }
+  .info-title {
+    display: flex;
+    position: absolute;
+    left: 20PX;
+    top: 20PX;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 10PX;
+      bottom: -10PX;
+      width: 90%;
+      height: 10PX;
+      border-radius: 5PX;
+      background: linear-gradient(to right,
+      rgba($color: var(--primary-color), $alpha: 0.4), rgba($color: var(--primary-color), $alpha: 0.4) 25%,
+      rgba($color: var(--primary-color), $alpha: 0.3) 25%, rgba($color: var(--primary-color), $alpha: 0.3) 50%,
+      rgba($color: var(--primary-color), $alpha: 0.2) 50%, rgba($color: var(--primary-color), $alpha: 0.2) 75%,
+      rgba($color: var(--primary-color), $alpha: 0.1) 75%, rgba($color: var(--primary-color), $alpha: 0.1) 100%,
+      );
+    }
+  }
+  .info-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .info-icon {
+    display: inline-flex;
+    color: var(--color);
+    margin: auto 5px;
+  }
+  .i-know {
+    display: flex;
+    position: absolute;
+    right: 40PX;
+    bottom: 40PX;
+    transition: transform .25s ease-in-out, opacity .25s ease-in-out;
+    &:active {
+      transform: scale(0.9);
+      opacity: 0.8;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      width: 80%;
+      height: 10PX;
+      border-radius: 5PX;
+      right: -10PX;
+      bottom: -10PX;
+      background: linear-gradient(to right,
+        rgba($color: var(--primary-color), $alpha: 0.8), rgba($color: var(--primary-color), $alpha: 0.8) 25%,
+        rgba($color: var(--primary-color), $alpha: 0.6) 25%, rgba($color: var(--primary-color), $alpha: 0.6) 50%,
+        rgba($color: var(--primary-color), $alpha: 0.4) 50%, rgba($color: var(--primary-color), $alpha: 0.4) 75%,
+        rgba($color: var(--primary-color), $alpha: 0.2) 75%, rgba($color: var(--primary-color), $alpha: 0.2) 100%,
+      );
+    }
+  }
+}

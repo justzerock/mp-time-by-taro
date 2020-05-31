@@ -5,7 +5,8 @@
   height: 54vw;
   padding: 10PX;
   position: absolute;
-  transition: $normal;
+  transition: opacity .25s ease-in-out .25s,
+    transform .25s ease-in-out;
   z-index: 999;
   border-radius: 10PX;
   display: flex;
@@ -13,7 +14,7 @@
   justify-content: space-evenly;
   align-items: center;
   &.show {
-    opacity: 1;
+    //opacity: 1;
     &.top-arrow {
       transform: translateY(100%) scale(1);
     }
@@ -22,7 +23,7 @@
     }
   }
   &.hide {
-    opacity: 0;
+    //opacity: 0;
     &.top-arrow {
       transform: translateY(50%) scale(0);
     }
@@ -38,15 +39,17 @@
     transform: rotate(45deg);
   }
   &.top-arrow {
-    bottom: -10PX;
+    bottom: -20PX;
     &::after {
-      top: -10PX;
+      top: -8PX;
+      clip-path: polygon(0% 0%, 0% 100%, 100% 0%);
     }
   }
   &.bottom-arrow {
-    top: -10PX;
+    top: -20PX;
     &::after {
-      bottom: -10PX;
+      bottom: -8PX;
+      clip-path: polygon(0% 100%, 100% 0%, 100% 100%);
     }
   }
   &.arrow-left {
@@ -104,15 +107,15 @@
   }
   &.light {
     background: darken($color: $light, $amount: 1%);
-    box-shadow: boxShadow(light, out, $normalSize);
+    box-shadow: 3PX 3PX 6PX rgba(0,0,0,.1), -3PX -3PX 6PX rgba(0,0,0,.1);
     &.top-arrow {
       &::after {
-        box-shadow: -3PX -3PX 4.5PX 0 rgba(255,255,255,.25);
+        box-shadow: -3PX -3PX 6PX rgba(0,0,0,.1);
       }
     }
     &.bottom-arrow {
       &::after {
-        box-shadow: 3PX 3PX 4.5PX 0 rgba(0,0,0,.1);
+        box-shadow: 3PX 3PX 6PX 0 rgba(0,0,0,.1);
       }
     }
     &::after {
@@ -121,15 +124,15 @@
   }
   &.dark {
     background: lighten($color: $dark, $amount: 1%);
-    box-shadow: boxShadow(dark, out, $normalSize);
+    box-shadow: 3PX 3PX 6PX rgba(0,0,0,.1), -3PX -3PX 6PX rgba(0,0,0,.1);
     &.top-arrow {
       &::after {
-        box-shadow: -3PX -3PX 4.5PX 0 rgba(255,255,255,.05);
+        box-shadow: -3PX -3PX 6PX 0 rgba(0,0,0,.1);
       }
     }
     &.bottom-arrow {
       &::after {
-        box-shadow: 3PX 3PX 4.5PX 0 rgba(0,0,0,.25);
+        box-shadow: 3PX 3PX 6PX 0 rgba(0,0,0,.1);
       }
     }
     &::after {

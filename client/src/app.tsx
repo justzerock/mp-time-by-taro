@@ -34,6 +34,7 @@ class App extends Component {
       navigationBarTitleText: 'WeChat',
       navigationBarTextStyle: 'black'
     },
+    darkmode: true,
     cloud: true
   }
 

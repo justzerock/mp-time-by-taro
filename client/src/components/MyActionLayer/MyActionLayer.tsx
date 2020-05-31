@@ -27,7 +27,7 @@ interface MyActionLayer {
 @observer
 class MyActionLayer extends Component {
   static defaultProps = {
-    expand: false
+    isShow: false
   }
 
   /**
@@ -60,21 +60,14 @@ class MyActionLayer extends Component {
   }
 
   render () {
-    const { themeStore: { isDark, hasHomeBar, list } , expand, onAdd } = this.props
+    const { themeStore: { isDark, hasHomeBar, list } , isShow, onManage } = this.props
 
-    const classExpand = expand ? 'open' : 'close'
+    const classExpand = isShow ? 'open' : 'close'
     const classDark = isDark ? 'dark' : 'light'
     const styleMain = {
-      paddingBottom: hasHomeBar ? '44PX' : '6vw'
+      paddingBottom: hasHomeBar ? '44PX' : '10PX'
     }
     return (
-      <View
-        className='my-action-layer'
-      >
-        <View 
-          className={`full-layer ${classExpand}`}
-          onClick={onAdd}
-        />
         <View
           className={`main ${classExpand} ${classDark}`}
           style={styleMain}
@@ -89,10 +82,10 @@ class MyActionLayer extends Component {
                 name='progress'
               />
             </View>
-            添加进度条
+            管理进度条
             <View
               className={`close-btn ${classDark}`}
-              onClick={onAdd}
+              onClick={onManage}
             >
               <MyIcon 
                 name='close'
@@ -158,8 +151,6 @@ class MyActionLayer extends Component {
             </View>
           </View>
         </View>
-
-      </View>
     )
   }
 }

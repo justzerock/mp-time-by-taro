@@ -1,29 +1,74 @@
 @import '../../assets/variables.scss';
 
-.my-float-button {
+.float-btn-group {
+  display: flex;
   width: 40PX;
   height: 40PX;
-  border-radius: 40PX;
+  border-radius: 50%;
   position: relative;
-  display: flex;
   justify-content: center;
   align-items: center;
-  animation: scale .5s;
-  &.light {
-    box-shadow: boxShadow(light, out, $normalSize);
-    animation: shadow-light .5s;
-    background: $light;
-    &:active {
-      box-shadow: boxShadow(light, out, $activeSize), boxShadow(light, inset, $normalSize);
+  .main-btn, .setting-btn, .manage-btn, .info-btn  {
+    display: flex;
+    position: absolute;
+    width: 40PX;
+    height: 40PX;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    right: 0;
+    opacity: 0;
+    z-index: -1;
+    transition: right .25s ease-in-out,
+      opacity .25s ease-in-out,
+      transform .25s ease-in-out;
+    &.light {
+      box-shadow: boxShadow(light, out, $normalSize);
+      animation: shadow-light .5s;
+      background: $light;
+      &:active {
+        box-shadow: boxShadow(light, out, $activeSize), boxShadow(light, inset, $normalSize);
+      }
+    }
+    &.dark {
+      box-shadow: boxShadow(dark, out, $normalSize);
+      animation: shadow-dark .5s;
+      background: $dark;
+      &:active {
+        box-shadow: boxShadow(dark, out, $activeSize), boxShadow(dark, inset, $normalSize);
+      }
+    }
+    &.open {
+      opacity: 1;
+      z-index: 999;
     }
   }
-  &.dark {
-    box-shadow: boxShadow(dark, out, $normalSize);
-    animation: shadow-dark .5s;
-    background: $dark;
-    &:active {
-      box-shadow: boxShadow(dark, out, $activeSize), boxShadow(dark, inset, $normalSize);
+  .main-btn {
+    opacity: 1;
+    z-index: 1;
+    .icon-wrap {
+      transition: transform .25s ease-in-out;
     }
+    &.open {
+      .icon-wrap {
+        transform: rotate(-45deg);
+      }
+    }
+  }
+  .setting-btn {
+    &.open {
+      right: 50PX;
+    }
+  }
+  .manage-btn {
+    &.open {
+      right: 100PX;
+    }
+  }
+  .info-btn {
+    &.open {
+      right: 150PX;
+    } 
   }
 }
 

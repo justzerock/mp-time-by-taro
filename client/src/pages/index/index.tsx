@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import { ComponentType } from 'react'
 import Taro, { Component } from '@tarojs/taro'
-import { View, Swiper, SwiperItem } from '@tarojs/components'
+import { View } from '@tarojs/components'
 import { observer, inject } from '@tarojs/mobx'
 import classNames from 'classnames/bind'
 
@@ -10,8 +10,13 @@ import MyNavBar from '../../components/MyNavBar/MyNavBar'
 import MyProgress from '../../components/MyProgress/MyProgress'
 import MyFloatButton from '../../components/MyFloatButton/MyFloatButton'
 import MyActionLayer from '../../components/MyActionLayer/MyActionLayer'
-import NewSettingList from '../../components/NewSettingList/NewSettingList'
+import MySettingList from '../../components/MySettingList/MySettingList'
+import MyInfo from '../../components/MyInfo/MyInfo'
+import MyFirstTip from '../../components/MyFirstTip/MyFirstTip'
+import MyFirstButton from '../../components/MyFirstButton/MyFirstButton'
+
 import '../../assets/myfont.scss'
+import hexToRgba from 'hex-to-rgba'
 
 let cx = classNames.bind(styles)
 
@@ -23,6 +28,7 @@ type PageStateProps = {
     isRight: boolean,
     isShare: boolean,
     hasHomeBar: boolean,
+    isFirst: boolean,
     navInfo: object,
     list: Array<Object>,
     birthday: Array<number>,
@@ -33,6 +39,7 @@ type PageStateProps = {
     setListData: Function,
     setUpdateData: Function,
     setNavBarTitle: Function,
+    setIsFirst: Function,
     getListData: Function,
     getNavInfo: Function,
     getPrimaryColor: Function,
@@ -41,7 +48,9 @@ type PageStateProps = {
     getBirthDay: Function,
     getDarkMode: Function,
     getWeekStartDay: Function,
-    getViewMode: Function
+    getViewMode: Function,
+    getUseCloudSync: Function,
+    getIsFirst: Function
   }
 }
 
@@ -53,13 +62,12 @@ interface Index {
 @observer
 class Index extends Component {
   state = {
-    expand: false,
-    dateSel: '1993-1-1',
-    startX: 0,
-    x: 0,
-    translateX: 0,
-    transition: 'all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-    current: '0'
+    showAction: false,
+    showInfo: false,
+    showFullLayer: false,
+    showListFullLayer: false,
+    showSettingList: false,
+    showColorSet: { index: '', show: false},
   }
 
   /**
@@ -92,7 +100,7 @@ class Index extends Component {
     themeStore.isShare = true
     setTimeout(() => {
       themeStore.isShare = false
-    }, 1000);
+    }, 100);
     return {
       title: '👍 亦时 - 人生进度条',
       path: '/pages/index/index'
@@ -101,6 +109,8 @@ class Index extends Component {
 
   onUpdate = () => {
     const { themeStore } = this.props
+    themeStore.getIsFirst()
+    themeStore.getUseCloudSync()
     themeStore.getExpLife()
     themeStore.getBirthDay()
     themeStore.getWeekStartDay()
@@ -109,9 +119,7 @@ class Index extends Component {
     themeStore.getDarkMode()
     themeStore.getViewMode()
     themeStore.getNavInfo()
-    setTimeout(() => {
-      themeStore.getListData()
-    }, 100)
+    themeStore.getListData()
 
     /**  
      * code start
@@ -138,49 +146,104 @@ class Index extends Component {
      */
   }
 
-  // 开启悬浮操作窗
-  onAddToggle = () => {
-    const { expand } = this.state
+  // 显示帮助信息
+  onShowInfo = () => {
+    const { showInfo, showFullLayer } = this.state
     this.setState({
-      expand: !expand
+      showFullLayer: !showFullLayer,
+      showInfo: !showInfo
+    })
+  }
+  onHideInfo = () => {
+    this.setState({
+      showInfo: false,
+      showFullLayer: false
+    })
+  }
+
+  // 开启悬浮操作窗
+  onShowManage = () => {
+    this.setState({
+      showFullLayer: true,
+      showAction: true
     })
   }
 
   // 关闭悬浮操作窗
-  onAddCancle = () => {
+  onHideManage = () => {
     this.setState({
-      expand: false
+      showAction: false,
+      showFullLayer: false
     })
   }
 
-  // 当滑动页面
-  onSwipItem = (e) => {
-    const { themeStore } = this.props
-    let current = e.detail.current
-    let isRight = current ? true : false
-    let title = current ? '设置' : '亦时'
-    themeStore.setNavBarTitle(title, isRight)
+  // 关闭遮罩层
+  closeFullLayer = () => {
+    this.setState({
+      showAction: false,
+      showInfo: false,
+      showFullLayer: false,
+      showSettingList: false
+    })
   }
 
-  // 滚动事件
-  onScroll = (e) => {
-    console.log(e)
+  // 显示遮罩层
+  onShowListFullLayer = () => {
+    this.setState({
+      showListFullLayer: true,
+    })
+  }
+
+  // 关闭遮罩层
+  onCloseListFullLayer = () => {
+    this.setState({
+      showColorSet: {index: '', show: false},
+      showListFullLayer: false,
+    })
+  }
+
+  // 显示设置列表
+  onShowSettingList = () => {
+    this.setState({
+      showFullLayer: true,
+      showSettingList: true
+    })
+  }
+
+  // 隐藏设置列表
+  onHideSettingList = () => {
+    this.setState({
+      showSettingList: false,
+      showFullLayer: false
+    })
+  }
+
+  // 设置初始提示
+  onSetFirst = () => {
+    const { themeStore } = this.props
+    themeStore.setIsFirst(false)
+    this.setState({
+      showFullLayer: false
+    })
   }
 
   render () {
-    const { themeStore: { primary, usePrimary, isDark, isDetail, isShare, weekStartDay, birthday, isRight, hasHomeBar, navInfo, list } } = this.props
-    const { expand } = this.state
+    const { 
+      themeStore: { 
+        primary, usePrimary, isFirst, isDark, isDetail, isShare, weekStartDay, birthday, isRight, hasHomeBar, navInfo, list 
+      } 
+    } = this.props
+    const { showAction, showInfo, showFullLayer, showListFullLayer, showColorSet, showSettingList } = this.state
+
+    const content = [
+      '点击进度条切换视图\n点击图标设置主题色',
+      '点击按钮管理进度条'
+    ]
 
     let classIndex = cx({
       'index': true,
       'light': !isDark,
       'dark': isDark
-    })
-    let classSwiper = cx({
-      'swiper': true
-    })
-    let classSwiperItem = cx({
-      'swiper-item': true
     })
     let classList = cx({
       'list': true,
@@ -200,62 +263,78 @@ class Index extends Component {
     let styleFloatBtn = {
       bottom: hasHomeBar ? '44PX' : '4vw'
     }
+
+    let globalVariables = `
+    --primary-light: ${primary};
+    --primary-dark: ${hexToRgba(primary, 0.8)};
+    --text-normal: ${isDark ? hexToRgba('#ffffff', 0.6) : hexToRgba('#5a5a5a', 0.6)};
+    --text-percent: ${isDark ? hexToRgba('#414141', 0.6) : hexToRgba('#F4F5FB', 0.9)};
+    `
+    const styleFullLayer =  `
+      --background: ${showFullLayer || isFirst ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0)'};
+      --z-index: ${showFullLayer || isFirst ? 1000 : -1}
+    `
+    const styleListFullLayer = `
+      --layer-background: ${showListFullLayer ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0)'};
+      --z-index: ${showListFullLayer ? 1000 : -1}
+    `
     return ( 
       <View
         className={classIndex}
+        style={globalVariables}
       >
+        <View
+          className={`full-layer`}
+          style={styleFullLayer}
+          onClick={this.closeFullLayer}
+        ></View>
         <MyNavBar />
-        <Swiper
-          className={classSwiper}
-          onChange={this.onSwipItem}
+
+        <View 
+          className={classScrollList}
         >
-          <SwiperItem
-            className={classSwiperItem}
+          <View 
+            className={classList}
+            style={styleList}
           >
-              <View 
-                className={classScrollList}
-              >
-                <View 
-                  className={classList}
-                  style={styleList}
-                >
-                  {
-                    list
-                    .filter(item => item.selected)
-                    .map(
-                      item => {
-                        return (
-                          <MyProgress 
-                            key={item.type + item.time}
-                            name={item.name}
-                            title={item.title}
-                            percent={item.percent}
-                            time={item.time}
-                            icon={item.icon}
-                            color={item.color}
-                            type={item.type}
-                            isDark={isDark}
-                            isDetail={isDetail}
-                            birthday={birthday}
-                            weekStartDay={weekStartDay}
-                            primary={primary}
-                            usePrimary={usePrimary}
-                            windowWidth={navInfo.windowWidth}
-                            windowHeight={navInfo.windowHeight}
-                          />
-                        )
-                      }
-                    )
-                  }
-                </View>
-              </View>
-          </SwiperItem>
-          <SwiperItem
-            className={classSwiperItem}
-          >
-            <NewSettingList />
-          </SwiperItem>
-        </Swiper>
+            <View
+              className={`list-full-layer`}
+              style={styleListFullLayer}
+              onClick={this.onCloseListFullLayer}
+            ></View>
+            {
+              list
+              .filter(item => item.selected)
+              .map(
+                item => {
+                  return (
+                    <MyProgress 
+                      key={item.type}
+                      name={item.name}
+                      title={item.title}
+                      percent={item.percent}
+                      time={item.time}
+                      icon={item.icon}
+                      color={item.color}
+                      type={item.type}
+                      isDark={isDark}
+                      isDetail={isDetail}
+                      birthday={birthday}
+                      weekStartDay={weekStartDay}
+                      primary={primary}
+                      usePrimary={usePrimary}
+                      windowWidth={navInfo.windowWidth}
+                      windowHeight={navInfo.windowHeight}
+                      onShowListFullLayer={this.onShowListFullLayer}
+                      onCloseListFullLayer={this.onCloseListFullLayer}
+                      showColorSet={showColorSet}
+                    />
+                  )
+                }
+              )
+            }
+          </View>
+        </View>
         <View
           className={classFloatBtn}
           style={styleFloatBtn}
@@ -263,12 +342,46 @@ class Index extends Component {
           <MyFloatButton 
             isDark={isDark}
             primary={primary}
-            onAdd={this.onAddToggle}
+            onSettingList={this.onShowSettingList}
+            onManage={this.onShowManage}
+            onShowInfo={this.onShowInfo}
+            onHideInfo={this.onHideInfo}
           />
         </View>
         <MyActionLayer 
-          expand={expand}
-          onAdd={this.onAddCancle}
+          isShow={showAction}
+          onManage={this.onHideManage}
+          isDark={isDark}
+        />
+        <MyInfo 
+          hasHomeBar={hasHomeBar}
+          isShow={showInfo}
+          isDark={isDark}
+          onHideInfo={this.onHideInfo}
+          primary={primary}
+        />
+        <MySettingList 
+          hasHomeBar={hasHomeBar}
+          isShow={showSettingList}
+          onHide={this.onHideSettingList}
+        />
+        <MyFirstTip
+          isTop={true}
+          content={content[0]}
+          hasHomeBar={hasHomeBar}
+          isShow={isFirst}
+          isDark={isDark}
+        />
+        <MyFirstTip
+          isTop={false}
+          content={content[1]}
+          hasHomeBar={hasHomeBar}
+          isShow={isFirst}
+          isDark={isDark}
+        />
+        <MyFirstButton 
+          isShow={isFirst}
+          onSetFirst={this.onSetFirst}
           isDark={isDark}
         />
       </View>
