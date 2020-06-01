@@ -23,8 +23,9 @@
 			"disablePlugins": [],
 			"outputPath": ""
 		},
+		"bundle": false,
 		"useCompilerModule": false,
-		"userConfirmedUseCompilerModuleSwitch": false
+		"userConfirmedUseCompilerModuleSwitch": true
 	},
 	"compileType": "miniprogram",
 	"simulatorType": "wechat",

@@ -54,7 +54,7 @@ class MySettingList extends Component {
       isDetail: false,
       primary: '#5a5a5a',
       usePrimary: false,
-      useCloudSync: false,
+      useCloudSync: true,
       colors: [],
       weekStartDay: 0,
       systemInfo: {},

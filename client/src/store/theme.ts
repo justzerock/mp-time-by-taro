@@ -39,7 +39,7 @@ const themeStore = observable({
   // 统一使用主题色
   usePrimary: false, 
   // 开启云同步
-  useCloudSync: false,
+  useCloudSync: true,
   // 标题
   navBarTitle: '亦时', 
   // 是否为右侧页面 
@@ -118,11 +118,14 @@ const themeStore = observable({
       let isFirst = Taro.getStorageSync('isFirst')
       if (!is(isFirst, '')) {
         this.isFirst = isFirst
+        return isFirst
       } else {
         this.setIsFirst(true)
+        return true
       }
     } catch (error) {
       this.setIsFirst(true)
+      return true
     }
   },
   setIsFirst(isFirst) {
@@ -463,7 +466,6 @@ const themeStore = observable({
     let menuInfo
     try {
       sysInfo = Taro.getSystemInfoSync()
-      console.log(sysInfo)
       menuInfo = Taro.getMenuButtonBoundingClientRect()
     } catch (error) {
       sysInfo = {

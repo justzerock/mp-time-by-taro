@@ -169,7 +169,6 @@ class MyProgress extends Component {
 
   onToggleColorSet = () => {
     const { showColorSet } = this.state
-    console.log('set')
     this.setState({
       showColorSet: !showColorSet,
     })
@@ -423,15 +422,6 @@ class MyProgress extends Component {
             </View>
           </View>
         </View>
-        {/* <MyColorSet 
-          isDark={isDark}
-          isTop={isTop}
-          show={showColorSet}
-          arrowPosition={arrowPosition}
-          curColor={color}
-          type={type}
-          onSetBarColor={this.onSetBarColor}
-        /> */}
       </View>
     )
   }

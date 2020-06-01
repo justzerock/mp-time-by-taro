@@ -14,8 +14,6 @@ const cx = classNames.bind(styles)
 type PageStateProps = {
   themeStore: {
     isDark: boolean,
-    isRight: boolean,
-    isShare: boolean,
     navBarTitle: string,
     systemInfo: object,
     menuButton: object,
@@ -52,7 +50,7 @@ class MyNavBar extends Component {
   componentWillReact () { }
 
   render () {
-    const { themeStore: { isDark, isRight, navBarTitle, isShare, navInfo } } = this.props
+    const { themeStore: { isDark, navBarTitle, navInfo } } = this.props
     const classNavBar = cx({
       'my-nav-bar': true,
       'light': !isDark,
@@ -81,7 +79,7 @@ class MyNavBar extends Component {
       'capsule': true,
       'light': !isDark,
       'dark': isDark,
-      'share': isShare
+      'share': true
     })
     
     const styleNavBar = {

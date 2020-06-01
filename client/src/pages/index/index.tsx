@@ -100,7 +100,7 @@ class Index extends Component {
     themeStore.isShare = true
     setTimeout(() => {
       themeStore.isShare = false
-    }, 100);
+    }, 500);
     return {
       title: '👍 亦时 - 人生进度条',
       path: '/pages/index/index'
@@ -109,17 +109,22 @@ class Index extends Component {
 
   onUpdate = () => {
     const { themeStore } = this.props
-    themeStore.getIsFirst()
-    themeStore.getUseCloudSync()
-    themeStore.getExpLife()
-    themeStore.getBirthDay()
-    themeStore.getWeekStartDay()
-    themeStore.getPrimaryColor()
-    themeStore.getUsePrimary()
-    themeStore.getDarkMode()
-    themeStore.getViewMode()
-    themeStore.getNavInfo()
-    themeStore.getListData()
+    let isFirst = themeStore.getIsFirst()
+    if (isFirst) {
+      themeStore.getNavInfo()
+      themeStore.getListData()
+    } else {
+      themeStore.getUseCloudSync()
+      themeStore.getExpLife()
+      themeStore.getBirthDay()
+      themeStore.getWeekStartDay()
+      themeStore.getPrimaryColor()
+      themeStore.getUsePrimary()
+      themeStore.getDarkMode()
+      themeStore.getViewMode()
+      themeStore.getNavInfo()
+      themeStore.getListData()
+    }
 
     /**  
      * code start
