@@ -6,9 +6,12 @@
   align-items: center;
   flex-direction: row;
   position: relative;
-  transition: $cubic;
+  transition: border-radius .25s ease-in-out .25s,
+    box-shadow .25s ease-in-out,
+    height .25s ease-in-out;
   border: 2PX solid;
   box-sizing: border-box;
+  transform: translateZ(0);
   &.on-top {
     z-index: 1001;
   }
@@ -72,13 +75,14 @@
       rgba($color: var(--primary-rgb), $alpha: .3) 60%, rgba($color: var(--primary-rgb), $alpha: .3) 80%,
       rgba($color: var(--primary-rgb), $alpha: .1) 80%, rgba($color: var(--primary-rgb), $alpha: .1) 100%,
     );
-    transition: clip-path .3s ease-in-out,
-      opacity .3s ease-in-out,
-      transform .25s ease-in-out;
+    transition: clip-path .25s ease-in-out,
+      opacity .25s ease-in-out,
+      transform .25s ease-in-out,
+      border-radius .25s ease-in-out;
     text-shadow: var(--text-shadow);
     opacity: var(--box-opacity);
     transform-origin: left top;
-    transform: var(--transform);
+    transform: var(--transform) translateZ(0);
     z-index: 98;
     &::before {
       content: '选择颜色';
@@ -88,7 +92,7 @@
       top: 40%;
       transform: translate(-50%, -50%);
       opacity: var(--title-opacity);
-      transition: opacity .3s ease-in-out;
+      transition: opacity .25s ease-in-out;
       color: var(--title-color);
     }
   }
@@ -102,7 +106,7 @@
     border-radius: 2vw;
     overflow: hidden;
     opacity: var(--action-opacity);
-    transition: opacity .3s ease-in-out;
+    transition: opacity .25s ease-in-out;
   }
   .left-circle {
     display: none;
@@ -114,7 +118,7 @@
     height: 120PX;
     border-radius: 50%;
     opacity: var(--opacity);
-    transform: var(--transform);
+    transform: var(--transform) translateZ(0);
     transition: transform .5s ease-in-out, 
       opacity .25s ease-in-out, 
       clip-path .25s ease-in-out;
@@ -137,13 +141,13 @@
     opacity: 0;
     transition: transform .5s ease-in-out,
       opacity .25s ease-in-out;
-    transform: scale(0);
+    transform: scale(0) translateZ(0);
     color: var(--icon-color);
     text-shadow: var(--text-shadow);
     z-index: 99;
     &.show {
       opacity: 1;
-      transform: scale(1);
+      transform: scale(1) translateZ(0);
     }
   }
   .detail {
@@ -166,11 +170,11 @@
       opacity: 0;
       transition: transform .25s ease-in-out,
         opacity .25s ease-in-out;
-      transform: scale(0);
+      transform: scale(0) translateZ(0);
       transform-origin: left center;
       &.show {
         opacity: 1;
-        transform: scale(1);
+        transform: scale(1) translateZ(0);
       }
       .detail-name {
         font-size: 12PX;
@@ -243,11 +247,11 @@
         @keyframes progress-active {
           0% {
             opacity: .1;
-            transform: translate(-100%)
+            transform: translate(-100%) translateZ(0);
           }
           to {
             opacity: 0;
-            transform: translate(0)
+            transform: translate(0) translateZ(0);
           }
         }
       }
@@ -258,7 +262,7 @@
         flex: 1;
         position: absolute;
         font-size: var(--font-size);
-        transform: var(--transform);
+        transform: var(--transform) translateZ(0);
         left: var(--left);
         color: var(--color);
         transition: font-size .25s ease-in-out, 

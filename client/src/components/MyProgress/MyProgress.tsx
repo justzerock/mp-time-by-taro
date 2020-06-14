@@ -295,8 +295,8 @@ class MyProgress extends Component {
     }
     const styleColorTitle = `
       --primary-rgb: ${this.hexToRgb(primaryColor)};
-      --clip-width: ${showColorSet ? '28vw' : '15vw'};
-      --clip-height: ${showColorSet ? '90%' : '50%'};
+      --clip-width: ${ !detail ? '0' : showColorSet ? '28vw' : '15vw'};
+      --clip-height: ${ !detail ? '0' : showColorSet ? '90%' : '50%'};
       --text-shadow: ${textShadow('icon')};
       --box-opacity: ${showColorSet || detail ? 1 : 0};
       --title-opacity: ${showColorSet ? 1 : 0};
